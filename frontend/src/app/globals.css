@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
+@source "../../node_modules/@tremor/react/dist/**/*.js";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

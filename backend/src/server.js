@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const { Pool } = require("pg");
 
 const app = express();
@@ -17,6 +18,12 @@ const pool = new Pool({
 
 app.use(cors());
 app.use(express.json());
+app.use(
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+  }),
+);
 
 app.get("/health", async (_req, res) => {
   try {

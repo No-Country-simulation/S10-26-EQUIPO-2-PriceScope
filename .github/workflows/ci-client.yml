@@ -1,0 +1,66 @@
+name: CI - Client Frontend
+
+on:
+  push:
+    branches: [main, frontend]
+    paths:
+      - 'apps/client/**'
+      - '.github/workflows/ci-client.yml'
+  pull_request:
+    branches: [main, frontend]
+    paths:
+      - 'apps/client/**'
+      - '.github/workflows/ci-client.yml'
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Typecheck (Frontend SPA)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar si existe apps/client
+        id: check_dir
+        run: |
+          if [ -d "apps/client" ] && [ -f "apps/client/package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "apps/client no existe o está pendiente de inicializar. Omitiendo CI."
+          fi
+
+      - name: Configurar Node.js 18.x / 20.x
+        if: steps.check_dir.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Instalar Dependencias
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/client
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          fi
+
+      - name: Verificación de Tipos TypeScript (tsc)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/client
+        run: |
+          if [ -f tsconfig.json ]; then
+            npx tsc --noEmit
+          else
+            echo "Sin tsconfig.json detectado aún."
+          fi
+
+      - name: Build de Producción (Next.js / Vite)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/client
+        run: |
+          if grep -q '"build"' package.json 2>/dev/null; then
+            npm run build
+          fi

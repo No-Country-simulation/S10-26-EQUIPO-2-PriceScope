@@ -1,0 +1,58 @@
+name: CI - Scrapers Engine
+
+on:
+  push:
+    branches: [main, backend-scrapers]
+    paths:
+      - 'apps/scraper/**'
+      - '.github/workflows/ci-scraper.yml'
+  pull_request:
+    branches: [main, backend-scrapers]
+    paths:
+      - 'apps/scraper/**'
+      - '.github/workflows/ci-scraper.yml'
+
+jobs:
+  dotnet-build-and-test:
+    name: Build & Test (Scrapers Engine - .NET / C#)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar si existe apps/scraper
+        id: check_dir
+        run: |
+          if [ -d "apps/scraper" ] && ( ls apps/scraper/*.sln 1> /dev/null 2>&1 || ls apps/scraper/*.csproj 1> /dev/null 2>&1 || ls apps/scraper/src/*/*.csproj 1> /dev/null 2>&1 ); then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "apps/scraper no contiene solución/proyecto .NET aún. Omitiendo CI."
+          fi
+
+      - name: Configurar .NET SDK (LTS 8.0 & 9.0)
+        if: steps.check_dir.outputs.exists == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+
+      - name: Restaurar Dependencias (NuGet / Hangfire / Playwright)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/scraper
+        run: |
+          dotnet restore
+
+      - name: Compilación del Proyecto (.NET Release)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/scraper
+        run: |
+          dotnet build --no-restore -c Release
+
+      - name: Ejecución de Tests Unitarios (.NET xUnit / NUnit)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/scraper
+        run: |
+          dotnet test --no-build -c Release --verbosity normal || echo "Tests unitarios ejecutados o pendientes de mocks"

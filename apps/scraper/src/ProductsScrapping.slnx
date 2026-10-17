@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Worker/Worker.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="ScrapersLibrary/ScrapersLibrary.csproj" />
+</Solution>

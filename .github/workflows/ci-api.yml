@@ -1,0 +1,72 @@
+name: CI - API Backend
+
+on:
+  push:
+    branches: [main, backend, feature/estructura-nestjs]
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/ci-api.yml'
+  pull_request:
+    branches: [main, backend]
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/ci-api.yml'
+
+jobs:
+  test-and-lint:
+    name: Lint & Tests (Backend API)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar si existe apps/api
+        id: check_dir
+        run: |
+          if [ -d "apps/api" ] && [ -f "apps/api/package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "apps/api no existe o está pendiente de inicializar. Omitiendo CI."
+          fi
+
+      - name: Configurar Node.js 20.x LTS
+        if: steps.check_dir.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Instalar Dependencias (NestJS)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/api
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          fi
+
+      - name: Verificación de Linter y Formato
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/api
+        run: |
+          if grep -q '"lint"' package.json 2>/dev/null; then
+            npm run lint --if-present
+          fi
+
+      - name: Ejecución de Tests Unitarios (Jest / NestJS)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/api
+        run: |
+          if grep -q '"test"' package.json 2>/dev/null; then
+            npm run test --if-present
+          fi
+
+      - name: Compilación de Producción (Nest Build / tsc)
+        if: steps.check_dir.outputs.exists == 'true'
+        working-directory: apps/api
+        run: |
+          if grep -q '"build"' package.json 2>/dev/null; then
+            npm run build
+          fi

@@ -774,6 +774,8 @@ export interface PipelineTiendaStatus {
   nombre: string;
   ultima_corrida_utc: string;
   estado_corrida: 'EXITOSA' | 'ADVERTENCIA' | 'FALLIDA';
+  circuit_breaker_open: boolean;
+  fallback_activo: boolean;
   publicaciones_procesadas: number;
   publicaciones_fallidas: number;
   cobertura_pct: number;

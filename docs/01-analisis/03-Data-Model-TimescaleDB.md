@@ -338,7 +338,7 @@ Núcleo del sistema: captura cronológica append-only de cotizaciones comerciale
 | `cotizacion_aplicada`| `NUMERIC(12,4)`| Sí | `CHECK (cotizacion_aplicada IS NULL OR cotizacion_aplicada > 0)` | Tipo de cambio fijado al cierre del mercado (HU-23, HU-24). |
 | `cotizacion_aproximada`| `BOOLEAN` | No | `DEFAULT FALSE` | `TRUE` si proviene del fallback de 72h (RN-03, HU-22). |
 | `fuente_cotizacion`| `VARCHAR(50)` | Sí | `NULL` | Fuente cambiaria (ej. `'DolarAPI_Blue'`, `'BCRA_Cierre'`). |
-| `motivo_faltante`| `VARCHAR(255)`| Sí | `NULL` | Causa forense del quiebre de stock o fallo técnico. |
+| `motivo_faltante`| `VARCHAR(255)`| Sí | `NULL` | Causa forense del faltante (ej. `'HTTP_404_DESPUBLICADO'`, `'HTTP_429_RATE_LIMIT'`, `'WAF_CHALLENGE'`, `'CIRCUIT_BREAKER_TRIGGERED'`, `'TIMEOUT_30S'`, `'CONTINGENCIA_OFFLINE_SEED'`). |
 | `created_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Timestamp de inserción física. |
 
 *Clave Primaria Compuesta:* `PRIMARY KEY (timestamp_utc, producto_canonico_id, tienda_id)`.  

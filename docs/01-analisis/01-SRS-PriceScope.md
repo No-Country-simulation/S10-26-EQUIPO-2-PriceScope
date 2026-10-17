@@ -159,6 +159,22 @@ Cobertura de 4 tiendas piloto (Carrefour y Jumbo para supermercados; Frávega y 
 - **Fase 1.5 (Buffer Condicional - Semanas 3 a 4):** 
 El Panel de Administración de Tiendas (HU-01) y la interfaz de revisión de Zona Gris (HU-10) se integran de forma modular únicamente tras consolidar el pipeline base de scraping, persistencia y visualización.
 
+### 3.3 Postura de Cumplimiento Legal, Protección de Datos y Extracción Ética
+PriceScope implementa una política vinculante de extracción automatizada ética (*Ethical Web Scraping*) basada en cinco pilares de cumplimiento normativo y respeto a la infraestructura externa:
+
+1. **Naturaleza Estrictamente Pública de los Datos:**  
+   La plataforma recolecta única y exclusivamente información comercial expuesta de manera abierta, libre y no autenticada a cualquier consumidor en la web (precios de venta al público, denominación comercial de productos y marcas). Queda terminantemente prohibido vulnerar o eludir pantallas de inicio de sesión (*logins*), saltar muros de pago (*paywalls*), descifrar contenidos protegidos por DRM o ejecutar ataques de fuerza bruta contra mecanismos CAPTCHA.
+2. **Protección Integral de Datos Personales (Cero PII):**  
+   En estricto cumplimiento de la **Ley 25.326 de Protección de Datos Personales (Argentina)** y directivas internacionales (GDPR / CCPA), PriceScope no captura, procesa ni almacena Información de Identificación Personal (PII). Queda taxativamente prohibida la recolección de nombres de compradores, reseñas, comentarios de usuarios, perfiles de vendedores, datos bancarios o identificadores de cookies de sesión.
+3. **Doctrina de Uso Legítimo (*Fair Use* y Transformación Económica):**  
+   Los datos extraídos no se redistribuyen ni comercializan como catálogos duplicados en competencia directa con las fuentes originales. Su tratamiento es puramente transformativo: los precios se agregan mediante modelos matemáticos robustos (Mediana por categoría) para derivar índices estadísticos macroeconómicos e inteligencia de mercado (amparado por jurisprudencia internacional sobre acceso a datos públicos en la web, e.g. *hiQ Labs v. LinkedIn* y *Van Buren v. United States*).
+4. **Principio Rector "Do-No-Harm" (No Saturación de Infraestructura Externa):**  
+   * **Ventanas de Ejecución Valle:** Las tareas programadas operan de madrugada (03:00 a 05:00 ART / 06:00 a 08:00 UTC), minimizando el impacto sobre los servidores de los comercios minoristas durante las horas de tráfico comercial.
+   * **Control de Frecuencia (*Throttling*):** Delays pseudoaleatorios de 2 a 5 segundos entre solicitudes por dominio.
+   * **Respeto a Respuestas del Servidor:** Cumplimiento imperativo de directivas de limitación de tasa y cabeceras de espera (`Retry-After`).
+5. **Protocolo de Retirada Pacífica (*Graceful Fallback*):**  
+   Si una tienda activa mecanismos anti-bot infranqueables o bloqueos de acceso WAF persistentes, el sistema prohíbe escalar contramedidas agresivas. El worker de scraping suspende de inmediato la recolección para ese dominio mediante el *Circuit Breaker* y activa de forma automática el catálogo de contingencia pre-capturado (`data/seed_dataset_offline.json`), garantizando la continuidad operativa sin comprometer la ética del proyecto.
+
 ## 4. Actores del Sistema
 
 | Actor | Tipo de Actor | Descripción y Alcance Operativo | Permisos y Acciones Principales | Frecuencia de Uso |
@@ -306,6 +322,7 @@ El Panel de Administración de Tiendas (HU-01) y la interfaz de revisión de Zon
   * [ ] Por cada publicación se registran: nombre, precio regular, precio tachado (si existe), estado de stock, categoría y URL.
   * [ ] Si la publicación no presenta precio tachado, el campo se envía y almacena como `null` (nunca en cero).
   * [ ] La URL se preserva íntegra para posibilitar la navegación y trazabilidad hacia la publicación original.
+  * [ ] **Límites y Timeouts Operativos:** La navegación hacia la URL (`Page.GotoAsync`) tiene un timeout máximo de 30 segundos (`30_000 ms`). La espera por selectores de precio y stock (`Page.WaitForSelectorAsync`) tiene un timeout estricto de 10 segundos (`10_000 ms`). Si expira, se cancela la pestaña para evitar acumulación de memoria.
 * **Datos de Prueba Sugeridos:**
   * Publicación con promo: precio regular $8.000, tachado $10.000.
   * Publicación sin promo: tachado `null`.
@@ -330,20 +347,34 @@ El Panel de Administración de Tiendas (HU-01) y la interfaz de revisión de Zon
 
 ---
 
-#### HU-05: Reintentos y Clasificación de Fallos de Red
+#### HU-05: Reintentos, Clasificación de Errores de Red y Circuit Breaker
 * **Épica:** E1 — Captura e Ingesta Automatizada de Precios.
 * **Prioridad:** Must Have (Fase 1 — Semana 1).
 * **Célula Responsable:** `E-Scrapper`.
 * **Como:** Sistema Programado.
-* **Quiero:** Reintentar solicitudes ante caídas técnicas y clasificar fallas persistentes.
-* **Para:** Distinguir un error de conectividad o bloqueo de IP de una baja real de precio o despublicación.
+* **Quiero:** Clasificar granularmente las respuestas de red, aplicar reintentos adaptativos con retroceso exponencial y desconectar dominios ante bloqueos sistemáticos.
+* **Para:** Distinguir un error de conectividad o saturación de una despublicación real, protegiendo la reputación de la IP y evitando sobrecargar los portales objetivo.
 * **Criterios de Aceptación:**
-  * [ ] Aplica hasta 3 reintentos con retroceso exponencial (*exponential backoff*) ante códigos HTTP 5xx o timeout.
-  * [ ] Si la falla persiste, se genera un registro con estado `ERROR_CAPTURA` preservando el motivo y la URL.
-  * [ ] Un registro de tipo `ERROR_CAPTURA` nunca guarda precio cero (`0`).
+  * [ ] **Clasificación Estricta de Respuestas HTTP:**
+    * **HTTP 404 (Not Found):** Se tipifica de forma inmediata como `AGOTADO` (o despublicado). No se aplican reintentos.
+    * **HTTP 429 (Too Many Requests):** Si la respuesta incluye cabecera `Retry-After`, el worker suspende la petición el tiempo estipulado (siempre que sea $\le 60\text{s}$). Si no existe o excede el límite, aplica retroceso con factor $2.5\times$ y rotación de proxy.
+    * **HTTP 403 (Forbidden / Cloudflare Challenge):** Detección de bloqueo WAF. Aplica reintento con rotación estocástica de cabeceras (`User-Agent`, `Sec-Ch-Ua`, mutación de viewport, supresión de `navigator.webdriver`) y cambio de dirección IP de salida.
+    * **HTTP 5xx o Timeout:** Falla transitoria de infraestructura externa; aplica política de reintento estándar. Timeouts unificados en Playwright: `NavigationTimeout = 30_000ms`, `DefaultTimeout = 10_000ms`.
+  * [ ] **Algoritmo de Reintento Micro (Nivel URL en Playwright .NET):**
+    * Se ejecutan hasta **3 reintentos** utilizando la fórmula de **Exponential Backoff con Full Jitter**:
+      $$T_{\text{espera}} = \min\left(T_{\text{max}}, T_{\text{base}} \times 2^i\right) + \text{random}(0, J)$$
+      Donde $T_{\text{base}} = 2.0\text{ s}$, $T_{\text{max}} = 30.0\text{ s}$, $J = 1.5\text{ s}$, con $i \in \{1, 2, 3\}$.
+  * [ ] **Mecanismo de Desconexión Rápida (*Circuit Breaker* a Nivel Tienda):**
+    * Si una tienda registra **5 fallos consecutivos de HTTP 403/429** o una tasa de error acumulada **$> 20\%$ sobre el lote**, el circuito cambia a estado `OPEN`.
+    * La ejecución del scraper para esa tienda se suspende de forma inmediata por el resto de la jornada, reportando el incidente al servicio de telemetría (`GET /api/v1/pipeline/status`) con la bandera `"circuit_breaker_open": true`.
+    * Se activa automáticamente la ingesta del catálogo de contingencia pre-almacenado (`seed_dataset_offline.json`) etiquetando el lote como mitigación activa.
+  * [ ] **Preservación Forense y Prohibición de Cero:**
+    * Si tras los 3 reintentos la falla persiste a nivel individual (sin abrir el circuito de la tienda), se persiste un registro con estado `ERROR_CAPTURA` reteniendo la URL de origen, código HTTP y motivo técnico.
+    * Queda terminantemente prohibido almacenar precio `0` o `0.0` ante cualquier falla de captura (precio debe persistirse como `NULL`).
 * **Datos de Prueba Sugeridos:**
-  * Simulación de HTTP 503 en 1 publicación → 3 reintentos fallidos → Registro `ERROR_CAPTURA` con precio `null`.
-* **Pantallas / Endpoints Involucrados:** Logs de ejecución y motor de reintentos.
+  * Simulación de HTTP 429 con cabecera `Retry-After: 5` → El scraper espera 5 segundos y reintenta con éxito.
+  * Simulación de 5 respuestas consecutivas HTTP 403 en Carrefour → Apertura del Circuit Breaker → Suspensión de la tienda → Activación de fallback offline sin afectar la extracción de Jumbo.
+* **Pantallas / Endpoints Involucrados:** Logs de ejecución en Hangfire, telemetría en `GET /api/v1/pipeline/status` y tabla `observaciones_precios`.
 
 ---
 

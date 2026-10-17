@@ -340,6 +340,19 @@ Para asegurar consistencia total entre Backend, Base de Datos y Frontend:
 * **Precios por Unidad Métrica ($/kg, $/L):** Se calculan y conservan a **4 decimales** (`NUMERIC(14, 4)`), redondeando a 2 decimales solo en la capa final de presentación UI.
 * **Variaciones Porcentuales e Indicadores:** Se redondean estrictamente a **1 o 2 decimales** según el contrato de API (`quantize(Decimal('0.01'))`), evitando colas infinitas de decimales periódicos (`5.33333333%` $\rightarrow$ `5.33%`).
 
+### 10.3 Algoritmo de Retroceso Exponencial con Full Jitter (HU-05)
+Para prevenir la saturación de los servidores objetivo y evitar la sincronización estocástica de peticiones concurrentes (*thundering herd problem*), el worker de scraping aplica el siguiente cálculo determinístico para el tiempo de espera $T_{\text{espera}}$ en el intento $i \in \{1, 2, 3\}$:
+
+$$T_{\text{espera}} = \min\left(T_{\text{max}}, T_{\text{base}} \times 2^i\right) + \text{random}(0, J)$$
+
+* **Parámetros Vinculantes:**
+  * $T_{\text{base}} = 2.0\text{ s}$ (Tiempo base de retroceso).
+  * $T_{\text{max}} = 30.0\text{ s}$ (Tope máximo de espera por intento).
+  * $J = 1.5\text{ s}$ (Amplitud máxima del Jitter aleatorio).
+* **Regla de Prioridad de Cabecera:** Si el servidor responde con código `HTTP 429` y la cabecera `Retry-After: N` está presente:
+  * Si $N \le 60\text{ s}$, se descarta el cálculo de la fórmula y se adopta estrictamente $T_{\text{espera}} = N\text{ s}$.
+  * Si $N > 60\text{ s}$, el scraper no espera; activa de inmediato el *Circuit Breaker* para ese dominio, abortando las peticiones restantes para preservar la IP.
+
 ---
 
 ## 11. Matriz de Casos de Prueba Límite para Certificación QA (`E-QA`)

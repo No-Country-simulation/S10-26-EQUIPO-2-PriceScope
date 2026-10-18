@@ -4,7 +4,7 @@ using ScrapersLibrary.Scrapers;
 
 namespace ScrapersLibrary.Persistence;
 
-public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource)
+public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScrapeRepository
 {
     public async Task CreateRunAsync(
         Guid runId,

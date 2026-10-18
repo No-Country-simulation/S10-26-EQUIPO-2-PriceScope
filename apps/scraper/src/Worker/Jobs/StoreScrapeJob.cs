@@ -4,7 +4,7 @@ using ScrapersLibrary.Scrapers;
 namespace Worker.Jobs;
 
 public sealed class StoreScrapeJob(
-    PostgresScrapeRepository repository,
+    IScrapeRepository repository,
     ILogger<StoreScrapeJob> logger)
 {
     public async Task ExecuteAsync(

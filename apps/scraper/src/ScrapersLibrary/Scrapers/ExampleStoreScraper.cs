@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 
-namespace Worker.Scrapers;
+namespace ScrapersLibrary.Scrapers;
 
 public sealed class ExampleStoreScraper(ILogger<ExampleStoreScraper> logger) : IStoreScraper
 {

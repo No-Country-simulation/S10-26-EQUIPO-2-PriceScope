@@ -1,4 +1,4 @@
-namespace Worker.Persistence;
+namespace ScrapersLibrary.Persistence;
 
 public sealed record ScrapeRunMetrics(
     Guid RunId,

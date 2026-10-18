@@ -1,8 +1,8 @@
 using Npgsql;
 using NpgsqlTypes;
-using Worker.Scrapers;
+using ScrapersLibrary.Scrapers;
 
-namespace Worker.Persistence;
+namespace ScrapersLibrary.Persistence;
 
 public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource)
 {

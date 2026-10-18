@@ -1,11 +1,12 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using Npgsql;
+using ScrapersLibrary.Persistence;
+using ScrapersLibrary.Scrapers;
 using Worker.Jobs;
-using Worker.Persistence;
-using Worker.Scrapers;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("Postgres")
     ?? throw new InvalidOperationException("ConnectionStrings:Postgres is required.");
 

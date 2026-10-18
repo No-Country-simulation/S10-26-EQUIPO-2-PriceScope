@@ -1,4 +1,4 @@
-namespace Worker.Scrapers;
+namespace ScrapersLibrary.Scrapers;
 
 public enum ScrapedProductStatus
 {

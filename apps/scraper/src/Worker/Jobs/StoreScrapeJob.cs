@@ -1,5 +1,5 @@
-using Worker.Persistence;
-using Worker.Scrapers;
+using ScrapersLibrary.Persistence;
+using ScrapersLibrary.Scrapers;
 
 namespace Worker.Jobs;
 

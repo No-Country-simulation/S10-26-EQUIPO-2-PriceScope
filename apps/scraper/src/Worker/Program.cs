@@ -36,15 +36,16 @@ var app = builder.Build();
 app.UseHangfireDashboard();
 app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" }));
 
-var scrapers = app.Services.GetServices<IStoreScraper>();
+var storeNames = app.Services.GetServices<IStoreScraper>()
+    .Select(scraper => scraper.StoreName);
 
-foreach (var scraper in scrapers)
+foreach (var storeName in storeNames)
 {
-    var recurringJobId = $"daily-scraper-{scraper.StoreName}";
+    var recurringJobId = $"daily-scraper-{storeName}";
 
     RecurringJob.AddOrUpdate<StoreScrapeJob>(
         recurringJobId,
-        job => job.ExecuteAsync(scraper, Guid.NewGuid(), CancellationToken.None),
+        job => job.ExecuteAsync(storeName, Guid.NewGuid(), CancellationToken.None),
         Cron.Daily(),
         new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
 }

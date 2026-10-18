@@ -5,13 +5,17 @@ namespace Worker.Jobs;
 
 public sealed class StoreScrapeJob(
     IScrapeRepository repository,
+    IEnumerable<IStoreScraper> scrapers,
     ILogger<StoreScrapeJob> logger)
 {
     public async Task ExecuteAsync(
-        IStoreScraper scraper,
+        string storeName,
         Guid runId,
         CancellationToken cancellationToken)
     {
+        var scraper = scrapers.SingleOrDefault(candidate => candidate.StoreName == storeName)
+            ?? throw new InvalidOperationException($"No scraper is registered for store '{storeName}'.");
+
         if (!await repository.IsStoreActive(scraper.StoreName))
         {
             logger.LogInformation("Skipping inactive scraper {ScraperName}", scraper.StoreName);

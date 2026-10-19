@@ -1,8 +1,10 @@
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
+using Worker;
 using Worker.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +31,28 @@ builder.Services.AddHangfire(options => options
     .UseRecommendedSerializerSettings()
     .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)));
 
-builder.Services.AddHangfireServer();
+builder.Services
+    .AddOptions<DailyScraperOptions>()
+    .BindConfiguration(DailyScraperOptions.SectionName)
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.CronExpression),
+        "The cron expression is required.")
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.TimeZoneId),
+        "The time zone ID is required.")
+    .ValidateOnStart();
+
+builder.Services.AddHangfireServer((sp, opts) =>
+{
+    int workerCount = builder.Configuration.GetValue<int>("Hangfire:WorkerCount");
+
+    if (workerCount <= 0)
+    {
+        throw new InvalidOperationException("The worker count must be greater than zero.");
+    }
+
+    opts.WorkerCount = workerCount;
+});
 
 var app = builder.Build();
 
@@ -39,6 +62,16 @@ app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" 
 var storeNames = app.Services.GetServices<IStoreScraper>()
     .Select(scraper => scraper.StoreName);
 
+var dailyScraperOptions = app.Services
+    .GetRequiredService<IOptions<DailyScraperOptions>>()
+    .Value;
+
+if (TimeZoneInfo.TryFindSystemTimeZoneById(dailyScraperOptions.TimeZoneId, out var timeZone) == false)
+{
+    throw new InvalidOperationException(
+        $"The configured time zone '{dailyScraperOptions.TimeZoneId}' is invalid or unsupported.");
+}
+
 foreach (var storeName in storeNames)
 {
     var recurringJobId = $"daily-scraper-{storeName}";
@@ -46,8 +79,8 @@ foreach (var storeName in storeNames)
     RecurringJob.AddOrUpdate<StoreScrapeJob>(
         recurringJobId,
         job => job.ExecuteAsync(storeName, Guid.NewGuid(), CancellationToken.None),
-        Cron.Daily(),
-        new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+        dailyScraperOptions.CronExpression,
+        new RecurringJobOptions { TimeZone = timeZone });
 }
 
 await app.RunAsync();

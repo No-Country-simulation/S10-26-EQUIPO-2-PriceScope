@@ -22,6 +22,8 @@ public sealed class StoreScrapeJob(
             return;
         }
 
+        await repository.CreateRunAsync(Guid.NewGuid(), storeName, cancellationToken);
+
         var attempt = await repository.BeginAttemptAsync(runId, cancellationToken);
 
         logger.LogInformation(

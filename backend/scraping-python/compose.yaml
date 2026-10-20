@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  worker:
+    build: .
+    container_name: store-scrapers-worker
+    command: celery -A celery_app:app worker --events --loglevel=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  beat:
+    build: .
+    container_name: store-scrapers-beat
+    command: celery -A celery_app:app beat --loglevel=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  flower:
+    build: .
+    container_name: store-scrapers-flower
+    command: celery -A celery_app:app flower --address=0.0.0.0 --port=5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      redis:
+        condition: service_healthy

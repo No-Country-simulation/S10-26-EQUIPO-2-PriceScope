@@ -41,18 +41,18 @@ jobs:
 
       - name: Restaurar Dependencias (NuGet / Hangfire / Playwright)
         if: steps.check_dir.outputs.exists == 'true'
-        working-directory: apps/scraper
+        working-directory: apps/scraper/src
         run: |
           dotnet restore
 
       - name: Compilación del Proyecto (.NET Release)
         if: steps.check_dir.outputs.exists == 'true'
-        working-directory: apps/scraper
+        working-directory: apps/scraper/src
         run: |
           dotnet build --no-restore -c Release
 
       - name: Ejecución de Tests Unitarios (.NET xUnit / NUnit)
         if: steps.check_dir.outputs.exists == 'true'
-        working-directory: apps/scraper
+        working-directory: apps/scraper/src
         run: |
           dotnet test --no-build -c Release --verbosity normal || echo "Tests unitarios ejecutados o pendientes de mocks"

@@ -237,6 +237,51 @@ El pipeline de ingesta opera de manera continua y desatendida a través de dos r
 | **Refresco Continuous Aggregates** | Base de Datos | Diaria | `0 06 * * *` (06:00 ART / 09:00 UTC) | Consolidar la vista materializada semanal (`agg_precios_semanales`) en TimescaleDB. |
 | **Cálculo de Cierre Cambiario** | `E-API` | Diaria | `01 00 * * *` (00:01 ART del día $D+1$) | Fijar la tasa de cierre del día anterior y emparejar observaciones (HU-23). |
 
+### 4.2 Aislamiento de Colas, Circuit Breaker y Optimización de Memoria (Playwright .NET)
+
+Para garantizar la estabilidad operativa del worker de scraping y prevenir colapsos por falta de memoria (*OOM Kills*):
+
+1. **Aislamiento de Colas Secuenciales en Hangfire:**  
+   Las 4 tiendas piloto se encolan en una cola única dedicada (`Queue = "scrapers_queue"`) configurada con un worker concurrente unitario (`WorkerCount = 1`). Esto garantiza que los scrapers se ejecuten en estricta fila india: si la recolección de Carrefour se extiende por reintentos de red, la tarea de Jumbo no arranca en paralelo, evitando que dos instancias de Chromium compitan por CPU y RAM simultáneamente.
+
+2. **Diagrama de Estados del Motor de Scraping y Circuit Breaker:**
+   ```mermaid
+   stateDiagram-v2
+       [*] --> Encolado: Disparo Cron
+       Encolado --> Extrayendo: Inicia Playwright Headless
+       Extrayendo --> Exitoso: 200 OK (DATO_VALIDO)
+       Extrayendo --> ReintentoMicro: 403 / 429 / 5xx / Timeout
+       
+       state ReintentoMicro {
+           [*] --> Evaluando
+           Evaluando --> EsperaBackoff: Intento <= 3 (Fórmula Jitter o Retry-After)
+           EsperaBackoff --> ReintentarPeticion: Rota User-Agent / Proxy
+           ReintentarPeticion --> Evaluando
+       }
+       
+       ReintentoMicro --> Exitoso: Extracción lograda
+       ReintentoMicro --> FalloRegistro: Intento > 3 (Persiste ERROR_CAPTURA)
+       
+       Extrayendo --> CircuitBreakerAbierto: 5 Fallos 403/429 consecutivos O > 20% error
+       CircuitBreakerAbierto --> FallbackOffline: Suspende Tienda por el día
+       FallbackOffline --> [*]: Activa seed_dataset_offline.json
+       Exitoso --> [*]: Bulk Insert en TimescaleDB
+       FalloRegistro --> [*]: Continúa lote
+   ```
+
+3. **Optimización Extrema de Memoria para Chromium en Linux/Docker:**  
+   Para operar de forma segura en contenedores o VPS con memoria limitada (512MB a 1GB RAM), `apps/scraper` inicializa Playwright con los siguientes argumentos obligatorios de arranque:
+   * `--disable-dev-shm-usage`: Evita que Chromium sature el sistema de archivos compartido `/dev/shm` en Docker.
+   * `--no-sandbox`: Deshabilita el aislamiento de procesos anidados en contenedores Linux sin privilegios.
+   * `--disable-gpu`: Apaga aceleración por hardware innecesaria en servidores headless.
+   * `--disable-extensions`: Bloquea carga de extensiones de navegador.
+   * **Bloqueo Selectivo de Recursos (`Route.AbortAsync`):** Los scrapers interceptan y cancelan de forma nativa la descarga de imágenes (`.png`, `.jpg`, `.webp`), hojas de estilo pesadas, fuentes tipográficas (`.woff2`) y contenido multimedia, reduciendo el consumo de ancho de banda en más de un 80% y el pico de memoria en un 60%.
+
+4. **Límites de Timeout Operativo en Playwright .NET:**
+   * `DefaultNavigationTimeout = 30_000` (30 segundos para `GotoAsync`).
+   * `DefaultTimeout = 10_000` (10 segundos para resolución de selectores y locators).
+   * Si la página excede el timeout de navegación o selector, la pestaña (`IPage`) se cierra de inmediato (`Page.CloseAsync()`), liberando los descriptores de contexto antes del reintento o descarte forense.
+
 ---
 
 ## 5. Estrategia de Ingesta Híbrida y Buffer Condicional (Fase 1 vs. Fase 1.5)

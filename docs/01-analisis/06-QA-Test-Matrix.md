@@ -216,6 +216,23 @@ sequenceDiagram
     * Amarillo para la fecha de Carrefour.
     * Rojo para la fecha de Jumbo.
 
+#### TC-SCRAP-04: Manejo de Rate Limiting (HTTP 429) y Cabecera Retry-After
+* **Identificador:** `TC-SCRAP-04`
+* **Escenario:** Durante la extracción de Frávega, el servidor emite una respuesta `HTTP 429 Too Many Requests` con la cabecera `Retry-After: 4`.
+* **Resultado Esperado:**
+  * El worker de Playwright .NET pausa de manera determinística la ejecución durante 4 segundos (respetando la cabecera).
+  * El primer reintento se ejecuta con éxito sin disparar penalizaciones en el WAF.
+  * No se incrementa el contador de fallos del Circuit Breaker.
+
+#### TC-SCRAP-05: Activación de Circuit Breaker tras Bloqueos Consecutivos (HTTP 403)
+* **Identificador:** `TC-SCRAP-05`
+* **Escenario:** Simulación de desafío WAF impenetrable (Cloudflare) en Musimundo arrojando 5 códigos `HTTP 403 Forbidden` consecutivos.
+* **Resultado Esperado:**
+  * Tras el quinto fallo consecutivo, el worker abre de inmediato el circuito (`CIRCUIT_BREAKER_OPEN`).
+  * Se cancelan las peticiones pendientes para Musimundo por esa jornada para proteger la IP del servidor.
+  * El servicio de telemetría (`GET /api/v1/pipeline/status`) reporta: `"tienda_id": "musimundo"`, `"estado": "CIRCUIT_BREAKER_OPEN"`, `"fallback_activo": true`.
+  * Se activa el proveedor `OfflineFileSeederService` cargando las observaciones de contingencia de `seed_dataset_offline.json` sin interrumpir la extracción de las demás tiendas.
+
 ---
 
 ## 4. Pruebas de Rendimiento, Paginación y Contratos OpenAPI (Suite PERF-INT)
@@ -294,6 +311,8 @@ sequenceDiagram
 | **TC-PERF-05** | Límite 365d (RN-09) | Validación / DoS | Alta (P1) | `E-API` / `E-QA` | Rechazo con código HTTP 422 si rango solicitado supera los 365 días. |
 | **TC-SEC-01** | Mitigación IDOR | Seguridad / Endpoint | Bloqueante (P0) | `E-API` / `E-QA` | Rutas dinámicas usan UUID inmutable (`/products/{uuid}/traceability`). |
 | **TC-SEC-02** | Validación URL Regex | Seguridad / Scraping | Alta (P1) | `E-Scrapper` / `E-DB`| Rechazo de URLs de tienda que no inicien bajo protocolo seguro `^https?://`. |
+| **TC-SCRAP-04** | Rate Limit Retry-After (HU-05) | Red / Scraping | Alta (P1) | `E-Scrapper` / `E-QA` | Espera obligatoria de cabecera `Retry-After` ante HTTP 429 sin penalización. |
+| **TC-SCRAP-05** | Circuit Breaker (HU-05) | Resiliencia / WAF | Bloqueante (P0) | `E-Scrapper` / `E-QA` | Corte automático tras 5 bloqueos HTTP 403 y activación de fallback offline. |
 
 ---
 
@@ -301,7 +320,7 @@ sequenceDiagram
 
 Para que el Tech Lead y QA autoricen formalmente el paso del monorepo a los servidores de producción (Hito de Cierre de Fase 1 / Semana 3), se deben cumplir sin excepción los siguientes requisitos:
 
-1. **100% de Pruebas P0 (Bloqueantes) Aprobadas:** Todos los casos `TC-MATH-01`, `TC-MATH-02`, `TC-MATH-03`, `TC-MATH-06`, `TC-RESIL-01`, `TC-RESIL-03`, `TC-RESIL-04`, `TC-PERF-03` y `TC-SEC-01` deben ejecutarse en verde.
+1. **100% de Pruebas P0 (Bloqueantes) Aprobadas:** Todos los casos `TC-MATH-01`, `TC-MATH-02`, `TC-MATH-03`, `TC-MATH-06`, `TC-RESIL-01`, `TC-RESIL-03`, `TC-RESIL-04`, `TC-PERF-03`, `TC-SEC-01` y `TC-SCRAP-05` deben ejecutarse en verde.
 2. **Cero Tolerancia a Valores Cero:** Ninguna tupla en base de datos ni ningún campo de precio en la API puede exponer `0` o `0.0` ante faltantes.
 3. **Validación Cruzada Monorepo:** 
    * Scraper persistiendo datos mediante bulk insert en TimescaleDB.

@@ -9,7 +9,7 @@ public sealed class ExampleStoreScraper(ILogger<ExampleStoreScraper> logger) : I
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        //logger.LogInformation("Example store scraper is not implemented yet");
+        // logger.LogInformation("Example store scraper is not implemented yet");
         await Task.Yield();
         cancellationToken.ThrowIfCancellationRequested();
 

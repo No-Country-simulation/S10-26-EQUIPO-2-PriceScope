@@ -1,4 +1,4 @@
-namespace PriceScope.ScrapingHangfire.Scrapers;
+namespace Worker.Scrapers;
 
 public enum ScrapedProductStatus
 {

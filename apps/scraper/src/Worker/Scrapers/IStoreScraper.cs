@@ -1,8 +1,8 @@
-namespace PriceScope.ScrapingHangfire.Scrapers;
+namespace Worker.Scrapers;
 
 public interface IStoreScraper
 {
-    string Name { get; }
+    string StoreName { get; }
 
     IAsyncEnumerable<ScrapedProduct> ScrapeAsync(CancellationToken cancellationToken);
 }

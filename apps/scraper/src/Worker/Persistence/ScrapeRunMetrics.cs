@@ -1,4 +1,4 @@
-namespace PriceScope.ScrapingHangfire.Persistence;
+namespace Worker.Persistence;
 
 public sealed record ScrapeRunMetrics(
     Guid RunId,

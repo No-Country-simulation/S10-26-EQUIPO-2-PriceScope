@@ -1,9 +1,9 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using Npgsql;
-using PriceScope.ScrapingHangfire.Jobs;
-using PriceScope.ScrapingHangfire.Persistence;
-using PriceScope.ScrapingHangfire.Scrapers;
+using Worker.Jobs;
+using Worker.Persistence;
+using Worker.Scrapers;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Postgres")
@@ -12,7 +12,6 @@ var connectionString = builder.Configuration.GetConnectionString("Postgres")
 builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
 builder.Services.AddSingleton<PostgresScrapeRepository>();
 builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
-builder.Services.AddScoped<DailyScrapeDispatcher>();
 builder.Services.AddScoped<StoreScrapeJob>();
 
 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
@@ -32,15 +31,20 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
-await app.Services.GetRequiredService<PostgresScrapeRepository>().InitializeAsync();
-
 app.UseHangfireDashboard();
 app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" }));
 
-RecurringJob.AddOrUpdate<DailyScrapeDispatcher>(
-    "daily-store-scrapers",
-    dispatcher => dispatcher.EnqueueAllAsync(),
-    Cron.Daily(),
-    new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+var scrapers = app.Services.GetServices<IStoreScraper>();
+
+foreach (var scraper in scrapers)
+{
+    var recurringJobId = $"daily-scraper-{scraper.StoreName}";
+
+    RecurringJob.AddOrUpdate<StoreScrapeJob>(
+        recurringJobId,
+        job => job.ExecuteAsync(scraper, Guid.NewGuid(), CancellationToken.None),
+        Cron.Daily(),
+        new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+}
 
 await app.RunAsync();

@@ -1,46 +1,11 @@
 using Npgsql;
 using NpgsqlTypes;
-using PriceScope.ScrapingHangfire.Scrapers;
+using Worker.Scrapers;
 
-namespace PriceScope.ScrapingHangfire.Persistence;
+namespace Worker.Persistence;
 
 public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource)
 {
-    public async Task InitializeAsync(CancellationToken cancellationToken = default)
-    {
-        const string sql = """
-            CREATE SCHEMA IF NOT EXISTS scraping_worker;
-
-            CREATE TABLE IF NOT EXISTS scraping_worker.scrape_runs (
-                run_id uuid PRIMARY KEY,
-                store_name text NOT NULL,
-                status text NOT NULL,
-                attempts integer NOT NULL DEFAULT 0,
-                products_processed integer NOT NULL DEFAULT 0,
-                products_succeeded integer NOT NULL DEFAULT 0,
-                products_with_problems integer NOT NULL DEFAULT 0,
-                created_at timestamptz NOT NULL DEFAULT now(),
-                started_at timestamptz,
-                finished_at timestamptz,
-                last_error text
-            );
-
-            CREATE TABLE IF NOT EXISTS scraping_worker.scraped_products (
-                run_id uuid NOT NULL REFERENCES scraping_worker.scrape_runs(run_id) ON DELETE CASCADE,
-                external_id text NOT NULL,
-                url text,
-                status text NOT NULL,
-                data jsonb,
-                error text,
-                updated_at timestamptz NOT NULL DEFAULT now(),
-                PRIMARY KEY (run_id, external_id)
-            );
-            """;
-
-        await using var command = dataSource.CreateCommand(sql);
-        await command.ExecuteNonQueryAsync(cancellationToken);
-    }
-
     public async Task CreateRunAsync(
         Guid runId,
         string storeName,
@@ -229,5 +194,10 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource)
             reader.GetInt32(5),
             reader.GetInt32(6),
             reader.IsDBNull(7) ? null : reader.GetString(7));
+    }
+
+    public async Task<bool> IsStoreActive(string storeName)
+    {
+        return true;
     }
 }

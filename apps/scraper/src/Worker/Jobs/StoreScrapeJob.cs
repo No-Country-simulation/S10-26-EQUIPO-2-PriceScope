@@ -1,26 +1,28 @@
-using Hangfire;
-using PriceScope.ScrapingHangfire.Persistence;
-using PriceScope.ScrapingHangfire.Scrapers;
+using Worker.Persistence;
+using Worker.Scrapers;
 
-namespace PriceScope.ScrapingHangfire.Jobs;
+namespace Worker.Jobs;
 
 public sealed class StoreScrapeJob(
-    IEnumerable<IStoreScraper> scrapers,
     PostgresScrapeRepository repository,
     ILogger<StoreScrapeJob> logger)
 {
     public async Task ExecuteAsync(
-        string storeName,
+        IStoreScraper scraper,
         Guid runId,
         CancellationToken cancellationToken)
     {
-        var scraper = scrapers.SingleOrDefault(candidate => candidate.Name == storeName)
-            ?? throw new InvalidOperationException($"No scraper is registered for '{storeName}'.");
+        if (!await repository.IsStoreActive(scraper.StoreName))
+        {
+            logger.LogInformation("Skipping inactive scraper {ScraperName}", scraper.StoreName);
+            return;
+        }
+
         var attempt = await repository.BeginAttemptAsync(runId, cancellationToken);
 
         logger.LogInformation(
             "Starting scraper {ScraperName}, run {RunId}, attempt {Attempt}",
-            storeName,
+            scraper.StoreName,
             runId,
             attempt);
 
@@ -34,9 +36,9 @@ public sealed class StoreScrapeJob(
 
             var metrics = await repository.MarkSucceededAsync(runId, cancellationToken);
             logger.LogInformation(
-                "Completed scraper {ScraperName}, run {RunId}: {Processed} processed, " +
+                "Completed scraper on store {StoreName}, run {RunId}: {Processed} processed, " +
                 "{Succeeded} successful, {Problems} with problems",
-                storeName,
+                scraper.StoreName,
                 runId,
                 metrics.ProductsProcessed,
                 metrics.ProductsSucceeded,
@@ -44,6 +46,7 @@ public sealed class StoreScrapeJob(
         }
         catch (Exception exception)
         {
+            // TODO: Replace this hard coded value with a setting
             var retryPending = attempt <= 5;
             var metrics = await repository.MarkFailedAsync(
                 runId,
@@ -56,7 +59,7 @@ public sealed class StoreScrapeJob(
                 "Scraper {ScraperName}, run {RunId}, attempt {Attempt} failed; " +
                 "retry pending: {RetryPending}. {Processed} processed, {Succeeded} successful, " +
                 "{Problems} with problems",
-                storeName,
+                scraper.StoreName,
                 runId,
                 attempt,
                 retryPending,

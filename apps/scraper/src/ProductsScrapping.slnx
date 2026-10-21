@@ -2,6 +2,7 @@
   <Project Path="Worker/Worker.csproj" />
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
   </Folder>
   <Project Path="ScrapersLibrary/ScrapersLibrary.csproj" />
 </Solution>

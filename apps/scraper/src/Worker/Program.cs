@@ -59,8 +59,8 @@ var app = builder.Build();
 app.UseHangfireDashboard();
 app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" }));
 
-var storeNames = app.Services.GetServices<IStoreScraper>()
-    .Select(scraper => scraper.StoreName);
+var storeSlugs = app.Services.GetServices<IStoreScraper>()
+    .Select(scraper => scraper.StoreSlug);
 
 var dailyScraperOptions = app.Services
     .GetRequiredService<IOptions<DailyScraperOptions>>()
@@ -72,13 +72,13 @@ if (TimeZoneInfo.TryFindSystemTimeZoneById(dailyScraperOptions.TimeZoneId, out v
         $"The configured time zone '{dailyScraperOptions.TimeZoneId}' is invalid or unsupported.");
 }
 
-foreach (var storeName in storeNames)
+foreach (var storeSlug in storeSlugs)
 {
-    var recurringJobId = $"daily-scraper-{storeName}";
+    var recurringJobId = $"daily-scraper-{storeSlug}";
 
     RecurringJob.AddOrUpdate<StoreScrapeJob>(
         recurringJobId,
-        job => job.ExecuteAsync(storeName, Guid.NewGuid(), CancellationToken.None),
+        job => job.ExecuteAsync(storeSlug, CancellationToken.None),
         dailyScraperOptions.CronExpression,
         new RecurringJobOptions { TimeZone = timeZone });
 }

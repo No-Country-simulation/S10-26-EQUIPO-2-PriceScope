@@ -2,7 +2,7 @@ namespace ScrapersLibrary.Persistence;
 
 public sealed record ScrapeRunMetrics(
     Guid RunId,
-    string StoreName,
+    string StoreSlug,
     string Status,
     int Attempts,
     int ProductsProcessed,

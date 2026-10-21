@@ -10,19 +10,19 @@ public class MockScrapeRepository : IScrapeRepository
         return Task.FromResult(1);
     }
 
-    public Task CreateRunAsync(Guid runId, string storeName, CancellationToken cancellationToken = default)
+    public Task CreateRunAsync(Guid runId, string storeSlug, CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
     }
 
-    public Task<bool> IsStoreActive(string storeName)
+    public Task<ScrapeRunMetrics?> GetRecentRunAsync(string storeSlug, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<ScrapeRunMetrics?>(null);
+    }
+
+    public Task<bool> IsStoreActive(string storeSlug, CancellationToken cancellationToken)
     {
         return Task.FromResult(true);
-    }
-
-    public Task MarkEnqueueFailedAsync(Guid runId, Exception exception, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
     }
 
     public Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken)

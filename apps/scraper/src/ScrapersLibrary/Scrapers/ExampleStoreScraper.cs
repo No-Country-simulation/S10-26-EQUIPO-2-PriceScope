@@ -5,7 +5,7 @@ namespace ScrapersLibrary.Scrapers;
 
 public sealed class ExampleStoreScraper(ILogger<ExampleStoreScraper> logger) : IStoreScraper
 {
-    public string StoreName => "example_store";
+    public string StoreSlug => "example-store";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken)

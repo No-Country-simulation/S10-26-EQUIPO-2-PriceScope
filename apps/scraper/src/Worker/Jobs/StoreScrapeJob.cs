@@ -9,27 +9,35 @@ public sealed class StoreScrapeJob(
     ILogger<StoreScrapeJob> logger)
 {
     public async Task ExecuteAsync(
-        string storeName,
-        Guid runId,
+        string storeSlug,
         CancellationToken cancellationToken)
     {
-        var scraper = scrapers.SingleOrDefault(candidate => candidate.StoreName == storeName)
-            ?? throw new InvalidOperationException($"No scraper is registered for store '{storeName}'.");
+        var scraper = scrapers.SingleOrDefault(candidate => candidate.StoreSlug == storeSlug)
+            ?? throw new InvalidOperationException($"No scraper is registered for store '{storeSlug}'.");
 
-        if (!await repository.IsStoreActive(scraper.StoreName))
+        if (!await repository.IsStoreActive(scraper.StoreSlug, cancellationToken))
         {
-            logger.LogInformation("Skipping inactive scraper {ScraperName}", scraper.StoreName);
+            logger.LogInformation("Skipping inactive scraper {ScraperSlug}", scraper.StoreSlug);
             return;
         }
 
-        await repository.CreateRunAsync(Guid.NewGuid(), storeName, cancellationToken);
+        var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
+        var currentRunId = run?.RunId ?? Guid.NewGuid();
+        int attempt = 0;
 
-        var attempt = await repository.BeginAttemptAsync(runId, cancellationToken);
+        if (run is null)
+        {
+            await repository.CreateRunAsync(currentRunId, storeSlug, cancellationToken);
+        }
+        else
+        {
+            attempt = await repository.BeginAttemptAsync(currentRunId, cancellationToken);
+        }
 
         logger.LogInformation(
-            "Starting scraper {ScraperName}, run {RunId}, attempt {Attempt}",
-            scraper.StoreName,
-            runId,
+            "Starting scraper {ScraperSlug}, run {RunId}, attempt {Attempt}",
+            scraper.StoreSlug,
+            currentRunId,
             attempt);
 
         try
@@ -37,15 +45,17 @@ public sealed class StoreScrapeJob(
             await foreach (var product in scraper.ScrapeAsync(cancellationToken)
                 .WithCancellation(cancellationToken))
             {
-                await repository.SaveProductAsync(runId, product, cancellationToken);
+                // TODO: Decide what to do here. If save products one by one or in batches.
+                await repository.SaveProductAsync(currentRunId, product, cancellationToken);
             }
 
-            var metrics = await repository.MarkSucceededAsync(runId, cancellationToken);
+            var metrics = await repository.MarkSucceededAsync(currentRunId, cancellationToken);
+
             logger.LogInformation(
-                "Completed scraper on store {StoreName}, run {RunId}: {Processed} processed, " +
+                "Completed scraper on store {StoreSlug}, run {RunId}: {Processed} processed, " +
                 "{Succeeded} successful, {Problems} with problems",
-                scraper.StoreName,
-                runId,
+                scraper.StoreSlug,
+                currentRunId,
                 metrics.ProductsProcessed,
                 metrics.ProductsSucceeded,
                 metrics.ProductsWithProblems);
@@ -55,7 +65,7 @@ public sealed class StoreScrapeJob(
             // TODO: Replace this hard coded value with a setting
             var retryPending = attempt <= 5;
             var metrics = await repository.MarkFailedAsync(
-                runId,
+                currentRunId,
                 exception,
                 retryPending,
                 CancellationToken.None);
@@ -65,13 +75,15 @@ public sealed class StoreScrapeJob(
                 "Scraper {ScraperName}, run {RunId}, attempt {Attempt} failed; " +
                 "retry pending: {RetryPending}. {Processed} processed, {Succeeded} successful, " +
                 "{Problems} with problems",
-                scraper.StoreName,
-                runId,
+                scraper.StoreSlug,
+                currentRunId,
                 attempt,
                 retryPending,
                 metrics.ProductsProcessed,
                 metrics.ProductsSucceeded,
                 metrics.ProductsWithProblems);
+
+            // TODO: Look if the error should continue bubbleling up.
             throw;
         }
     }

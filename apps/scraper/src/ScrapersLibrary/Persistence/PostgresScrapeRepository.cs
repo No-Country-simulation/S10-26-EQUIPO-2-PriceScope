@@ -8,24 +8,24 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
 {
     public async Task CreateRunAsync(
         Guid runId,
-        string storeName,
+        string storeSlug,
         CancellationToken cancellationToken = default)
     {
         const string sql = """
-            INSERT INTO scraping_worker.scrape_runs (run_id, store_name, status)
-            VALUES (@runId, @storeName, 'Queued');
+            INSERT INTO scrape_runs (run_id, store_slug, status)
+            VALUES (@runId, @storeSlug, 'Queued');
             """;
 
         await using var command = dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("runId", runId);
-        command.Parameters.AddWithValue("storeName", storeName);
+        command.Parameters.AddWithValue("storeSlug", storeSlug);
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     public async Task<int> BeginAttemptAsync(Guid runId, CancellationToken cancellationToken)
     {
         const string sql = """
-            UPDATE scraping_worker.scrape_runs
+            UPDATE scrape_runs
             SET attempts = attempts + 1,
                 status = 'Running',
                 started_at = now(),
@@ -41,43 +41,77 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         return Convert.ToInt32(result);
     }
 
+    public async Task<ScrapeRunMetrics?> GetRecentRunAsync(
+        string storeSlug,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT run_id, store_slug, status, attempts, products_processed,
+                   products_succeeded, products_with_problems, last_error
+            FROM scrape_runs
+            WHERE store_slug = @storeSlug
+              AND created_at >= now() - INTERVAL '10 hours'
+            ORDER BY created_at DESC
+            LIMIT 1;
+            """;
+
+        await using var command = dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("storeSlug", storeSlug);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            return null;
+        }
+
+        return new ScrapeRunMetrics(
+            reader.GetGuid(0),
+            reader.GetString(1),
+            reader.GetString(2),
+            reader.GetInt32(3),
+            reader.GetInt32(4),
+            reader.GetInt32(5),
+            reader.GetInt32(6),
+            reader.IsDBNull(7) ? null : reader.GetString(7));
+    }
+
     public async Task SaveProductAsync(
         Guid runId,
         ScrapedProduct product,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(product.ExternalId))
-        {
-            throw new ArgumentException("A scraped product must have an external ID.", nameof(product));
-        }
+        return;
+        // if (string.IsNullOrWhiteSpace(product.ExternalId))
+        // {
+        //     throw new ArgumentException("A scraped product must have an external ID.", nameof(product));
+        // }
 
-        const string upsertSql = """
-            INSERT INTO scraping_worker.scraped_products
-                (run_id, external_id, url, status, data, error, updated_at)
-            VALUES (@runId, @externalId, @url, @status, @data, @error, now())
-            ON CONFLICT (run_id, external_id) DO UPDATE SET
-                url = EXCLUDED.url,
-                status = EXCLUDED.status,
-                data = EXCLUDED.data,
-                error = EXCLUDED.error,
-                updated_at = now();
-            """;
-        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
-        await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+        // const string upsertSql = """
+        //     INSERT INTO scraping_worker.scraped_products
+        //         (run_id, external_id, url, status, data, error, updated_at)
+        //     VALUES (@runId, @externalId, @url, @status, @data, @error, now())
+        //     ON CONFLICT (run_id, external_id) DO UPDATE SET
+        //         url = EXCLUDED.url,
+        //         status = EXCLUDED.status,
+        //         data = EXCLUDED.data,
+        //         error = EXCLUDED.error,
+        //         updated_at = now();
+        //     """;
+        // await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
+        // await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
-        await using (var command = new NpgsqlCommand(upsertSql, connection, transaction))
-        {
-            command.Parameters.AddWithValue("runId", runId);
-            command.Parameters.AddWithValue("externalId", product.ExternalId);
-            command.Parameters.AddWithValue("url", (object?)product.Url ?? DBNull.Value);
-            command.Parameters.AddWithValue("status", product.Status.ToString());
-            command.Parameters.Add("data", NpgsqlDbType.Jsonb).Value =
-                (object?)product.DataJson ?? DBNull.Value;
-            command.Parameters.AddWithValue("error", (object?)product.Error ?? DBNull.Value);
-            await command.ExecuteNonQueryAsync(cancellationToken);
-        }
+        // await using (var command = new NpgsqlCommand(upsertSql, connection, transaction))
+        // {
+        //     command.Parameters.AddWithValue("runId", runId);
+        //     command.Parameters.AddWithValue("externalId", product.ExternalId);
+        //     command.Parameters.AddWithValue("url", (object?)product.Url ?? DBNull.Value);
+        //     command.Parameters.AddWithValue("status", product.Status.ToString());
+        //     command.Parameters.Add("data", NpgsqlDbType.Jsonb).Value =
+        //         (object?)product.DataJson ?? DBNull.Value;
+        //     command.Parameters.AddWithValue("error", (object?)product.Error ?? DBNull.Value);
+        //     await command.ExecuteNonQueryAsync(cancellationToken);
+        // }
 
-        await transaction.CommitAsync(cancellationToken);
+        // await transaction.CommitAsync(cancellationToken);
     }
 
     public async Task<ScrapeRunMetrics> MarkSucceededAsync(
@@ -85,7 +119,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         CancellationToken cancellationToken)
     {
         const string sql = """
-            UPDATE scraping_worker.scrape_runs
+            UPDATE scrape_runs
             SET status = 'Succeeded', finished_at = now(), last_error = NULL
             WHERE run_id = @runId;
             """;
@@ -101,26 +135,13 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         CancellationToken cancellationToken)
     {
         const string sql = """
-            UPDATE scraping_worker.scrape_runs
+            UPDATE scrape_runs
             SET status = @status, finished_at = now(), last_error = @error
             WHERE run_id = @runId;
             """;
         await RefreshMetricsAsync(runId, cancellationToken);
         await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken, retryPending);
         return await GetMetricsAsync(runId, cancellationToken);
-    }
-
-    public async Task MarkEnqueueFailedAsync(
-        Guid runId,
-        Exception exception,
-        CancellationToken cancellationToken)
-    {
-        const string sql = """
-            UPDATE scraping_worker.scrape_runs
-            SET status = 'Failed', finished_at = now(), last_error = @error
-            WHERE run_id = @runId;
-            """;
-        await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken);
     }
 
     private async Task UpdateRunAsync(
@@ -145,25 +166,26 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
 
     private async Task RefreshMetricsAsync(Guid runId, CancellationToken cancellationToken)
     {
-        const string sql = """
-            UPDATE scraping_worker.scrape_runs
-            SET products_processed = (
-                    SELECT count(*) FROM scraping_worker.scraped_products WHERE run_id = @runId
-                ),
-                products_succeeded = (
-                    SELECT count(*) FROM scraping_worker.scraped_products
-                    WHERE run_id = @runId AND status IN ('Captured', 'Rejected')
-                ),
-                products_with_problems = (
-                    SELECT count(*) FROM scraping_worker.scraped_products
-                    WHERE run_id = @runId AND status = 'Error'
-                )
-            WHERE run_id = @runId;
-            """;
+        throw new NotImplementedException();
+        // const string sql = """
+        //     UPDATE scrape_runs
+        //     SET products_processed = (
+        //             SELECT count(*) FROM scraping_worker.scraped_products WHERE run_id = @runId
+        //         ),
+        //         products_succeeded = (
+        //             SELECT count(*) FROM scraping_worker.scraped_products
+        //             WHERE run_id = @runId AND status IN ('Captured', 'Rejected')
+        //         ),
+        //         products_with_problems = (
+        //             SELECT count(*) FROM scraping_worker.scraped_products
+        //             WHERE run_id = @runId AND status = 'Error'
+        //         )
+        //     WHERE run_id = @runId;
+        //     """;
 
-        await using var command = dataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue("runId", runId);
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        // await using var command = dataSource.CreateCommand(sql);
+        // command.Parameters.AddWithValue("runId", runId);
+        // await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private async Task<ScrapeRunMetrics> GetMetricsAsync(
@@ -171,9 +193,9 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         CancellationToken cancellationToken)
     {
         const string sql = """
-            SELECT run_id, store_name, status, attempts, products_processed,
+            SELECT run_id, store_slug, status, attempts, products_processed,
                    products_succeeded, products_with_problems, last_error
-            FROM scraping_worker.scrape_runs
+            FROM scrape_runs
             WHERE run_id = @runId;
             """;
 
@@ -196,8 +218,23 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
             reader.IsDBNull(7) ? null : reader.GetString(7));
     }
 
-    public async Task<bool> IsStoreActive(string storeName)
+    public async Task<bool> IsStoreActive(string storeSlug, CancellationToken cancellationToken)
     {
-        return true;
+        const string sql = """
+            SELECT activo
+            FROM tiendas
+            WHERE slug = @storeSlug;
+            """;
+
+        await using var command = dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("storeSlug", storeSlug);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            throw new InvalidOperationException($"Store with slug {storeSlug} was not found.");
+        }
+
+        return reader.GetBoolean(0);
     }
 }

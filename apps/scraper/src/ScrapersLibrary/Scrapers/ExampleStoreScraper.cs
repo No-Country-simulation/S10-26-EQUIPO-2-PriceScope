@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace ScrapersLibrary.Scrapers;
 
 public sealed class ExampleStoreScraper(
-    ISeedProductUrlProvider urlProvider,
+    IProductInfoProvider infoProvider,
     ILogger<ExampleStoreScraper> logger) : IStoreScraper
 {
     public string StoreSlug => "example-store";
@@ -13,8 +13,8 @@ public sealed class ExampleStoreScraper(
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var productsUrl = await urlProvider
-            .GetProductUrlsAsync(StoreSlug, cancellationToken);
+        var products = await infoProvider
+            .GetInfoAsync(StoreSlug, cancellationToken);
 
         logger.LogInformation("Example store scraper is not implemented yet");
 
@@ -22,9 +22,9 @@ public sealed class ExampleStoreScraper(
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        yield return new ScrapedProduct("123", null, ScrapedProductStatus.Captured);
+        // yield return new ScrapedProduct("123", null, ScrapedProductStatus.Captured);
 
-        yield return new ScrapedProduct("456", null, ScrapedProductStatus.Captured);
+        // yield return new ScrapedProduct("456", null, ScrapedProductStatus.Captured);
 
         yield break;
     }

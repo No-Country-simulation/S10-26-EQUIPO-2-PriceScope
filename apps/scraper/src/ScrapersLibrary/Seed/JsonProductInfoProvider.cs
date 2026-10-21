@@ -1,12 +1,13 @@
 using System.Text.Json;
+using ScrapersLibrary.Scrapers;
 
 namespace ScrapersLibrary.Seed;
 
-public sealed class SeedProductUrlProvider : ISeedProductUrlProvider
+public sealed class JsonProductInfoProvider : IProductInfoProvider
 {
     private readonly string _seedFilePath = Path.Combine(AppContext.BaseDirectory, "seed.json");
 
-    public async Task<IReadOnlyList<string>> GetProductUrlsAsync(
+    public async Task<IReadOnlyList<ScrapedProduct>> GetInfoAsync(
         string storeSlug,
         CancellationToken cancellationToken)
     {
@@ -21,7 +22,7 @@ public sealed class SeedProductUrlProvider : ISeedProductUrlProvider
             throw new InvalidDataException("'productos_canonicos' must be a JSON array.");
         }
 
-        var productUrls = new List<string>();
+        var productUrls = new List<ScrapedProduct>();
         foreach (var product in products.EnumerateArray())
         {
             var stores = product.GetProperty("tiendas");
@@ -39,7 +40,11 @@ public sealed class SeedProductUrlProvider : ISeedProductUrlProvider
                 {
                     var productUrl = store.GetProperty("url_origen").GetString()
                         ?? throw new InvalidDataException("'url_origen' cannot be null.");
-                    productUrls.Add(productUrl);
+                    productUrls.Add(new ScrapedProduct
+                    {
+                        Url = productUrl,
+                        DataState = ScrapedProductStatus.SIN_DATO
+                    });
                 }
             }
         }

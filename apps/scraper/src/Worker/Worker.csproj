@@ -16,4 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\ScrapersLibrary\ScrapersLibrary.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\seed.json" Link="seed.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

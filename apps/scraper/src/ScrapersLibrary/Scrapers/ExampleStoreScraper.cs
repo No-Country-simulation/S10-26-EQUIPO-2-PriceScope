@@ -1,15 +1,21 @@
 using Microsoft.Extensions.Logging;
+using ScrapersLibrary.Seed;
 using System.Runtime.CompilerServices;
 
 namespace ScrapersLibrary.Scrapers;
 
-public sealed class ExampleStoreScraper(ILogger<ExampleStoreScraper> logger) : IStoreScraper
+public sealed class ExampleStoreScraper(
+    ISeedProductUrlProvider urlProvider,
+    ILogger<ExampleStoreScraper> logger) : IStoreScraper
 {
     public string StoreSlug => "example-store";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var productsUrl = await urlProvider
+            .GetProductUrlsAsync(StoreSlug, cancellationToken);
+
         logger.LogInformation("Example store scraper is not implemented yet");
 
         await Task.Yield();

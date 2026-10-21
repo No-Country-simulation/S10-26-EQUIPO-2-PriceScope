@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Npgsql;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
+using ScrapersLibrary.Seed;
 using Worker;
 using Worker.Jobs;
 
@@ -16,6 +17,7 @@ builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
 // builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
 builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
 builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
+builder.Services.AddSingleton<ISeedProductUrlProvider, SeedProductUrlProvider>();
 builder.Services.AddScoped<StoreScrapeJob>();
 
 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute

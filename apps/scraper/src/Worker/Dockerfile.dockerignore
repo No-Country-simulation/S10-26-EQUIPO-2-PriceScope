@@ -1,0 +1,17 @@
+**
+!apps/
+!apps/scraper/
+!apps/scraper/src/
+!apps/scraper/src/Directory.Build.props
+!apps/scraper/src/Worker/
+!apps/scraper/src/Worker/**
+!apps/scraper/src/ScrapersLibrary/
+!apps/scraper/src/ScrapersLibrary/**
+!data/
+!data/seed.json
+**/bin
+**/obj
+.vs
+.git
+.vscode
+.idea

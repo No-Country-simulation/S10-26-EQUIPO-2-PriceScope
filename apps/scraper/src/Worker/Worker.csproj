@@ -18,6 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\seed.json" Link="seed.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\data\seed.json" Link="seed.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

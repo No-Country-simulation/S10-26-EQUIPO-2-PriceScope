@@ -83,39 +83,74 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         ScrapedProduct product,
         CancellationToken cancellationToken)
     {
-        return;
-        // if (string.IsNullOrWhiteSpace(product.ExternalId))
-        // {
-        //     throw new ArgumentException("A scraped product must have an external ID.", nameof(product));
-        // }
+        ArgumentNullException.ThrowIfNull(product);
 
-        // const string upsertSql = """
-        //     INSERT INTO scraping_worker.scraped_products
-        //         (run_id, external_id, url, status, data, error, updated_at)
-        //     VALUES (@runId, @externalId, @url, @status, @data, @error, now())
-        //     ON CONFLICT (run_id, external_id) DO UPDATE SET
-        //         url = EXCLUDED.url,
-        //         status = EXCLUDED.status,
-        //         data = EXCLUDED.data,
-        //         error = EXCLUDED.error,
-        //         updated_at = now();
-        //     """;
-        // await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
-        // await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+        if (product.CapturedAt == default || product.CapturedAt.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("A scraped product must have a UTC capture timestamp.", nameof(product));
+        }
 
-        // await using (var command = new NpgsqlCommand(upsertSql, connection, transaction))
-        // {
-        //     command.Parameters.AddWithValue("runId", runId);
-        //     command.Parameters.AddWithValue("externalId", product.ExternalId);
-        //     command.Parameters.AddWithValue("url", (object?)product.Url ?? DBNull.Value);
-        //     command.Parameters.AddWithValue("status", product.Status.ToString());
-        //     command.Parameters.Add("data", NpgsqlDbType.Jsonb).Value =
-        //         (object?)product.DataJson ?? DBNull.Value;
-        //     command.Parameters.AddWithValue("error", (object?)product.Error ?? DBNull.Value);
-        //     await command.ExecuteNonQueryAsync(cancellationToken);
-        // }
+        if (string.IsNullOrWhiteSpace(product.CurrencyCode) || product.CurrencyCode.Length != 3)
+        {
+            throw new ArgumentException("A scraped product must have a three-character currency code.", nameof(product));
+        }
 
-        // await transaction.CommitAsync(cancellationToken);
+        var hasValidData = product.DataState == ScrapedProductStatus.DATO_VALIDO;
+
+        if (hasValidData && (!product.Available || product.RegularPrice <= 0))
+        {
+            throw new ArgumentException(
+                "A valid scraped product must be available and have a positive regular price.",
+                nameof(product));
+        }
+
+        if (hasValidData && (product.PromoPrice < 0 || product.UnitPrice < 0))
+        {
+            throw new ArgumentException(
+                "A scraped product's promotional and unit prices cannot be negative.",
+                nameof(product));
+        }
+
+        const string sql = """
+            INSERT INTO observaciones_precios
+                (timestamp_utc, producto_canonico_id, tienda_id, alias_tienda_id, scrape_run_id,
+                 precio_regular, precio_promocional, precio_por_unidad, moneda_codigo,
+                 disponible, estado_dato, motivo_faltante)
+            VALUES
+                (@capturedAt, @canonicalProductId, @storeId, @aliasStoreId, @runId,
+                 @regularPrice, @promoPrice, @unitPrice, @currencyCode,
+                 @available, @dataState::enum_estado_dato, @error)
+            ON CONFLICT (timestamp_utc, producto_canonico_id, tienda_id) DO UPDATE SET
+                alias_tienda_id = EXCLUDED.alias_tienda_id,
+                scrape_run_id = EXCLUDED.scrape_run_id,
+                precio_regular = EXCLUDED.precio_regular,
+                precio_promocional = EXCLUDED.precio_promocional,
+                precio_por_unidad = EXCLUDED.precio_por_unidad,
+                moneda_codigo = EXCLUDED.moneda_codigo,
+                disponible = EXCLUDED.disponible,
+                estado_dato = EXCLUDED.estado_dato,
+                motivo_faltante = EXCLUDED.motivo_faltante;
+            """;
+
+        await using var command = dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("capturedAt", product.CapturedAt);
+        command.Parameters.AddWithValue("canonicalProductId", product.CanonicalProductId);
+        command.Parameters.AddWithValue("storeId", product.StoreId);
+        command.Parameters.AddWithValue("aliasStoreId", product.AliasStoreId);
+        command.Parameters.AddWithValue("runId", runId);
+        command.Parameters.Add("regularPrice", NpgsqlDbType.Numeric).Value =
+            hasValidData ? product.RegularPrice : DBNull.Value;
+        command.Parameters.Add("promoPrice", NpgsqlDbType.Numeric).Value =
+            hasValidData && product.PromoPrice > 0 ? product.PromoPrice : DBNull.Value;
+        command.Parameters.Add("unitPrice", NpgsqlDbType.Numeric).Value =
+            hasValidData && product.UnitPrice > 0 ? product.UnitPrice : DBNull.Value;
+        command.Parameters.AddWithValue("currencyCode", product.CurrencyCode);
+        command.Parameters.AddWithValue("available", product.Available);
+        command.Parameters.AddWithValue("dataState", product.DataState.ToString());
+        command.Parameters.AddWithValue(
+            "error",
+            string.IsNullOrWhiteSpace(product.Error) ? DBNull.Value : product.Error);
+        await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     public async Task<ScrapeRunMetrics> MarkSucceededAsync(

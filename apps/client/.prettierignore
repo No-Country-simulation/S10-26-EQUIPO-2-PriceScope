@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+build
+dist
+coverage
+package-lock.json
+next-env.d.ts
+tsconfig.tsbuildinfo
+.obsidian
+test-results

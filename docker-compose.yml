@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: pricescope-db
+    restart: always
+    environment:
+      POSTGRES_DB: pricescope
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./apps/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:
+    driver: local

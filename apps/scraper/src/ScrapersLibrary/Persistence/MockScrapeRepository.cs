@@ -10,9 +10,9 @@ public class MockScrapeRepository : IScrapeRepository
         return Task.FromResult(1);
     }
 
-    public Task CreateRunAsync(Guid runId, string storeSlug, CancellationToken cancellationToken = default)
+    public Task<Guid> CreateRunAsync(string storeSlug, CancellationToken cancellationToken = default)
     {
-        return Task.CompletedTask;
+        return Task.FromResult(Guid.NewGuid());
     }
 
     public Task<ScrapeRunMetrics?> GetRecentRunAsync(string storeSlug, CancellationToken cancellationToken)
@@ -28,13 +28,13 @@ public class MockScrapeRepository : IScrapeRepository
     public Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken)
     {
         return Task.FromResult(new ScrapeRunMetrics(
-            runId, "CoolStore", "Failed", 1, 100, 90, 10, null));
+            runId, "CoolStore", retryPending ? ScrapeRunStatus.PENDIENTE : ScrapeRunStatus.FALLIDA, 1, 100, 90, 10, null));
     }
 
     public Task<ScrapeRunMetrics> MarkSucceededAsync(Guid runId, CancellationToken cancellationToken)
     {
         return Task.FromResult(new ScrapeRunMetrics(
-            runId, "CoolStore", "OK", 1, 100, 90, 10, null));
+            runId, "CoolStore", ScrapeRunStatus.EXITOSA, 1, 100, 90, 10, null));
     }
 
     public Task SaveProductAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken)

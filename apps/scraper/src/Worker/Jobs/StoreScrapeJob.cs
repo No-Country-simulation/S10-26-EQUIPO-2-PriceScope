@@ -22,15 +22,16 @@ public sealed class StoreScrapeJob(
         }
 
         var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
-        var currentRunId = run?.RunId ?? Guid.NewGuid();
+        Guid currentRunId;
         int attempt = 0;
 
         if (run is null)
         {
-            await repository.CreateRunAsync(currentRunId, storeSlug, cancellationToken);
+            currentRunId = await repository.CreateRunAsync(storeSlug, cancellationToken);
         }
         else
         {
+            currentRunId = run.RunId;
             attempt = await repository.BeginAttemptAsync(currentRunId, cancellationToken);
         }
 

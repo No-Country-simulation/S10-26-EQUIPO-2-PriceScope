@@ -6,20 +6,23 @@ namespace ScrapersLibrary.Persistence;
 
 public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScrapeRepository
 {
-    public async Task CreateRunAsync(
-        Guid runId,
+    public async Task<Guid> CreateRunAsync(
         string storeSlug,
         CancellationToken cancellationToken = default)
     {
         const string sql = """
-            INSERT INTO scrape_runs (run_id, store_slug, status)
-            VALUES (@runId, @storeSlug, 'Queued');
+            INSERT INTO scrape_runs (store_slug, status)
+            VALUES (@storeSlug, @status::enum_estado_corrida)
+            RETURNING run_id;
             """;
 
         await using var command = dataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue("runId", runId);
         command.Parameters.AddWithValue("storeSlug", storeSlug);
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        command.Parameters.AddWithValue("status", ScrapeRunStatus.PENDIENTE.ToString());
+        var result = await command.ExecuteScalarAsync(cancellationToken);
+        return result is Guid generatedRunId
+            ? generatedRunId
+            : throw new InvalidOperationException("PostgreSQL did not return the generated scrape run ID.");
     }
 
     public async Task<int> BeginAttemptAsync(Guid runId, CancellationToken cancellationToken)
@@ -27,7 +30,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         const string sql = """
             UPDATE scrape_runs
             SET attempts = attempts + 1,
-                status = 'Running',
+                status = @status::enum_estado_corrida,
                 started_at = now(),
                 finished_at = NULL,
                 last_error = NULL
@@ -37,6 +40,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
 
         await using var command = dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("runId", runId);
+        command.Parameters.AddWithValue("status", ScrapeRunStatus.EN_PROCESO.ToString());
         var result = await command.ExecuteScalarAsync(cancellationToken);
         return Convert.ToInt32(result);
     }
@@ -66,7 +70,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         return new ScrapeRunMetrics(
             reader.GetGuid(0),
             reader.GetString(1),
-            reader.GetString(2),
+            Enum.Parse<ScrapeRunStatus>(reader.GetString(2)),
             reader.GetInt32(3),
             reader.GetInt32(4),
             reader.GetInt32(5),
@@ -120,11 +124,11 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
     {
         const string sql = """
             UPDATE scrape_runs
-            SET status = 'Succeeded', finished_at = now(), last_error = NULL
+            SET status = @status::enum_estado_corrida, finished_at = now(), last_error = NULL
             WHERE run_id = @runId;
             """;
         await RefreshMetricsAsync(runId, cancellationToken);
-        await UpdateRunAsync(sql, runId, null, cancellationToken);
+        await UpdateRunAsync(sql, runId, null, cancellationToken, ScrapeRunStatus.EXITOSA);
         return await GetMetricsAsync(runId, cancellationToken);
     }
 
@@ -136,11 +140,12 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
     {
         const string sql = """
             UPDATE scrape_runs
-            SET status = @status, finished_at = now(), last_error = @error
+            SET status = @status::enum_estado_corrida, finished_at = now(), last_error = @error
             WHERE run_id = @runId;
             """;
         await RefreshMetricsAsync(runId, cancellationToken);
-        await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken, retryPending);
+        var status = retryPending ? ScrapeRunStatus.PENDIENTE : ScrapeRunStatus.FALLIDA;
+        await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken, status);
         return await GetMetricsAsync(runId, cancellationToken);
     }
 
@@ -149,13 +154,13 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         Guid runId,
         string? error,
         CancellationToken cancellationToken,
-        bool retryPending = false)
+        ScrapeRunStatus? status = null)
     {
         await using var command = dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("runId", runId);
-        if (sql.Contains("@status", StringComparison.Ordinal))
+        if (status is { } runStatus)
         {
-            command.Parameters.AddWithValue("status", retryPending ? "RetryPending" : "Failed");
+            command.Parameters.AddWithValue("status", runStatus.ToString());
         }
         if (sql.Contains("@error", StringComparison.Ordinal))
         {
@@ -166,26 +171,47 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
 
     private async Task RefreshMetricsAsync(Guid runId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // const string sql = """
-        //     UPDATE scrape_runs
-        //     SET products_processed = (
-        //             SELECT count(*) FROM scraping_worker.scraped_products WHERE run_id = @runId
-        //         ),
-        //         products_succeeded = (
-        //             SELECT count(*) FROM scraping_worker.scraped_products
-        //             WHERE run_id = @runId AND status IN ('Captured', 'Rejected')
-        //         ),
-        //         products_with_problems = (
-        //             SELECT count(*) FROM scraping_worker.scraped_products
-        //             WHERE run_id = @runId AND status = 'Error'
-        //         )
-        //     WHERE run_id = @runId;
-        //     """;
+        const string sql = """
+            UPDATE scrape_runs
+            SET products_processed = (
+                    SELECT count(*)
+                    FROM observaciones_precios
+                    WHERE scrape_run_id = @runId
+                ),
+                products_succeeded = (
+                    SELECT count(*)
+                    FROM observaciones_precios
+                    WHERE scrape_run_id = @runId
+                      AND estado_dato IN (
+                          @validDataStatus::enum_estado_dato,
+                          @outOfStockStatus::enum_estado_dato,
+                          @noDataStatus::enum_estado_dato
+                      )
+                ),
+                products_with_problems = (
+                    SELECT count(*)
+                    FROM observaciones_precios
+                    WHERE scrape_run_id = @runId
+                      AND estado_dato = @captureErrorStatus::enum_estado_dato
+                )
+            WHERE run_id = @runId;
+            """;
 
-        // await using var command = dataSource.CreateCommand(sql);
-        // command.Parameters.AddWithValue("runId", runId);
-        // await command.ExecuteNonQueryAsync(cancellationToken);
+        await using var command = dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("runId", runId);
+        command.Parameters.AddWithValue(
+            "validDataStatus",
+            ScrapedProductStatus.DATO_VALIDO.ToString());
+        command.Parameters.AddWithValue(
+            "outOfStockStatus",
+            ScrapedProductStatus.AGOTADO.ToString());
+        command.Parameters.AddWithValue(
+            "noDataStatus",
+            ScrapedProductStatus.SIN_DATO.ToString());
+        command.Parameters.AddWithValue(
+            "captureErrorStatus",
+            ScrapedProductStatus.ERROR_CAPTURA.ToString());
+        await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private async Task<ScrapeRunMetrics> GetMetricsAsync(
@@ -210,7 +236,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         return new ScrapeRunMetrics(
             reader.GetGuid(0),
             reader.GetString(1),
-            reader.GetString(2),
+            Enum.Parse<ScrapeRunStatus>(reader.GetString(2)),
             reader.GetInt32(3),
             reader.GetInt32(4),
             reader.GetInt32(5),

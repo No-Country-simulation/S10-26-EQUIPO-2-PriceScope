@@ -8,6 +8,7 @@ public sealed class ScrapedProduct
     public Guid CanonicalProductId { get; set; }
     public Guid StoreId { get; set; }
     public Guid AliasStoreId { get; set; }
+    public Guid ScrapeRunId { get; set; }
 
     public decimal RegularPrice { get; set; }
     public decimal PromoPrice { get; set; }

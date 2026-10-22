@@ -30,6 +30,7 @@
 | Versión | Fecha | Autor | Descripción del Cambio |
 | :--- | :--- | :--- | :--- |
 | **1.0** | 2026-10-16 | Equipo PriceScope | Formalización exhaustiva de la arquitectura del monorepo, topología de despliegue, patrón Productor-Consumidor sobre TimescaleDB compartida, cron jobs y orquestación del pipeline de datos. |
+| **1.1** | 2026-10-21 | Equipo PriceScope | Incorporación de la tabla operacional `scrape_runs` en el flujo Productor-Consumidor y telemetría de monitoreo operativo (HU-43, HU-45, `GET /api/v1/pipeline/status`). |
 
 ### ACTA DE APROBACIÓN TÉCNICA (SIGN-OFF)
 La firma de este documento formaliza los límites arquitectónicos, la delimitación de directorios, las convenciones de ramas git y la estrategia de persistencia como vinculantes para los 8 integrantes del equipo.
@@ -60,11 +61,12 @@ flowchart TD
         SCRAP --> DTO_VAL
     end
 
-    subgraph Persistencia ["Capa de Persistencia (PostgreSQL 15 + TimescaleDB 2.x)"]
+    subgraph Persistencia ["Capa de Persistencia (PostgreSQL 16 + TimescaleDB 2.x)"]
         HYPER_OBS[("Hypertable:<br/>observaciones_precios<br/>(Partición: 7 días)")]
         HYPER_DIV[("Hypertable:<br/>cotizaciones_divisas<br/>(Partición: 30 días)")]
         REL_MAST[("Tablas Maestras:<br/>categorias, tiendas,<br/>productos_canonicos, alias_tienda")]
-        AGG_MAT[("Continuous Aggregate:<br/>agg_precios_semanales<br/>(Mediana Semanal HU-47)")]
+        OPER_RUNS[("Tabla Operacional:<br/>scrape_runs<br/>(Telemetría de Corridas HU-43)")]
+        AGG_MAT[("Vista Materializada:<br/>agg_precios_semanales<br/>(Mediana Semanal HU-47)")]
         HYPER_OBS -.-> AGG_MAT
     end
 
@@ -132,14 +134,17 @@ pricescope-monorepo/
 │   │   │   └── routes/           # Mapeo de rutas HTTP
 │   │   ├── package.json          # Dependencias aisladas de la API
 │   │   └── README.md
-│   └── client/                   # Aplicación Web Frontend SPA / SSR (E-F/UX/UI: Next.js 14+ / React / TypeScript)
-│       ├── src/
-│       │   ├── components/       # Gráficos Recharts/Chart.js (60 FPS), BandaCalidad, Filtros
-│       │   ├── pages/            # Vistas ejecutivas: Dashboard, Alertas, Ficha Trazabilidad
-│       │   ├── services/         # Clientes HTTP y mocks tipados
-│       │   └── types/            # Contratos de interfaz TypeScript (api.ts)
-│       ├── package.json          # Dependencias aisladas del cliente web
-│       └── README.md
+│   ├── client/                   # Aplicación Web Frontend SPA / SSR (E-F/UX/UI: Next.js 14+ / React / TypeScript)
+│   │   ├── src/
+│   │   │   ├── components/       # Gráficos Recharts/Chart.js (60 FPS), BandaCalidad, Filtros
+│   │   │   ├── pages/            # Vistas ejecutivas: Dashboard, Alertas, Ficha Trazabilidad
+│   │   │   ├── services/         # Clientes HTTP y mocks tipados
+│   │   │   └── types/            # Contratos de interfaz TypeScript (api.ts)
+│   │   ├── package.json          # Dependencias aisladas del cliente web
+│   │   └── README.md
+│   └── database/                 # Persistencia y Esquema Compartido (TimescaleDB / PostgreSQL 16)
+│       ├── init.sql              # Script DDL oficial, hypertables, vistas continuas y funciones
+│       └── README.md             # Guía de persistencia local y credenciales
 ├── docs/                         # Documentación técnica oficial y auditable de ingeniería
 │   ├── assets/                   # Recursos gráficos e imagotipos corporativos
 │   │   ├── imagotipo.png         # Logo horizontal oficial (símbolo + texto PriceScope)
@@ -193,13 +198,16 @@ sequenceDiagram
     participant AP as E-API (Consumidor / Transformador)
     participant UI as E-F/UX/UI (Cliente Final)
 
-    Note over SC,DB: FASE 1: Inserción Masiva Directa
+    Note over SC,DB: FASE 1: Inserción Masiva Directa y Telemetría
+    SC->>DB: INSERT en scrape_runs (status = 'EN_PROCESO', started_at = NOW())
     SC->>SC: Lee URLs desde seed.json / alias_tienda
     SC->>SC: Extrae publicaciones vía Playwright .NET (Hangfire Job)
     SC->>SC: Valida regla Anti-Cero (null si agotado)
-    SC->>DB: SQL BULK INSERT en observaciones_precios (Append-Only)
+    SC->>DB: SQL BULK INSERT en observaciones_precios (con scrape_run_id)
+    SC->>DB: UPDATE scrape_runs (status = 'EXITOSA'/'ADVERTENCIA', counters, finished_at = NOW())
     
     Note over DB,AP: Proceso Asíncrono de Consulta y Sincronización
+    AP->>DB: SELECT status, frescura FROM scrape_runs (para /pipeline/status)
     AP->>DB: Consume cotizaciones divisas horarias
     AP->>DB: Ejecuta Continuous Aggregate semanal (agg_precios_semanales)
     
@@ -330,9 +338,11 @@ Si el tiempo de desarrollo no resulta suficiente para implementar los componente
 
 Para que el analista interno conozca la salud técnica del sistema en todo momento:
 
-1. **Indicador de Frescura Temporal (`frescura_datos_utc`):**
+1. **Indicador de Frescura Temporal (`frescura_datos_utc` y `scrape_runs`):**
+   * La API consulta la tabla operacional `scrape_runs` filtrando por `status = 'EXITOSA'` para computar de forma instantánea la estampa de la última extracción sin penalizar las hypertables analíticas.
    * Toda respuesta de `/dashboard` y `/pipeline/status` expone la estampa de la última extracción completada.
-   * **Alerta de Datos Atrasados (HU-45):** Si transcurren más de 24 horas continuas sin una corrida exitosa, la API activa `"alerta_atraso_24h": true` y el Frontend despliega un banner de advertencia visual en la cabecera.
+   * **Alerta de Datos Atrasados (HU-45):** Si transcurren más de 24 horas continuas sin una corrida exitosa (`MAX(finished_at) < NOW() - INTERVAL '24 hours'` o sin corridas registradas), la API activa `"alerta_atraso_24h": true` y el Frontend despliega un banner de advertencia visual en la cabecera.
+   * **Telemetría de Incidencias (HU-43, HU-44):** Permite aislar errores de red (`products_with_problems`, `last_error`) de fallas de scraping sin mezclar métricas de infraestructura con precios de productos.
 2. **Registro de Fallos Técnicos:**
    * Las capturas fallidas por bloqueos de red o caídas de servidor HTTP 5xx se registran de forma obligatoria en la base de datos con `estado_dato = 'ERROR_CAPTURA'`, conservando la URL de origen para facilitar tareas de mantenimiento sobre los selectores CSS de los extractores.
 
@@ -349,7 +359,7 @@ flowchart LR
     end
 
     subgraph SrvDB ["Servidor de Base de Datos (TimescaleDB Cloud / VPS Dedicado)"]
-        TDB[("TimescaleDB / PostgreSQL 15<br/>Puerto: 5432 (SSL Requerido)<br/>Particionamiento de Hypertables")]
+        TDB[("TimescaleDB / PostgreSQL 16<br/>Puerto: 5432 (SSL Requerido)<br/>Particionamiento de Hypertables")]
     end
 
     subgraph SrvBackend ["Servidor de API Backend (Container / PaaS)"]
@@ -369,7 +379,7 @@ flowchart LR
 * **`apps/client` (Frontend Next.js):** Aplicación Next.js servida a través de CDN global (Vercel / Cloudflare Pages) para latencia menor a 50ms en la entrega de assets interactivos.
 * **`apps/api` (Backend REST NestJS & Divisas):** Desplegado en un servidor de aplicaciones PaaS/Container (Render, Fly.io o AWS ECS) con escalado horizontal y variables de entorno seguras (`DATABASE_URL`, tokens de servicio).
 * **`apps/scraper` (Worker Hangfire & Playwright .NET):** Aplicación ASP.NET Core (.NET 10) alojada en un worker independiente con Hangfire Server y Playwright .NET para orquestar y reintentar ejecuciones headless de Chromium sin impactar el servidor de la API web.
-* **`timescaledb` (Capa de Persistencia):** Instancia dedicada de PostgreSQL 15 con la extensión TimescaleDB activada, accesible vía TLS/SSL restringido por whitelist de IPs (solo el worker de scraping y el backend tienen acceso al puerto 5432).
+* **`timescaledb` (Capa de Persistencia):** Instancia dedicada de PostgreSQL 16 con la extensión TimescaleDB activada, accesible vía TLS/SSL restringido por whitelist de IPs (solo el worker de scraping y el backend tienen acceso al puerto 5432).
 
 ### Infraestructura Local para Desarrollo (`docker-compose.yml`)
 Para reproducir la base de datos de manera uniforme en local para los 8 desarrolladores:
@@ -379,7 +389,7 @@ version: '3.8'
 
 services:
   timescaledb:
-    image: timescale/timescaledb:latest-pg15
+    image: timescale/timescaledb:latest-pg16
     container_name: pricescope-db
     restart: always
     environment:
@@ -390,7 +400,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./apps/api/src/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./apps/database/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:

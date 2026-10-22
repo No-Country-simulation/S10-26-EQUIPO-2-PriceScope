@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "2bd71cfb35f44c9b",
+    "type": "split",
+    "children": [
+      {
+        "id": "287dcec944e777ae",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ed60bdcf4eebbd23",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "681357f98db9a735",
+    "type": "split",
+    "children": [
+      {
+        "id": "4ce13ff8f6632568",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "44e3b8b7d7a1effd",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "eef1f17f275fe53d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "dc3b00324ee11afb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e94aeddc1e7b8036",
+    "type": "split",
+    "children": [
+      {
+        "id": "3e7ecf8e3679ca2c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dc1ef059c7b7360e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "44cc9f25029324e6",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "98affe29e947d621",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "b29bedd9a236f6f3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "58c15c69fa66e23d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "ed60bdcf4eebbd23",
+  "lastOpenFiles": [
+    "src/hooks/index.ts",
+    "src/hooks/useSidebar.ts",
+    "src/hooks/useDateRangeDraft.ts",
+    "src/components/charts/LineChartYAxisTick.tsx",
+    "src/components/dashboard/DashboardEvolutionLegend.tsx",
+    "src/components/ui/DateRangePicker/useDateRangeDraft.ts",
+    "src/components/charts/LineChartShape.tsx",
+    "src/components/charts/LineChartReferenceAreaShape.tsx",
+    "src/components/charts/LineChartLegend.tsx",
+    "src/components/charts/LineChartTooltip.tsx",
+    "src/components/charts/line-chart-types.ts",
+    "node_modules/@playwright/test/README.md",
+    "node_modules/vite/node_modules/lightningcss-win32-x64-msvc/README.md",
+    "node_modules/@vitest/mocker/README.md",
+    "node_modules/es-module-lexer/README.md",
+    "node_modules/vitest/node_modules/picomatch/README.md",
+    "node_modules/expect-type/SECURITY.md",
+    "node_modules/chai/README.md",
+    "node_modules/expect-type/README.md",
+    "node_modules/tinybench/README.md",
+    "node_modules/@vitest/spy/README.md",
+    "node_modules/@vitest/mocker/node_modules/magic-string/README.md",
+    "node_modules/@types/chai/README.md",
+    "node_modules/obug/README.md",
+    "specs/002-chart-grid-alignment/tasks.md",
+    "specs/002-chart-grid-alignment/plan.md",
+    "specs/002-chart-grid-alignment/spec.md",
+    "docs/constitution.md",
+    "AGENTS.md",
+    "MEMORY.md",
+    "docs/vault/Inicio.md",
+    "docs/vault/Estado-del-Proyecto.md",
+    "docs/vault/Arquitectura.md",
+    "public/isotipo.png",
+    "public/imagotipo.png",
+    "README.md"
+  ]
+}

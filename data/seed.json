@@ -1,0 +1,231 @@
+{
+  "version_schema": "1.0",
+  "metadata": {
+    "pais": "Argentina",
+    "zona_referencia": "AMBA / CABA (Ciudad Autónoma de Buenos Aires y Gran Buenos Aires)",
+    "moneda_codigo": "ARS",
+    "timezone": "America/Argentina/Buenos_Aires"
+  },
+  "tiendas_piloto": [
+    {
+      "slug": "carrefour",
+      "nombre": "Carrefour Argentina",
+      "url_base": "https://www.carrefour.com.ar",
+      "tipo": "supermercado"
+    },
+    {
+      "slug": "jumbo",
+      "nombre": "Jumbo Argentina",
+      "url_base": "https://www.jumbo.com.ar",
+      "tipo": "supermercado"
+    },
+    {
+      "slug": "fravega",
+      "nombre": "Frávega Argentina",
+      "url_base": "https://www.fravega.com",
+      "tipo": "electro"
+    },
+    {
+      "slug": "musimundo",
+      "nombre": "Musimundo Argentina",
+      "url_base": "https://www.musimundo.com",
+      "tipo": "electro"
+    }
+  ],
+  "categorias": [
+    {
+      "slug": "canasta-basica",
+      "nombre": "Canasta Básica",
+      "descripcion": "Alimentos y artículos de primera necesidad (consumo masivo)"
+    },
+    {
+      "slug": "bienes-durables",
+      "nombre": "Bienes Durables",
+      "descripcion": "Electrodomésticos y tecnología para el hogar"
+    }
+  ],
+  "productos_canonicos": [
+    {
+      "slug": "prod-cafe-molido-la-morenita-500g",
+      "categoria_slug": "canasta-basica",
+      "marca": "La Morenita",
+      "modelo": "Clásico",
+      "nombre_normalizado": "Café tostado molido clásico La Morenita 500g",
+      "contenido_neto": {
+        "valor": 0.5,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "carrefour",
+          "alias_producto": "Café molido La Morenita clásico 500 g",
+          "sku_tienda": "CAR-684279",
+          "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-morenita-clasico-500-g/p"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Café molido La Morenita clásico 500 gr",
+          "sku_tienda": "JUM-128450",
+          "url_origen": "https://www.jumbo.com.ar/cafe-molido-la-morenita-clasico-500-gr/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-aceite-girasol-natura-1-5l",
+      "categoria_slug": "canasta-basica",
+      "marca": "Natura",
+      "modelo": "Puro Girasol",
+      "nombre_normalizado": "Aceite de girasol Natura 1.5 L",
+      "contenido_neto": {
+        "valor": 1.5,
+        "unidad": "L"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "carrefour",
+          "alias_producto": "Aceite de girasol Natura 1.5 L",
+          "sku_tienda": "CAR-693155",
+          "url_origen": "https://www.carrefour.com.ar/aceite-de-girasol-natura-15-l/p"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Aceite de girasol Natura 1.5 L botella",
+          "sku_tienda": "JUM-349821",
+          "url_origen": "https://www.jumbo.com.ar/aceite-de-girasol-natura-1-5-l/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-leche-entera-la-serenisima-1l",
+      "categoria_slug": "canasta-basica",
+      "marca": "La Serenísima",
+      "modelo": "Clásica UAT",
+      "nombre_normalizado": "Leche entera UAT La Serenísima clásica 1 L",
+      "contenido_neto": {
+        "valor": 1.0,
+        "unidad": "L"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "carrefour",
+          "alias_producto": "Leche entera La Serenísima clásica 1 L",
+          "sku_tienda": "CAR-674681",
+          "url_origen": "https://www.carrefour.com.ar/leche-entera-la-serenisima-clasica-1-l/p"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Leche entera clásica La Serenísima 1 L brik",
+          "sku_tienda": "JUM-542190",
+          "url_origen": "https://www.jumbo.com.ar/leche-entera-la-serenisima-clasica-1-l/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-arroz-largo-fino-lucchetti-1kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Lucchetti",
+      "modelo": "Largo Fino",
+      "nombre_normalizado": "Arroz largo fino Lucchetti 1 kg",
+      "contenido_neto": {
+        "valor": 1.0,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "carrefour",
+          "alias_producto": "Arroz largo fino Lucchetti 1 kg",
+          "sku_tienda": "CAR-693245",
+          "url_origen": "https://www.carrefour.com.ar/arroz-largo-fino-lucchetti-1-kg/p"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Arroz largo fino Lucchetti bolsa 1 kg",
+          "sku_tienda": "JUM-872341",
+          "url_origen": "https://www.jumbo.com.ar/arroz-largo-fino-lucchetti-1-kg/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-smarttv-samsung-55-du7000-4k",
+      "categoria_slug": "bienes-durables",
+      "marca": "Samsung",
+      "modelo": "DU7000",
+      "nombre_normalizado": "Smart TV Samsung 55 pulgadas 4K UHD Crystal DU7000",
+      "contenido_neto": {
+        "valor": 1.0,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "fravega",
+          "alias_producto": "Smart TV 55\" 4K UHD Samsung Crystal DU7000 UN55DU7000GCZB",
+          "sku_tienda": "FRA-DU7000-55",
+          "url_origen": "https://www.fravega.com/p/smart-tv-55-4k-uhd-samsung-du7000-un55du7000gczb/"
+        },
+        {
+          "tienda_slug": "musimundo",
+          "alias_producto": "Smart TV Samsung 55\" 4K UHD UN55DU7000",
+          "sku_tienda": "MUS-55DU7000",
+          "url_origen": "https://www.musimundo.com/televisores/smart-tv/smart-tv-55-4k-uhd-samsung-un55du7000/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-heladera-gafa-hgn358b-310l",
+      "categoria_slug": "bienes-durables",
+      "marca": "Gafa",
+      "modelo": "HGN358B",
+      "nombre_normalizado": "Heladera con freezer Gafa HGN358B blanca 310 L",
+      "contenido_neto": {
+        "valor": 1.0,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "fravega",
+          "alias_producto": "Heladera con Freezer Gafa HGN358B Blanca 310 L",
+          "sku_tienda": "FRA-HGN358B",
+          "url_origen": "https://www.fravega.com/p/heladera-con-freezer-gafa-hgn358b-blanca-310-l/"
+        },
+        {
+          "tienda_slug": "musimundo",
+          "alias_producto": "Heladera Gafa HGN358B Blanca 310 L",
+          "sku_tienda": "MUS-HGN358B",
+          "url_origen": "https://www.musimundo.com/heladeras-y-freezers/heladeras/heladera-gafa-hgn358b-blanca-310-l/p"
+        }
+      ]
+    },
+    {
+      "slug": "prod-lavarropas-drean-next-8-12-8kg",
+      "categoria_slug": "bienes-durables",
+      "marca": "Drean",
+      "modelo": "Next 8.12 Eco",
+      "nombre_normalizado": "Lavarropas automático Drean Next 8.12 Eco 8 kg 1200 RPM",
+      "contenido_neto": {
+        "valor": 1.0,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "fravega",
+          "alias_producto": "Lavarropas Automático Drean Next 8.12 Eco 8 kg 1200 RPM",
+          "sku_tienda": "FRA-NEXT812",
+          "url_origen": "https://www.fravega.com/p/lavarropas-automatico-drean-next-8-12-eco-8-kg-1200-rpm/"
+        },
+        {
+          "tienda_slug": "musimundo",
+          "alias_producto": "Lavarropas Drean Next 8.12 Eco 8 kg",
+          "sku_tienda": "MUS-NEXT812",
+          "url_origen": "https://www.musimundo.com/lavado/lavarropas/lavarropas-drean-next-8-12-eco-8kg/p"
+        }
+      ]
+    }
+  ]
+}

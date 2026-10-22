@@ -319,6 +319,21 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
     "contenido_neto_unidad": "kg",
     "pack": "x1"
   },
+  "hitos_reduflacion": [
+    {
+      "id": "red-20261015-001",
+      "timestamp_utc": "2026-10-15T14:30:00Z",
+      "tipo": "REDUFLACION",
+      "titulo": "Hito de Reduflación Registrado",
+      "descripcion": "Reducción de presentación de 500g a 450g (-10.0%). El precio nominal se mantuvo en $12.000, pero el costo real por kilogramo saltó de $24.000 a $26.666,67/kg (+11.1%).",
+      "impacto": "Salto oculto de precio unitario detectado automáticamente",
+      "contenido_anterior_valor": 0.5,
+      "contenido_nuevo_valor": 0.45,
+      "unidad_medida": "kg",
+      "variacion_gramaje_pct": -10.0,
+      "salto_precio_unitario_pct": 11.1
+    }
+  ],
   "historico_observaciones": [
     {
       "timestamp_utc": "2026-10-16T14:00:00Z",
@@ -384,6 +399,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Carrefour",
       "ultima_corrida_utc": "2026-10-16T14:00:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 42,
       "publicaciones_fallidas": 0,
       "cobertura_pct": 100.0
@@ -393,6 +410,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Jumbo",
       "ultima_corrida_utc": "2026-10-16T14:05:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 40,
       "publicaciones_fallidas": 2,
       "cobertura_pct": 95.0
@@ -402,6 +421,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Frávega",
       "ultima_corrida_utc": "2026-10-16T14:10:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 28,
       "publicaciones_fallidas": 0,
       "cobertura_pct": 100.0
@@ -411,6 +432,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Musimundo",
       "ultima_corrida_utc": "2026-10-16T14:15:00Z",
       "estado_corrida": "ADVERTENCIA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 25,
       "publicaciones_fallidas": 3,
       "cobertura_pct": 89.2
@@ -764,8 +787,23 @@ export interface ObservacionTrazabilidadItem {
   motivo_faltante?: string | null;
 }
 
+export interface HitoReduflacionItem {
+  id: string;
+  timestamp_utc: string;
+  tipo: 'REDUFLACION';
+  titulo: string;
+  descripcion: string;
+  impacto: string;
+  contenido_anterior_valor: number;
+  contenido_nuevo_valor: number;
+  unidad_medida: 'kg' | 'L' | 'unidad';
+  variacion_gramaje_pct: number;
+  salto_precio_unitario_pct: number;
+}
+
 export interface TraceabilityResponse {
   producto: ProductoCanonicoDetalle;
+  hitos_reduflacion?: HitoReduflacionItem[];
   historico_observaciones: ObservacionTrazabilidadItem[];
 }
 

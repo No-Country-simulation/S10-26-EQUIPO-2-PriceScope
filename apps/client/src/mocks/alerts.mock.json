@@ -1,0 +1,146 @@
+{
+  "paginacion": {
+    "pagina_actual": 1,
+    "limite_por_pagina": 50,
+    "total_registros": 8,
+    "total_paginas": 1
+  },
+  "alertas": [
+    {
+      "alerta_id": "alt-20261018-001",
+      "producto_canonico_id": "b3e21a88-7f2c-4b55-89df-1c0a2f4d6e90",
+      "producto_nombre": "Café tostado molido clásico 500g",
+      "tienda_nombre": "Carrefour",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 25.0,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 5.0,
+      "cotizacion_usada_cierre": 1200.0,
+      "cobertura_pct": 90.0,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-002",
+      "producto_canonico_id": "c4f32b99-8a3d-4c66-90ea-2d1b3f5e7f01",
+      "producto_nombre": "Aceite de girasol puro 1.5L",
+      "tienda_nombre": "Jumbo",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 18.5,
+      "variacion_cotizacion_pct": 8.0,
+      "diferencial_puntos": 10.5,
+      "cotizacion_usada_cierre": 920.0,
+      "cobertura_pct": 100.0,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-003",
+      "producto_canonico_id": "d5a43c00-9b4e-4d77-a1fb-3e2c4a6f8a12",
+      "producto_nombre": "Smart TV 55\" 4K UHD Smart Series",
+      "tienda_nombre": "Frávega",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 45.0,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 25.0,
+      "cotizacion_usada_cierre": 1185.0,
+      "cobertura_pct": 96.7,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-004",
+      "producto_canonico_id": "e6b54d11-0c5f-4e88-b2ac-4f3d5b7a9b23",
+      "producto_nombre": "Yerba Mate Suave 1kg con Palo",
+      "tienda_nombre": "Carrefour",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 27.5,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 7.5,
+      "cotizacion_usada_cierre": 1190.0,
+      "cobertura_pct": 93.3,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-005",
+      "producto_canonico_id": "f7c65e22-1d6a-4f99-c3bd-5a4e6c8b0c34",
+      "producto_nombre": "Leche Entera UAT 1L Botella",
+      "tienda_nombre": "Jumbo",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 24.0,
+      "variacion_cotizacion_pct": 15.0,
+      "diferencial_puntos": 9.0,
+      "cotizacion_usada_cierre": 920.0,
+      "cobertura_pct": 100.0,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-006",
+      "producto_canonico_id": "a8d76f33-2e7b-4a00-d4ce-6b5f7d9c1d45",
+      "producto_nombre": "Heladera No Frost Inverter 380L",
+      "tienda_nombre": "Musimundo",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 38.4,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 18.4,
+      "cotizacion_usada_cierre": 1185.0,
+      "cobertura_pct": 89.2,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-007",
+      "producto_canonico_id": "b9e87a44-3f8c-4b11-e5df-7c6a8e0d2e56",
+      "producto_nombre": "Galletitas Dulces Rellenas 300g",
+      "tienda_nombre": "Carrefour",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 31.2,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 11.2,
+      "cotizacion_usada_cierre": 1200.0,
+      "cobertura_pct": 100.0,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    },
+    {
+      "alerta_id": "alt-20261018-008",
+      "producto_canonico_id": "c0f98b55-4a9d-4c22-f6ea-8d7b9f1e3f67",
+      "producto_nombre": "Detergente Líquido Activo 750ml",
+      "tienda_nombre": "Jumbo",
+      "periodo": {
+        "inicio_utc": "2026-09-19T00:00:00Z",
+        "fin_utc": "2026-10-18T00:00:00Z"
+      },
+      "variacion_precio_pct": 26.8,
+      "variacion_cotizacion_pct": 20.0,
+      "diferencial_puntos": 6.8,
+      "cotizacion_usada_cierre": 1185.0,
+      "cobertura_pct": 95.0,
+      "regla_faltantes": "LOCF",
+      "tipo_alerta": "PRECIO_SUPERA_DEVALUACION"
+    }
+  ]
+}

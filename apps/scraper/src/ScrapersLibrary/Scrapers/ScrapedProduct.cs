@@ -10,9 +10,9 @@ public sealed class ScrapedProduct
     public Guid AliasStoreId { get; set; }
     public Guid ScrapeRunId { get; set; }
 
-    public decimal RegularPrice { get; set; }
-    public decimal PromoPrice { get; set; }
-    public decimal UnitPrice { get; set; }
+    public decimal? RegularPrice { get; set; }
+    public decimal? PromoPrice { get; set; }
+    public decimal? UnitPrice { get; set; }
 
     public string CurrencyCode { get; set; } = "ARS";
     public bool Available { get; set; }

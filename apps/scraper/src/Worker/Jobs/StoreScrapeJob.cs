@@ -23,7 +23,7 @@ public sealed class StoreScrapeJob(
 
         var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
         Guid currentRunId;
-        int attempt = 0;
+        int attempt = 1;
 
         if (run is null)
         {

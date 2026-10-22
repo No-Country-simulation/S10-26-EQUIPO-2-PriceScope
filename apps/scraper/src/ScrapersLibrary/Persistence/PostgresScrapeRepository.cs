@@ -11,14 +11,14 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         CancellationToken cancellationToken = default)
     {
         const string sql = """
-            INSERT INTO scrape_runs (store_slug, status)
-            VALUES (@storeSlug, @status::enum_estado_corrida)
+            INSERT INTO scrape_runs (store_slug, status, started_at)
+            VALUES (@storeSlug, @status::enum_estado_corrida, now())
             RETURNING run_id;
             """;
 
         await using var command = dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("storeSlug", storeSlug);
-        command.Parameters.AddWithValue("status", ScrapeRunStatus.PENDIENTE.ToString());
+        command.Parameters.AddWithValue("status", ScrapeRunStatus.EN_PROCESO.ToString());
         var result = await command.ExecuteScalarAsync(cancellationToken);
         return result is Guid generatedRunId
             ? generatedRunId

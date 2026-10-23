@@ -68,14 +68,16 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         }
 
         return new ScrapeRunMetrics(
-            reader.GetGuid(0),
-            reader.GetString(1),
-            Enum.Parse<ScrapeRunStatus>(reader.GetString(2)),
-            reader.GetInt32(3),
-            reader.GetInt32(4),
-            reader.GetInt32(5),
-            reader.GetInt32(6),
-            reader.IsDBNull(7) ? null : reader.GetString(7));
+            reader.GetGuid(reader.GetOrdinal("run_id")),
+            reader.GetString(reader.GetOrdinal("store_slug")),
+            Enum.Parse<ScrapeRunStatus>(reader.GetString(reader.GetOrdinal("status"))),
+            reader.GetInt32(reader.GetOrdinal("attempts")),
+            reader.GetInt32(reader.GetOrdinal("products_processed")),
+            reader.GetInt32(reader.GetOrdinal("products_succeeded")),
+            reader.GetInt32(reader.GetOrdinal("products_with_problems")),
+            reader.IsDBNull(reader.GetOrdinal("last_error"))
+                ? null
+                : reader.GetString(reader.GetOrdinal("last_error")));
     }
 
     public async Task SaveProductAsync(
@@ -256,14 +258,16 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         }
 
         return new ScrapeRunMetrics(
-            reader.GetGuid(0),
-            reader.GetString(1),
-            Enum.Parse<ScrapeRunStatus>(reader.GetString(2)),
-            reader.GetInt32(3),
-            reader.GetInt32(4),
-            reader.GetInt32(5),
-            reader.GetInt32(6),
-            reader.IsDBNull(7) ? null : reader.GetString(7));
+            reader.GetGuid(reader.GetOrdinal("run_id")),
+            reader.GetString(reader.GetOrdinal("store_slug")),
+            Enum.Parse<ScrapeRunStatus>(reader.GetString(reader.GetOrdinal("status"))),
+            reader.GetInt32(reader.GetOrdinal("attempts")),
+            reader.GetInt32(reader.GetOrdinal("products_processed")),
+            reader.GetInt32(reader.GetOrdinal("products_succeeded")),
+            reader.GetInt32(reader.GetOrdinal("products_with_problems")),
+            reader.IsDBNull(reader.GetOrdinal("last_error"))
+                ? null
+                : reader.GetString(reader.GetOrdinal("last_error")));
     }
 
     public async Task<bool> IsStoreActive(string storeSlug, CancellationToken cancellationToken)
@@ -283,6 +287,6 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
             throw new InvalidOperationException($"Store with slug {storeSlug} was not found.");
         }
 
-        return reader.GetBoolean(0);
+        return reader.GetBoolean(reader.GetOrdinal("activo"));
     }
 }

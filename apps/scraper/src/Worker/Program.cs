@@ -5,6 +5,7 @@ using Npgsql;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Seed;
+using ScrapersLibrary.Validators;
 using Worker;
 using Worker.Jobs;
 
@@ -21,6 +22,7 @@ builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
 // builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
 builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();
 builder.Services.AddScoped<StoreScrapeJob>();
+builder.Services.AddSingleton<IScrapedProductValidator, ScrapedProductValidator>();
 
 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
 {

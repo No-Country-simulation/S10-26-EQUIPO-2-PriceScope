@@ -41,4 +41,9 @@ public class MockScrapeRepository : IScrapeRepository
     {
         return Task.CompletedTask;
     }
+
+    public Task SaveCaptureErrorAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }

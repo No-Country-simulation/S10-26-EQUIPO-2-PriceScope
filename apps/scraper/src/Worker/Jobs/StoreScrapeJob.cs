@@ -1,10 +1,12 @@
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
+using ScrapersLibrary.Validators;
 
 namespace Worker.Jobs;
 
 public sealed class StoreScrapeJob(
     IScrapeRepository repository,
+    IScrapedProductValidator productValidator,
     IEnumerable<IStoreScraper> scrapers,
     ILogger<StoreScrapeJob> logger)
 {
@@ -47,7 +49,14 @@ public sealed class StoreScrapeJob(
                 .WithCancellation(cancellationToken))
             {
                 // TODO: Decide what to do here. If save products one by one or in batches.
-                await repository.SaveProductAsync(currentRunId, product, cancellationToken);
+                if (productValidator.Validate(product))
+                {
+                    await repository.SaveProductAsync(currentRunId, product, cancellationToken);
+                }
+                else
+                {
+                    await repository.SaveCaptureErrorAsync(currentRunId, product, cancellationToken);
+                }
             }
 
             var metrics = await repository.MarkSucceededAsync(currentRunId, cancellationToken);

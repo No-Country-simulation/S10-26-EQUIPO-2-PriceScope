@@ -83,34 +83,6 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         ScrapedProduct product,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(product);
-
-        if (product.CapturedAt == default || product.CapturedAt.Kind != DateTimeKind.Utc)
-        {
-            throw new ArgumentException("A scraped product must have a UTC capture timestamp.", nameof(product));
-        }
-
-        if (string.IsNullOrWhiteSpace(product.CurrencyCode) || product.CurrencyCode.Length != 3)
-        {
-            throw new ArgumentException("A scraped product must have a three-character currency code.", nameof(product));
-        }
-
-        var hasValidData = product.DataState == ScrapedProductStatus.DATO_VALIDO;
-
-        if (hasValidData && (!product.Available || product.RegularPrice <= 0))
-        {
-            throw new ArgumentException(
-                "A valid scraped product must be available and have a positive regular price.",
-                nameof(product));
-        }
-
-        if (hasValidData && (product.PromoPrice < 0 || product.UnitPrice < 0))
-        {
-            throw new ArgumentException(
-                "A scraped product's promotional and unit prices cannot be negative.",
-                nameof(product));
-        }
-
         const string sql = """
             INSERT INTO observaciones_precios
                 (timestamp_utc, producto_canonico_id, tienda_id, alias_tienda_id, scrape_run_id,
@@ -128,18 +100,43 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         command.Parameters.AddWithValue("storeId", product.StoreId);
         command.Parameters.AddWithValue("aliasStoreId", product.AliasStoreId);
         command.Parameters.AddWithValue("runId", runId);
-        command.Parameters.Add("regularPrice", NpgsqlDbType.Numeric).Value =
-            hasValidData ? product.RegularPrice : DBNull.Value;
-        command.Parameters.Add("promoPrice", NpgsqlDbType.Numeric).Value =
-            hasValidData && product.PromoPrice > 0 ? product.PromoPrice : DBNull.Value;
-        command.Parameters.Add("unitPrice", NpgsqlDbType.Numeric).Value =
-            hasValidData && product.UnitPrice > 0 ? product.UnitPrice : DBNull.Value;
+        command.Parameters.Add("regularPrice", NpgsqlDbType.Numeric)
+            .Value = product.RegularPrice;
+        command.Parameters.Add("promoPrice", NpgsqlDbType.Numeric)
+            .Value = product.PromoPrice is null ? DBNull.Value : product.PromoPrice;
+        command.Parameters.Add("unitPrice", NpgsqlDbType.Numeric)
+            .Value = product.UnitPrice;
         command.Parameters.AddWithValue("currencyCode", product.CurrencyCode);
         command.Parameters.AddWithValue("available", product.Available);
         command.Parameters.AddWithValue("dataState", product.DataState.ToString());
         command.Parameters.AddWithValue(
             "error",
             string.IsNullOrWhiteSpace(product.Error) ? DBNull.Value : product.Error);
+        await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    public async Task SaveCaptureErrorAsync(
+        Guid runId,
+        ScrapedProduct product,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            INSERT INTO observaciones_precios
+                (timestamp_utc, producto_canonico_id, tienda_id, alias_tienda_id, scrape_run_id,
+                 disponible, estado_dato, motivo_faltante)
+            VALUES
+                (@capturedAt, @canonicalProductId, @storeId, @aliasStoreId, @runId,
+                 FALSE, @dataState::enum_estado_dato, @error);
+            """;
+
+        await using var command = dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("capturedAt", product.CapturedAt);
+        command.Parameters.AddWithValue("canonicalProductId", product.CanonicalProductId);
+        command.Parameters.AddWithValue("storeId", product.StoreId);
+        command.Parameters.AddWithValue("aliasStoreId", product.AliasStoreId);
+        command.Parameters.AddWithValue("runId", runId);
+        command.Parameters.AddWithValue("dataState", ScrapedProductStatus.ERROR_CAPTURA.ToString());
+        command.Parameters.AddWithValue("error", product.Error);
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 

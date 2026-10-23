@@ -11,4 +11,5 @@ public interface IScrapeRepository
     Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken);
     Task<ScrapeRunMetrics> MarkSucceededAsync(Guid runId, CancellationToken cancellationToken);
     Task SaveProductAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken);
+    Task SaveCaptureErrorAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken);
 }

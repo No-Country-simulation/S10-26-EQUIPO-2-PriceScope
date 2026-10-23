@@ -15,21 +15,14 @@ var connectionString = builder.Configuration.GetConnectionString("Postgres")
     ?? throw new InvalidOperationException("ConnectionStrings:Postgres is required.");
 
 builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
-// builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
-builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
+builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
+//builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
 builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
 // builder.Services.AddSingleton<IProductInfoProvider, JsonProductInfoProvider>();
-// builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
-builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();
+builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
+//builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();
 builder.Services.AddScoped<StoreScrapeJob>();
 builder.Services.AddSingleton<IScrapedProductValidator, ScrapedProductValidator>();
-
-GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
-{
-    Attempts = 4,
-    DelaysInSeconds = [1500, 3000, 6000, 12000],
-    OnAttemptsExceeded = AttemptsExceededAction.Fail
-});
 
 builder.Services.AddHangfire(options => options
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -48,6 +41,21 @@ builder.Services
         "The time zone ID is required.")
     .ValidateOnStart();
 
+builder.Services
+    .AddOptions<HangfireRetryOptions>()
+    .BindConfiguration(HangfireRetryOptions.SectionName)
+    .Validate(
+        options => options.Attempts >= 0,
+        "The Hangfire retry attempts must be zero or greater.")
+    .Validate(
+        options => options.Attempts == options.DelaysInSeconds.Length,
+        "The Hangfire retry attempts must be equal to the number of items in DelaysInSeconds.")
+    .Validate(
+        options => options.DelaysInSeconds is { Length: > 0 }
+            && options.DelaysInSeconds.All(delay => delay >= 0),
+        "The Hangfire retry delays must contain non-negative values.")
+    .ValidateOnStart();
+
 builder.Services.AddHangfireServer((sp, opts) =>
 {
     int workerCount = builder.Configuration.GetValue<int>("Hangfire:WorkerCount");
@@ -61,6 +69,17 @@ builder.Services.AddHangfireServer((sp, opts) =>
 });
 
 var app = builder.Build();
+
+var retryOptions = app.Services
+    .GetRequiredService<IOptions<HangfireRetryOptions>>()
+    .Value;
+
+GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
+{
+    Attempts = retryOptions.Attempts,
+    DelaysInSeconds = retryOptions.DelaysInSeconds,
+    OnAttemptsExceeded = AttemptsExceededAction.Fail
+});
 
 app.UseHangfireDashboard();
 app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" }));

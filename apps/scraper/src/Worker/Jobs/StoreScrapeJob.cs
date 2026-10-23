@@ -43,9 +43,11 @@ public sealed class StoreScrapeJob(
             currentRunId,
             attempt);
 
+        int continueFrom = run?.ProductsProcessed ?? 0;
+
         try
         {
-            await foreach (var product in scraper.ScrapeAsync(cancellationToken)
+            await foreach (var product in scraper.ScrapeAsync(continueFrom, cancellationToken)
                 .WithCancellation(cancellationToken))
             {
                 // TODO: Decide what to do here. If save products one by one or in batches.

@@ -11,6 +11,7 @@ public sealed class ExampleStoreScraper(
     public string StoreSlug => "carrefour";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
+        int countinueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var products = await infoProvider

@@ -119,17 +119,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
             VALUES
                 (@capturedAt, @canonicalProductId, @storeId, @aliasStoreId, @runId,
                  @regularPrice, @promoPrice, @unitPrice, @currencyCode,
-                 @available, @dataState::enum_estado_dato, @error)
-            ON CONFLICT (timestamp_utc, producto_canonico_id, tienda_id) DO UPDATE SET
-                alias_tienda_id = EXCLUDED.alias_tienda_id,
-                scrape_run_id = EXCLUDED.scrape_run_id,
-                precio_regular = EXCLUDED.precio_regular,
-                precio_promocional = EXCLUDED.precio_promocional,
-                precio_por_unidad = EXCLUDED.precio_por_unidad,
-                moneda_codigo = EXCLUDED.moneda_codigo,
-                disponible = EXCLUDED.disponible,
-                estado_dato = EXCLUDED.estado_dato,
-                motivo_faltante = EXCLUDED.motivo_faltante;
+                 @available, @dataState::enum_estado_dato, @error);
             """;
 
         await using var command = dataSource.CreateCommand(sql);

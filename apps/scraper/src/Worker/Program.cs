@@ -14,11 +14,12 @@ var connectionString = builder.Configuration.GetConnectionString("Postgres")
     ?? throw new InvalidOperationException("ConnectionStrings:Postgres is required.");
 
 builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
-builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
-// builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
+// builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
+builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
 builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
 // builder.Services.AddSingleton<IProductInfoProvider, JsonProductInfoProvider>();
-builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
+// builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
+builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();
 builder.Services.AddScoped<StoreScrapeJob>();
 
 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute

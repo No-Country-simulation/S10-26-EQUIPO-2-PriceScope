@@ -56,7 +56,7 @@ timeline
 
 ### Principios Operativos del Equipo:
 1. **Prioridad Absoluta al Flujo Local-First (Semanas 1 a 3):**
-   * Toda la infraestructura (PostgreSQL 15 + TimescaleDB) corre localmente vía `docker-compose.yml`.
+   * Toda la infraestructura (PostgreSQL 16 + TimescaleDB) corre localmente vía `docker-compose.yml`.
    * C# / ASP.NET Core (.NET 10) con Hangfire ejecuta los scrapers y realiza `bulk insert` directo a la base de datos sin depender de latencias o cuotas de red externas.
    * La API en NestJS computa la mediana y sincronización cambiaria en local.
    * El cliente Next.js consume la API en `localhost:3000`.
@@ -90,7 +90,7 @@ flowchart TD
 | Célula | Entregables y Tareas Técnicas | Historias Vinculadas | Criterio de Éxito del Sprint |
 | :--- | :--- | :--- | :--- |
 | **`E-Scrapper`** | Configuración de proyecto ASP.NET Core (.NET 10), integración de Hangfire y Playwright .NET. Extracción piloto de Carrefour y Jumbo desde `seed.json`. Implementación del DTO con validación anti-cero. | `HU-02`, `HU-03`, `HU-04` | 50 productos de Carrefour y Jumbo extraídos en consola con precios válidos y stocks clasificados. |
-| **`E-API`** | Puesta a punto de PostgreSQL 15 + TimescaleDB en `docker-compose.yml`. Ejecución de DDL (`03-Data-Model-TimescaleDB.md`). Setup de NestJS con TypeScript y endpoints mock iniciales (`GET /api/v1/dashboard`). Ingesta horaria de divisas (DolarAPI). | `HU-21`, `HU-22`, `HU-23` | Base de datos local levantada con hypertables particionadas y cron de cotización financiera persistiendo USD. |
+| **`E-API`** | Puesta a punto de PostgreSQL 16 + TimescaleDB en `docker-compose.yml`. Ejecución de DDL (`03-Data-Model-TimescaleDB.md`). Setup de NestJS con TypeScript y endpoints mock iniciales (`GET /api/v1/dashboard`). Ingesta horaria de divisas (DolarAPI). | `HU-21`, `HU-22`, `HU-23` | Base de datos local levantada con hypertables particionadas y cron de cotización financiera persistiendo USD. |
 | **`E-F/UX/UI`** | Setup del workspace Next.js (`apps/client`). Configuración de Tailwind CSS y tipografía corporativa (Plus Jakarta Sans / Inter). Maquetación estática de la interfaz ejecutiva: Header, Tarjetas KPI y Sidebar. | `HU-41`, `HU-42` | Shell de la aplicación Next.js corriendo localmente con paleta institucional y estructura responsive. |
 | **`E-QA`** | Generación de datasets sintéticos para pruebas unitarias de mediana (`TC-MATH-01`, `TC-MATH-02`). Armado de la suite de pruebas unitarias en el pipeline de CI (`.github/workflows/`). | `TC-MATH-01..03` | Tests unitarios matemáticos ejecutándose en GitHub Actions en verde sobre mocks. |
 

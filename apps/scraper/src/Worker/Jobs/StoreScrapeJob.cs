@@ -1,10 +1,12 @@
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
+using ScrapersLibrary.Validators;
 
 namespace Worker.Jobs;
 
 public sealed class StoreScrapeJob(
     IScrapeRepository repository,
+    IScrapedProductValidator productValidator,
     IEnumerable<IStoreScraper> scrapers,
     ILogger<StoreScrapeJob> logger)
 {
@@ -22,15 +24,16 @@ public sealed class StoreScrapeJob(
         }
 
         var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
-        var currentRunId = run?.RunId ?? Guid.NewGuid();
-        int attempt = 0;
+        Guid currentRunId;
+        int attempt = 1;
 
         if (run is null)
         {
-            await repository.CreateRunAsync(currentRunId, storeSlug, cancellationToken);
+            currentRunId = await repository.CreateRunAsync(storeSlug, cancellationToken);
         }
         else
         {
+            currentRunId = run.RunId;
             attempt = await repository.BeginAttemptAsync(currentRunId, cancellationToken);
         }
 
@@ -40,13 +43,22 @@ public sealed class StoreScrapeJob(
             currentRunId,
             attempt);
 
+        int continueFrom = run?.ProductsProcessed ?? 0;
+
         try
         {
-            await foreach (var product in scraper.ScrapeAsync(cancellationToken)
+            await foreach (var product in scraper.ScrapeAsync(continueFrom, cancellationToken)
                 .WithCancellation(cancellationToken))
             {
                 // TODO: Decide what to do here. If save products one by one or in batches.
-                await repository.SaveProductAsync(currentRunId, product, cancellationToken);
+                if (productValidator.Validate(product))
+                {
+                    await repository.SaveProductAsync(currentRunId, product, cancellationToken);
+                }
+                else
+                {
+                    await repository.SaveCaptureErrorAsync(currentRunId, product, cancellationToken);
+                }
             }
 
             var metrics = await repository.MarkSucceededAsync(currentRunId, cancellationToken);

@@ -1,1 +1,57 @@
-# Scrapers
+# Scraper de PriceScope (.NET)
+
+El scraper es un worker ASP.NET Core en .NET 10 que programa trabajos recurrentes por tienda con Hangfire.
+
+- `src/Worker`: aplicación, configuración, dashboard y trabajos de Hangfire.
+- `src/ScrapersLibrary`: contratos, scrapers, proveedores de productos y repositorios de corridas.
+- PostgreSQL almacena el estado de Hangfire, las corridas (`scrape_runs`) y las observaciones de precios (`observaciones_precios`).
+
+## Requisitos
+
+- .NET SDK 10 y una instancia de PostgreSQL accesible que tenga el esquema de PriceScope.
+- Docker Desktop con Docker Compose v2 compatible con la propiedad `include`, o
+
+## Ejecutar el worker localmente
+
+Desde la raíz del repositorio, inicia PostgreSQL con el compose principal:
+
+```powershell
+docker compose up -d timescaledb
+```
+
+Configura la cadena de conexión para el proceso local y ejecuta el Worker:
+
+```powershell
+$env:ConnectionStrings__Postgres = "Host=localhost;Port=5432;Database=pricescope;Username=postgres;Password=postgres"
+dotnet run --project apps/scraper/src/Worker/Worker.csproj
+```
+
+El dashboard de Hangfire que muestra los recurring jobs estará en https://localhost:7479/hangfire/recurring. La aplicación requiere `ConnectionStrings:Postgres` y falla al iniciar si la cadena no está configurada o no puede conectarse a PostgreSQL.
+
+## Ejecutar con Docker Compose
+
+**Nota**: Necesita revision. No se puede acceder al dashboard de hangfire.
+
+Desde la raíz del repositorio:
+
+```powershell
+docker compose -f apps/scraper/src/compose.yaml up --build
+```
+
+El compose del scraper incluye el [`docker-compose.yml`](../../docker-compose.yml) raíz, que define PostgreSQL/TimescaleDB y el volumen `pgdata`. También inicia el worker y pgAdmin. El worker se conecta a PostgreSQL mediante el nombre de servicio `timescaledb`.
+
+- Worker: <http://localhost:8080/>
+- Dashboard de Hangfire: <http://localhost:8080/hangfire>
+- pgAdmin: <http://localhost:15432/> (usuario `admin@pricescope.com`, contraseña `admin`)
+- PostgreSQL desde el host: `localhost:5432` (base `pricescope`, usuario y contraseña `postgres`)
+
+Para registrar la base en pgAdmin, usa el host `timescaledb`, puerto `5432`, base `pricescope` y las credenciales `postgres` / `postgres`.
+
+## Agregar una tienda
+
+1. Carga la tienda en `tiendas` y asegúrate de que su slug coincida con el `StoreSlug` del scraper.
+2. Crea los productos canónicos y sus alias en `productos_canonicos` y `alias_tienda`; el proveedor PostgreSQL solo devuelve alias activos.
+3. Implementa `IStoreScraper` en `ScrapersLibrary` y procesa los productos como `IAsyncEnumerable<ScrapedProduct>`.
+4. Registra la implementación en [`src/Worker/Program.cs`](src/Worker/Program.cs) como `IStoreScraper`.
+
+El worker programará automáticamente un trabajo recurrente para cada scraper registrado. Los resultados se guardan mediante `PostgresScrapeRepository`; cada producto debe cumplir las validaciones del repositorio y el esquema de PostgreSQL.

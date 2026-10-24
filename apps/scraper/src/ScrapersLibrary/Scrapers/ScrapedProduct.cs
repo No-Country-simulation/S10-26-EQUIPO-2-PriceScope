@@ -1,15 +1,21 @@
 namespace ScrapersLibrary.Scrapers;
 
-public enum ScrapedProductStatus
+public sealed class ScrapedProduct
 {
-    Captured,
-    Rejected,
-    Error
-}
+    public string Url { get; set; } = string.Empty;
+    public DateTime CapturedAt { get; set; }
 
-public sealed record ScrapedProduct(
-    string ExternalId,
-    string? Url,
-    ScrapedProductStatus Status,
-    string? DataJson = null,
-    string? Error = null);
+    public Guid CanonicalProductId { get; set; }
+    public Guid StoreId { get; set; }
+    public Guid AliasStoreId { get; set; }
+    public Guid ScrapeRunId { get; set; }
+
+    public decimal? RegularPrice { get; set; }
+    public decimal? PromoPrice { get; set; }
+    public decimal? UnitPrice { get; set; }
+
+    public string CurrencyCode { get; set; } = "ARS";
+    public bool Available { get; set; }
+    public ScrapedProductStatus DataState { get; set; }
+    public string Error { get; set; } = string.Empty;
+}

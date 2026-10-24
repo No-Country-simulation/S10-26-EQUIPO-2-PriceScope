@@ -1,0 +1,454 @@
+{
+  "contexto": {
+    "frescura_datos_utc": "2026-10-18T14:00:00Z",
+    "filtros_activos": {
+      "moneda": "ARS",
+      "fecha_desde": "2026-09-19",
+      "fecha_hasta": "2026-10-18",
+      "tienda_id": null,
+      "categoria_id": "canasta-basica"
+    }
+  },
+  "kpis": {
+    "variacion_pesos": {
+      "porcentaje": 25.0,
+      "fecha_inicial": "2026-09-19T00:00:00Z",
+      "fecha_final": "2026-10-18T00:00:00Z",
+      "cobertura_pct": 98.5,
+      "estado": "SUFICIENTE",
+      "regla_faltantes": "LOCF"
+    },
+    "variacion_usd": {
+      "porcentaje": 5.0,
+      "cotizacion_usada": 1200.0,
+      "fuente_cotizacion": "DolarAPI_Cierre",
+      "tipo_cotizacion": "BLUE"
+    },
+    "comparacion_devaluacion": {
+      "diferencial_puntos": 5.0,
+      "variacion_precio_pct": 25.0,
+      "variacion_cotizacion_pct": 20.0
+    }
+  },
+  "variacion_por_categoria": [
+    {
+      "categoria_id": "canasta-basica",
+      "nombre": "Canasta Básica",
+      "variacion_mediana_pct": 5.0,
+      "cantidad_productos": 45,
+      "cobertura_pct": 98.4
+    },
+    {
+      "categoria_id": "bienes-durables",
+      "nombre": "Bienes Durables",
+      "variacion_mediana_pct": 3.2,
+      "cantidad_productos": 28,
+      "cobertura_pct": 91.0
+    }
+  ],
+  "grafico_evolucion": {
+    "metadata": {
+      "downsampling_aplicado": false,
+      "intervalo_agrupacion": "1d"
+    },
+    "hitos": [
+      {
+        "timestamp_utc": "2026-10-09T00:00:00Z",
+        "tipo": "AUTOMATICO",
+        "titulo": "Reduflación Detectada",
+        "descripcion": "Café molido La Virginia redujo empaque de 500g a 450g (-10.0%) manteniendo precio nominal en $12.000"
+      },
+      {
+        "timestamp_utc": "2026-10-12T00:00:00Z",
+        "tipo": "MANUAL",
+        "titulo": "Evento Comercial ElectroFest",
+        "descripcion": "Inicio de jornada promocional en cadenas de electrodomésticos (Frávega y Musimundo)"
+      }
+    ],
+    "banda_calidad_diaria": [
+      { "fecha": "2026-09-19", "estado": "VERDE" },
+      { "fecha": "2026-09-20", "estado": "VERDE" },
+      { "fecha": "2026-09-21", "estado": "VERDE" },
+      { "fecha": "2026-09-22", "estado": "VERDE" },
+      { "fecha": "2026-09-23", "estado": "VERDE" },
+      { "fecha": "2026-09-24", "estado": "VERDE" },
+      { "fecha": "2026-09-25", "estado": "VERDE" },
+      { "fecha": "2026-09-26", "estado": "VERDE" },
+      { "fecha": "2026-09-27", "estado": "VERDE" },
+      { "fecha": "2026-09-28", "estado": "VERDE" },
+      { "fecha": "2026-09-29", "estado": "VERDE" },
+      { "fecha": "2026-09-30", "estado": "AMARILLO" },
+      { "fecha": "2026-10-01", "estado": "AMARILLO" },
+      { "fecha": "2026-10-02", "estado": "AMARILLO" },
+      { "fecha": "2026-10-03", "estado": "VERDE" },
+      { "fecha": "2026-10-04", "estado": "VERDE" },
+      { "fecha": "2026-10-05", "estado": "VERDE" },
+      { "fecha": "2026-10-06", "estado": "VERDE" },
+      { "fecha": "2026-10-07", "estado": "VERDE" },
+      { "fecha": "2026-10-08", "estado": "VERDE" },
+      { "fecha": "2026-10-09", "estado": "VERDE" },
+      { "fecha": "2026-10-10", "estado": "VERDE" },
+      { "fecha": "2026-10-11", "estado": "VERDE" },
+      { "fecha": "2026-10-12", "estado": "VERDE" },
+      { "fecha": "2026-10-13", "estado": "VERDE" },
+      { "fecha": "2026-10-14", "estado": "ROJO" },
+      { "fecha": "2026-10-15", "estado": "VERDE" },
+      { "fecha": "2026-10-16", "estado": "VERDE" },
+      { "fecha": "2026-10-17", "estado": "VERDE" },
+      { "fecha": "2026-10-18", "estado": "VERDE" }
+    ],
+    "series": [
+      {
+        "timestamp_utc": "2026-09-19T00:00:00Z",
+        "precio_regular": 9600.0,
+        "precio_promocional": null,
+        "precio_usd": 9.6,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1000.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-20T00:00:00Z",
+        "precio_regular": 9650.0,
+        "precio_promocional": null,
+        "precio_usd": 9.65,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1000.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-21T00:00:00Z",
+        "precio_regular": 9650.0,
+        "precio_promocional": null,
+        "precio_usd": 9.65,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1000.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-22T00:00:00Z",
+        "precio_regular": 9800.0,
+        "precio_promocional": null,
+        "precio_usd": 9.61,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1020.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-23T00:00:00Z",
+        "precio_regular": 9900.0,
+        "precio_promocional": null,
+        "precio_usd": 9.61,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1030.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-24T00:00:00Z",
+        "precio_regular": 10000.0,
+        "precio_promocional": 9500.0,
+        "precio_usd": 9.62,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1040.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-25T00:00:00Z",
+        "precio_regular": 10100.0,
+        "precio_promocional": 9500.0,
+        "precio_usd": 9.62,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1050.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-26T00:00:00Z",
+        "precio_regular": 10250.0,
+        "precio_promocional": null,
+        "precio_usd": 9.67,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1060.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-27T00:00:00Z",
+        "precio_regular": 10300.0,
+        "precio_promocional": null,
+        "precio_usd": 9.72,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1060.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-28T00:00:00Z",
+        "precio_regular": 10300.0,
+        "precio_promocional": null,
+        "precio_usd": 9.72,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1060.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-29T00:00:00Z",
+        "precio_regular": 10500.0,
+        "precio_promocional": null,
+        "precio_usd": 9.72,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1080.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-30T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "estado_dato": "AGOTADO",
+        "cotizacion_aplicada": null,
+        "cotizacion_aproximada": false,
+        "motivo": "Quiebre de stock en tienda"
+      },
+      {
+        "timestamp_utc": "2026-10-01T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "estado_dato": "AGOTADO",
+        "cotizacion_aplicada": null,
+        "cotizacion_aproximada": false,
+        "motivo": "Quiebre de stock en tienda"
+      },
+      {
+        "timestamp_utc": "2026-10-02T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "estado_dato": "AGOTADO",
+        "cotizacion_aplicada": null,
+        "cotizacion_aproximada": false,
+        "motivo": "Quiebre de stock en tienda"
+      },
+      {
+        "timestamp_utc": "2026-10-03T00:00:00Z",
+        "precio_regular": 10900.0,
+        "precio_promocional": null,
+        "precio_usd": 9.82,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1110.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-04T00:00:00Z",
+        "precio_regular": 10950.0,
+        "precio_promocional": null,
+        "precio_usd": 9.86,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1110.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-05T00:00:00Z",
+        "precio_regular": 10950.0,
+        "precio_promocional": null,
+        "precio_usd": 9.86,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1110.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-06T00:00:00Z",
+        "precio_regular": 11100.0,
+        "precio_promocional": null,
+        "precio_usd": 9.82,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1130.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-07T00:00:00Z",
+        "precio_regular": 11200.0,
+        "precio_promocional": null,
+        "precio_usd": 9.82,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1140.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-08T00:00:00Z",
+        "precio_regular": 11300.0,
+        "precio_promocional": null,
+        "precio_usd": 9.83,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1150.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-09T00:00:00Z",
+        "precio_regular": 11450.0,
+        "precio_promocional": null,
+        "precio_usd": 9.87,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1160.0,
+        "cotizacion_aproximada": false,
+        "motivo": "Hito: Reduflación detectada (500g -> 450g)"
+      },
+      {
+        "timestamp_utc": "2026-10-10T00:00:00Z",
+        "precio_regular": 11500.0,
+        "precio_promocional": null,
+        "precio_usd": 9.91,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1160.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-11T00:00:00Z",
+        "precio_regular": 11500.0,
+        "precio_promocional": null,
+        "precio_usd": 9.91,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1160.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-12T00:00:00Z",
+        "precio_regular": 11600.0,
+        "precio_promocional": 10900.0,
+        "precio_usd": 9.91,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1170.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-13T00:00:00Z",
+        "precio_regular": 11700.0,
+        "precio_promocional": null,
+        "precio_usd": 9.92,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1180.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-14T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "estado_dato": "ERROR_CAPTURA",
+        "cotizacion_aplicada": null,
+        "cotizacion_aproximada": false,
+        "motivo": "HTTP 503 Service Unavailable en portal origen"
+      },
+      {
+        "timestamp_utc": "2026-10-15T00:00:00Z",
+        "precio_regular": 11850.0,
+        "precio_promocional": null,
+        "precio_usd": 9.96,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1190.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario 24h aplicado"
+      },
+      {
+        "timestamp_utc": "2026-10-16T00:00:00Z",
+        "precio_regular": 11950.0,
+        "precio_promocional": null,
+        "precio_usd": 9.96,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1200.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-17T00:00:00Z",
+        "precio_regular": 12000.0,
+        "precio_promocional": null,
+        "precio_usd": 10.0,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1200.0,
+        "cotizacion_aproximada": false,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-18T00:00:00Z",
+        "precio_regular": 12000.0,
+        "precio_promocional": null,
+        "precio_usd": 10.0,
+        "estado_dato": "DATO_VALIDO",
+        "cotizacion_aplicada": 1200.0,
+        "cotizacion_aproximada": true,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      }
+    ]
+  },
+  "pipeline_status": {
+    "estado_global": "OPERATIVO",
+    "frescura_general_utc": "2026-10-18T14:00:00Z",
+    "alerta_atraso_24h": false,
+    "tiendas": [
+      {
+        "tienda_id": "carrefour",
+        "nombre": "Carrefour",
+        "ultima_corrida_utc": "2026-10-18T14:00:00Z",
+        "estado_corrida": "EXITOSA",
+        "circuit_breaker_open": false,
+        "fallback_activo": false,
+        "publicaciones_procesadas": 42,
+        "publicaciones_fallidas": 0,
+        "cobertura_pct": 100.0
+      },
+      {
+        "tienda_id": "jumbo",
+        "nombre": "Jumbo",
+        "ultima_corrida_utc": "2026-10-18T14:05:00Z",
+        "estado_corrida": "EXITOSA",
+        "circuit_breaker_open": false,
+        "fallback_activo": false,
+        "publicaciones_procesadas": 40,
+        "publicaciones_fallidas": 2,
+        "cobertura_pct": 95.0
+      },
+      {
+        "tienda_id": "fravega",
+        "nombre": "Frávega",
+        "ultima_corrida_utc": "2026-10-18T14:10:00Z",
+        "estado_corrida": "EXITOSA",
+        "circuit_breaker_open": false,
+        "fallback_activo": false,
+        "publicaciones_procesadas": 28,
+        "publicaciones_fallidas": 0,
+        "cobertura_pct": 100.0
+      },
+      {
+        "tienda_id": "musimundo",
+        "nombre": "Musimundo",
+        "ultima_corrida_utc": "2026-10-18T14:15:00Z",
+        "estado_corrida": "ADVERTENCIA",
+        "circuit_breaker_open": false,
+        "fallback_activo": true,
+        "publicaciones_procesadas": 25,
+        "publicaciones_fallidas": 3,
+        "cobertura_pct": 89.2
+      }
+    ]
+  }
+}

@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CurrencyModule } from './modules/currency/currency.module';
 import { DatabaseModule } from './database/database.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [DatabaseModule, CurrencyModule],
+    imports: [ScheduleModule.forRoot(), DatabaseModule, CurrencyModule],
   controllers: [AppController],
   providers: [AppService],
 })

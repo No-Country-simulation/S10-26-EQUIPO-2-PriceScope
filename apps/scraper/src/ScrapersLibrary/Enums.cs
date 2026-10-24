@@ -17,3 +17,10 @@ public enum ScrapeRunStatus
     FALLIDA,
     ABORTADA
 }
+
+public enum Unit
+{
+    kg,
+    L,
+    unidad
+}

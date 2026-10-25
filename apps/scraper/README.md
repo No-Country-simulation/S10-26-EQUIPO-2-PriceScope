@@ -28,6 +28,8 @@ dotnet run --project apps/scraper/src/Worker/Worker.csproj
 
 El dashboard de Hangfire que muestra los recurring jobs estará en https://localhost:7479/hangfire/recurring. La aplicación requiere `ConnectionStrings:Postgres` y falla al iniciar si la cadena no está configurada o no puede conectarse a PostgreSQL.
 
+Los logs del worker se emiten por la salida estándar con el proveedor de logging de ASP.NET Core. Al iniciar se informa la lista de scrapers registrados y los recurring jobs configurados; cada ejecución informa el `run_id`, intento, producto actual y resultado. También se eliminan automáticamente los recurring jobs con prefijo `daily-scraper-` que ya no correspondan a un scraper registrado.
+
 ## Ejecutar con Docker Compose
 
 **Nota**: Necesita revision. No se puede acceder al dashboard de hangfire.

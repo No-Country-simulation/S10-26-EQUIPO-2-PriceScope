@@ -14,6 +14,8 @@ public sealed class StoreScrapeJob(
         string storeSlug,
         CancellationToken cancellationToken)
     {
+        logger.LogInformation("Hangfire inició el job de scraping para {StoreSlug}", storeSlug);
+
         var scraper = scrapers.SingleOrDefault(candidate => candidate.StoreSlug == storeSlug)
             ?? throw new InvalidOperationException($"No scraper is registered for store '{storeSlug}'.");
 
@@ -44,6 +46,10 @@ public sealed class StoreScrapeJob(
             attempt);
 
         int continueFrom = run?.ProductsProcessed ?? 0;
+        logger.LogInformation(
+            "Ejecutando {ScraperSlug} desde el producto {ContinueFrom}.",
+            scraper.StoreSlug,
+            continueFrom);
 
         try
         {

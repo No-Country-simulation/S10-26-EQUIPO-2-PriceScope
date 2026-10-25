@@ -308,10 +308,10 @@ ON CONFLICT (slug) DO UPDATE SET
     descripcion = EXCLUDED.descripcion;
 
 INSERT INTO tiendas (slug, nombre, url_base, tipo) VALUES
-('carrefour', 'Carrefour Argentina', 'https://www.carrefour.com.ar', 'supermercado'),
+('coto', 'Coto Argentina', 'https://www.coto.com.ar', 'supermercado'),
 ('jumbo', 'Jumbo Argentina', 'https://www.jumbo.com.ar', 'supermercado'),
-('fravega', 'Frávega Argentina', 'https://www.fravega.com', 'electro'),
-('musimundo', 'Musimundo Argentina', 'https://www.musimundo.com', 'electro')
+('disco', 'Disco Argentina', 'https://www.disco.com.ar', 'electro'),
+('vea', 'Vea Argentina', 'https://www.vea.com.ar', 'electro')
 ON CONFLICT (slug) DO UPDATE SET 
     nombre = EXCLUDED.nombre,
     url_base = EXCLUDED.url_base,
@@ -399,14 +399,6 @@ VALUES
 -- Café
 (
     (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Café molido La Morenita clásico 500 g',
-    'CAR-684279',
-    'https://www.carrefour.com.ar/cafe-molido-la-morenita-clasico-500-g/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
     (SELECT id FROM tiendas WHERE slug = 'jumbo'),
     'Café molido La Morenita clásico 500 gr',
     'JUM-128450',
@@ -414,14 +406,6 @@ VALUES
     'MANUAL_SEED'
 ),
 -- Aceite
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Aceite de girasol Natura 1.5 L',
-    'CAR-693155',
-    'https://www.carrefour.com.ar/aceite-de-girasol-natura-15-l/p',
-    'MANUAL_SEED'
-),
 (
     (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
     (SELECT id FROM tiendas WHERE slug = 'jumbo'),
@@ -433,14 +417,6 @@ VALUES
 -- Leche
 (
     (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Leche entera La Serenísima clásica 1 L',
-    'CAR-674681',
-    'https://www.carrefour.com.ar/leche-entera-la-serenisima-clasica-1-l/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
     (SELECT id FROM tiendas WHERE slug = 'jumbo'),
     'Leche entera clásica La Serenísima 1 L brik',
     'JUM-542190',
@@ -450,69 +426,10 @@ VALUES
 -- Arroz
 (
     (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Arroz largo fino Lucchetti 1 kg',
-    'CAR-693245',
-    'https://www.carrefour.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
     (SELECT id FROM tiendas WHERE slug = 'jumbo'),
     'Arroz largo fino Lucchetti bolsa 1 kg',
     'JUM-872341',
     'https://www.jumbo.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
-),
--- Smart TV
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Smart TV 55" 4K UHD Samsung Crystal DU7000 UN55DU7000GCZB',
-    'FRA-DU7000-55',
-    'https://www.fravega.com/p/smart-tv-55-4k-uhd-samsung-du7000-un55du7000gczb/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Smart TV Samsung 55" 4K UHD UN55DU7000',
-    'MUS-55DU7000',
-    'https://www.musimundo.com/televisores/smart-tv/smart-tv-55-4k-uhd-samsung-un55du7000/p',
-    'MANUAL_SEED'
-),
--- Heladera
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Heladera con Freezer Gafa HGN358B Blanca 310 L',
-    'FRA-HGN358B',
-    'https://www.fravega.com/p/heladera-con-freezer-gafa-hgn358b-blanca-310-l/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Heladera Gafa HGN358B Blanca 310 L',
-    'MUS-HGN358B',
-    'https://www.musimundo.com/heladeras-y-freezers/heladeras/heladera-gafa-hgn358b-blanca-310-l/p',
-    'MANUAL_SEED'
-),
--- Lavarropas
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Lavarropas Automático Drean Next 8.12 Eco 8 kg 1200 RPM',
-    'FRA-NEXT812',
-    'https://www.fravega.com/p/lavarropas-automatico-drean-next-8-12-eco-8-kg-1200-rpm/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Lavarropas Drean Next 8.12 Eco 8 kg',
-    'MUS-NEXT812',
-    'https://www.musimundo.com/lavado/lavarropas/lavarropas-drean-next-8-12-eco-8kg/p',
     'MANUAL_SEED'
 )
 ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 

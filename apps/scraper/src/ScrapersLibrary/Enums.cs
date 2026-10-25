@@ -22,5 +22,6 @@ public enum Unit
 {
     kg,
     L,
-    unidad
+    unidad,
+    None
 }

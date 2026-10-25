@@ -19,20 +19,23 @@ public sealed class VeaScraper(
         int countinueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        logger.LogInformation("Starting Vea scraper");
-
-        var products = await infoProvider.GetInfoAsync(StoreSlug, cancellationToken);
         if (countinueFrom < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(countinueFrom));
         }
 
+        IReadOnlyList<ScrapedProduct> products =
+            await infoProvider.GetInfoAsync(StoreSlug, cancellationToken);
+
+        logger.LogInformation(
+            "Starting Vea scraper with {ProductCount} products from index {StartIndex}",
+            products.Count,
+            countinueFrom);
+
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Channel = "msedge",
-            Headless = false,
-            SlowMo = 3_000
+            Headless = true
         });
 
         for (var index = countinueFrom; index < products.Count; index++)
@@ -42,7 +45,20 @@ public sealed class VeaScraper(
 
             try
             {
+                logger.LogDebug(
+                    "Scraping Vea product (item {CurrentItem} of {TotalItems}). {ProductUrl} ",
+                    index + 1,
+                    products.Count,
+                    product.Url);
+
                 await ProcessProduct(browser, product);
+
+                logger.LogDebug(
+                    "Scraped Vea product (item {CurrentItem} of {TotalItems}). State: {DataState}. {ProductUrl}",
+                    index + 1,
+                    products.Count,
+                    product.DataState,
+                    product.Url);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -59,8 +75,11 @@ public sealed class VeaScraper(
                 product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
                 product.Error = exception.Message;
             }
+
             yield return product;
         }
+
+        logger.LogInformation("Completed Vea scraper");
     }
 
     private async Task ProcessProduct(IBrowser browser, ScrapedProduct product)
@@ -69,6 +88,7 @@ public sealed class VeaScraper(
 
         try
         {
+            // navigate to the page
             await page.GotoAsync(product.Url, new PageGotoOptions
             {
                 WaitUntil = WaitUntilState.DOMContentLoaded,
@@ -81,45 +101,62 @@ public sealed class VeaScraper(
                 State = WaitForSelectorState.Visible,
                 Timeout = 30_000
             });
+            var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
 
-            // regular price
-            var priceContainer = page.Locator("#priceContainer").First;
-            var currentPriceText = await priceContainer.InnerTextAsync();
-            var currentPrice = ParsePrice(currentPriceText);
+            // get regular price
+            string currentPriceText = await productBoxLocator.Locator("#priceContainer")
+                .First.InnerTextAsync();
+            decimal currentPrice = ParsePrice(currentPriceText);
 
-            // var regularPriceText = await page.Locator(".vtex-price-promotion-container")
-            //     .First.InnerTextAsync();
-            // var regularPrice = ParseRegularPrice(regularPriceText) ?? currentPrice;
+            // get crossOutPrice
+            var crossOutPriceLocator = productBoxLocator.Locator(".vtex-precio-tachado");
 
-            // var addToCartButton = page.Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
-            // var buttonText = await addToCartButton.First.InnerTextAsync();
-            // var isOutOfStock = (await addToCartButton.First.IsDisabledAsync()) ||
-            //     Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible", RegexOptions.IgnoreCase) ||
-            //     await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false }).CountAsync() > 0;
+            decimal? crossOutPrice = null;
 
-            // product.CapturedAt = DateTime.UtcNow;
+            if (await crossOutPriceLocator.CountAsync() > 0)
+            {
+                string crossOutPriceText = await crossOutPriceLocator.First.InnerTextAsync();
+                crossOutPrice = ParsePrice(crossOutPriceText);
+            }
+
+            // get stock availability
+            var addToCartButton = productBoxLocator
+                .Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
+            string buttonText = await addToCartButton.InnerTextAsync();
+            bool isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
+                                Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
+                                    RegexOptions.IgnoreCase) ||
+                                await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
+                                    .CountAsync() > 0;
+
+            // fill prices
+            if (isOutOfStock || (currentPrice == 0 && crossOutPrice is null))
+            {
+                product.RegularPrice = null;
+                product.PromoPrice = null;
+                product.Available = false;
+                product.DataState = ScrapedProductStatus.AGOTADO;
+            }
+            else
+            {
+                // A crossed-out price is the regular price; otherwise the current price is regular.
+                decimal regularPrice = crossOutPrice ?? currentPrice;
+
+                product.RegularPrice = regularPrice;
+                product.PromoPrice = regularPrice > currentPrice ? currentPrice : null;
+                product.Available = true;
+                product.DataState = ScrapedProductStatus.DATO_VALIDO;
+            }
+
+            // ARS is the default value
             // product.CurrencyCode = "ARS";
+            // bienes durables son siempre 1
             // product.NetContent = 1;
-            // product.NetContentUnit = Unit.unidad;
-            // product.Pack = 1;
-            // product.Error = string.Empty;
 
-            // if (isOutOfStock)
-            // {
-            //     product.RegularPrice = null;
-            //     product.PromoPrice = null;
-            //     product.UnitPrice = null;
-            //     product.Available = false;
-            //     product.DataState = ScrapedProductStatus.AGOTADO;
-            // }
-            // else
-            // {
-            //     product.RegularPrice = regularPrice;
-            //     product.PromoPrice = currentPrice < regularPrice ? currentPrice : null;
-            //     product.UnitPrice = currentPrice;
-            //     product.Available = true;
-            //     product.DataState = ScrapedProductStatus.DATO_VALIDO;
-            // }
+            product.CapturedAt = DateTime.UtcNow;
+            product.NetContentUnit = Unit.None;
+            product.Error = string.Empty;
+            product.UnitPrice = null;
         }
         finally
         {
@@ -136,11 +173,5 @@ public sealed class VeaScraper(
         }
 
         return price;
-    }
-
-    private static decimal? ParseRegularPrice(string text)
-    {
-        var match = Regex.Match(text, @"Precio regular[^$]*\$\s*([\d.,]+)", RegexOptions.IgnoreCase);
-        return match.Success ? ParsePrice(match.Groups[1].Value) : null;
     }
 }

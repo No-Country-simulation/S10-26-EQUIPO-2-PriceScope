@@ -16,21 +16,21 @@ public sealed class VeaScraper(
     public string StoreSlug => "vea";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
-        int countinueFrom,
+        int continueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if (countinueFrom < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(countinueFrom));
-        }
-
         IReadOnlyList<ScrapedProduct> products =
             await infoProvider.GetInfoAsync(StoreSlug, cancellationToken);
+
+        if (continueFrom < 0 || continueFrom > products.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(continueFrom));
+        }
 
         logger.LogInformation(
             "Starting Vea scraper with {ProductCount} products from index {StartIndex}",
             products.Count,
-            countinueFrom);
+            continueFrom);
 
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
@@ -56,7 +56,7 @@ public sealed class VeaScraper(
 
             var page = await context.NewPageAsync();
 
-            for (var index = countinueFrom; index < products.Count; index++)
+            for (var index = continueFrom; index < products.Count; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var product = products[index];
@@ -114,17 +114,22 @@ public sealed class VeaScraper(
         });
 
         // wait for elements to appear
-        await page.Locator("#priceContainer").First.WaitForAsync(new LocatorWaitForOptions
+        var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
+        await productBoxLocator.WaitForAsync(new LocatorWaitForOptions
         {
             State = WaitForSelectorState.Attached,
             Timeout = 30_000
         });
 
-        var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
+        var currentPriceLocator = productBoxLocator.Locator("#priceContainer").First;
+        await currentPriceLocator.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Attached,
+            Timeout = 30_000
+        });
 
         // get regular price
-        string currentPriceText = await productBoxLocator.Locator("#priceContainer")
-            .First.InnerTextAsync();
+        string currentPriceText = await currentPriceLocator.InnerTextAsync();
         decimal currentPrice = ParsePrice(currentPriceText);
 
         // get crossOutPrice
@@ -141,12 +146,18 @@ public sealed class VeaScraper(
         // get stock availability
         var addToCartButton = productBoxLocator
             .Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
-        string buttonText = await addToCartButton.InnerTextAsync();
-        bool isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
-                            Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
-                                RegexOptions.IgnoreCase) ||
-                            await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
-                                .CountAsync() > 0;
+
+        bool isOutOfStock = false;
+
+        if (await addToCartButton.CountAsync() > 0)
+        {
+            string buttonText = await addToCartButton.InnerTextAsync();
+            isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
+                               Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
+                                   RegexOptions.IgnoreCase) ||
+                               await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
+                                   .CountAsync() > 0;
+        }
 
         // fill prices
         if (isOutOfStock || (currentPrice == 0 && crossOutPrice is null))
@@ -181,7 +192,7 @@ public sealed class VeaScraper(
     private static decimal ParsePrice(string text)
     {
         var normalized = Regex.Replace(text, @"[^\d,.]", string.Empty);
-        if (!decimal.TryParse(normalized, NumberStyles.Number, ArgentineCulture, out var price) || price <= 0)
+        if (!decimal.TryParse(normalized, NumberStyles.Number, ArgentineCulture, out var price) || price < 0)
         {
             throw new FormatException($"Could not parse Vea price from '{text}'.");
         }

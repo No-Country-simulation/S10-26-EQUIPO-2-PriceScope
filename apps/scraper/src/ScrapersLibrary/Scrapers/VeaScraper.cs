@@ -38,57 +38,10 @@ public sealed class VeaScraper(
             Headless = true
         });
 
-        for (var index = countinueFrom; index < products.Count; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var product = products[index];
-
-            try
-            {
-                logger.LogDebug(
-                    "Scraping Vea product (item {CurrentItem} of {TotalItems}). {ProductUrl} ",
-                    index + 1,
-                    products.Count,
-                    product.Url);
-
-                await ProcessProduct(browser, product);
-
-                logger.LogDebug(
-                    "Scraped Vea product (item {CurrentItem} of {TotalItems}). State: {DataState}. {ProductUrl}",
-                    index + 1,
-                    products.Count,
-                    product.DataState,
-                    product.Url);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                logger.LogWarning(exception, "Could not scrape Vea product {ProductUrl}", product.Url);
-                product.CapturedAt = DateTime.UtcNow;
-                product.RegularPrice = null;
-                product.PromoPrice = null;
-                product.UnitPrice = null;
-                product.Available = false;
-                product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
-                product.Error = exception.Message;
-            }
-
-            yield return product;
-        }
-
-        logger.LogInformation("Completed Vea scraper");
-    }
-
-    private async Task ProcessProduct(IBrowser browser, ScrapedProduct product)
-    {
-        var page = await browser.NewPageAsync();
-
+        var context = await browser.NewContextAsync();
         try
         {
-            await page.RouteAsync("**/*", async route =>
+            await context.RouteAsync("**/*", async route =>
             {
                 var resourceType = route.Request.ResourceType;
                 if (resourceType is "document" or "script" or "fetch" or "xhr")
@@ -101,81 +54,128 @@ public sealed class VeaScraper(
                 }
             });
 
-            // navigate to the page
-            await page.GotoAsync(product.Url, new PageGotoOptions
+            var page = await context.NewPageAsync();
+
+            for (var index = countinueFrom; index < products.Count; index++)
             {
-                WaitUntil = WaitUntilState.DOMContentLoaded,
-                Timeout = 60_000
-            });
+                cancellationToken.ThrowIfCancellationRequested();
+                var product = products[index];
 
-            // wait for elements to appear
-            await page.Locator("#priceContainer").First.WaitForAsync(new LocatorWaitForOptions
-            {
-                State = WaitForSelectorState.Attached,
-                Timeout = 30_000
-            });
+                try
+                {
+                    logger.LogDebug(
+                        "Scraping Vea product (item {CurrentItem} of {TotalItems}). {ProductUrl} ",
+                        index + 1,
+                        products.Count,
+                        product.Url);
 
-            var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
+                    await ProcessProduct(page, product);
 
-            // get regular price
-            string currentPriceText = await productBoxLocator.Locator("#priceContainer")
-                .First.InnerTextAsync();
-            decimal currentPrice = ParsePrice(currentPriceText);
+                    logger.LogDebug(
+                        "Scraped Vea product (item {CurrentItem} of {TotalItems}). State: {DataState}. {ProductUrl}",
+                        index + 1,
+                        products.Count,
+                        product.DataState,
+                        product.Url);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    logger.LogWarning(exception, "Could not scrape Vea product {ProductUrl}", product.Url);
+                    product.CapturedAt = DateTime.UtcNow;
+                    product.RegularPrice = null;
+                    product.PromoPrice = null;
+                    product.UnitPrice = null;
+                    product.Available = false;
+                    product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
+                    product.Error = exception.Message;
+                }
 
-            // get crossOutPrice
-            var crossOutPriceLocator = productBoxLocator.Locator(".vtex-precio-tachado");
-
-            decimal? crossOutPrice = null;
-
-            if (await crossOutPriceLocator.CountAsync() > 0)
-            {
-                string crossOutPriceText = await crossOutPriceLocator.First.InnerTextAsync();
-                crossOutPrice = ParsePrice(crossOutPriceText);
+                yield return product;
             }
 
-            // get stock availability
-            var addToCartButton = productBoxLocator
-                .Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
-            string buttonText = await addToCartButton.InnerTextAsync();
-            bool isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
-                                Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
-                                    RegexOptions.IgnoreCase) ||
-                                await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
-                                    .CountAsync() > 0;
-
-            // fill prices
-            if (isOutOfStock || (currentPrice == 0 && crossOutPrice is null))
-            {
-                product.RegularPrice = null;
-                product.PromoPrice = null;
-                product.Available = false;
-                product.DataState = ScrapedProductStatus.AGOTADO;
-            }
-            else
-            {
-                // A crossed-out price is the regular price; otherwise the current price is regular.
-                decimal regularPrice = crossOutPrice ?? currentPrice;
-
-                product.RegularPrice = regularPrice;
-                product.PromoPrice = regularPrice > currentPrice ? currentPrice : null;
-                product.Available = true;
-                product.DataState = ScrapedProductStatus.DATO_VALIDO;
-            }
-
-            // ARS is the default value
-            // product.CurrencyCode = "ARS";
-            // bienes durables son siempre 1
-            // product.NetContent = 1;
-
-            product.CapturedAt = DateTime.UtcNow;
-            product.NetContentUnit = Unit.None;
-            product.Error = string.Empty;
-            product.UnitPrice = null;
+            logger.LogInformation("Completed Vea scraper");
         }
         finally
         {
-            await page.CloseAsync();
+            await context.CloseAsync();
         }
+    }
+
+    private async Task ProcessProduct(IPage page, ScrapedProduct product)
+    {
+        await page.GotoAsync(product.Url, new PageGotoOptions
+        {
+            WaitUntil = WaitUntilState.DOMContentLoaded,
+            Timeout = 60_000
+        });
+
+        // wait for elements to appear
+        await page.Locator("#priceContainer").First.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Attached,
+            Timeout = 30_000
+        });
+
+        var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
+
+        // get regular price
+        string currentPriceText = await productBoxLocator.Locator("#priceContainer")
+            .First.InnerTextAsync();
+        decimal currentPrice = ParsePrice(currentPriceText);
+
+        // get crossOutPrice
+        var crossOutPriceLocator = productBoxLocator.Locator(".vtex-precio-tachado");
+
+        decimal? crossOutPrice = null;
+
+        if (await crossOutPriceLocator.CountAsync() > 0)
+        {
+            string crossOutPriceText = await crossOutPriceLocator.First.InnerTextAsync();
+            crossOutPrice = ParsePrice(crossOutPriceText);
+        }
+
+        // get stock availability
+        var addToCartButton = productBoxLocator
+            .Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
+        string buttonText = await addToCartButton.InnerTextAsync();
+        bool isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
+                            Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
+                                RegexOptions.IgnoreCase) ||
+                            await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
+                                .CountAsync() > 0;
+
+        // fill prices
+        if (isOutOfStock || (currentPrice == 0 && crossOutPrice is null))
+        {
+            product.RegularPrice = null;
+            product.PromoPrice = null;
+            product.Available = false;
+            product.DataState = ScrapedProductStatus.AGOTADO;
+        }
+        else
+        {
+            // A crossed-out price is the regular price; otherwise the current price is regular.
+            decimal regularPrice = crossOutPrice ?? currentPrice;
+
+            product.RegularPrice = regularPrice;
+            product.PromoPrice = regularPrice > currentPrice ? currentPrice : null;
+            product.Available = true;
+            product.DataState = ScrapedProductStatus.DATO_VALIDO;
+        }
+
+        // ARS is the default value
+        // product.CurrencyCode = "ARS";
+        // bienes durables son siempre 1
+        // product.NetContent = 1;
+
+        product.CapturedAt = DateTime.UtcNow;
+        product.NetContentUnit = Unit.None;
+        product.Error = string.Empty;
+        product.UnitPrice = null;
     }
 
     private static decimal ParsePrice(string text)

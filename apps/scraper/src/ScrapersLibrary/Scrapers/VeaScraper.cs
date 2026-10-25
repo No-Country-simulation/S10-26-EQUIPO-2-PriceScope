@@ -88,6 +88,19 @@ public sealed class VeaScraper(
 
         try
         {
+            await page.RouteAsync("**/*", async route =>
+            {
+                var resourceType = route.Request.ResourceType;
+                if (resourceType is "document" or "script" or "fetch" or "xhr")
+                {
+                    await route.ContinueAsync();
+                }
+                else
+                {
+                    await route.AbortAsync();
+                }
+            });
+
             // navigate to the page
             await page.GotoAsync(product.Url, new PageGotoOptions
             {
@@ -98,9 +111,10 @@ public sealed class VeaScraper(
             // wait for elements to appear
             await page.Locator("#priceContainer").First.WaitForAsync(new LocatorWaitForOptions
             {
-                State = WaitForSelectorState.Visible,
+                State = WaitForSelectorState.Attached,
                 Timeout = 30_000
             });
+
             var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
 
             // get regular price

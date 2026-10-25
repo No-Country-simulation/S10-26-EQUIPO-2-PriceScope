@@ -61,4 +61,89 @@ export class CurrencyService {
       throw new BadRequestException(`Error de base de datos: ${(error as Error).message}`);
     }
   }
+
+  /**
+   * Busca la cotización más reciente aplicando una ventana de tolerancia de hasta 72 horas (Fallback HU-22).
+   */
+  async obtenerCotizacionConFallback(
+    monedaBase: string,
+    monedaCotizada: string,
+    tipo: string,
+    condicion: string,
+    fuente: string,
+    fechaConsulta: Date = new Date(),
+  ) {
+    const query = `
+      SELECT timestamp_utc, moneda_base, moneda_cotizada, tipo, condicion, valor, fuente, url_fuente
+      FROM cotizaciones_divisas
+      WHERE moneda_base = $1
+        AND moneda_cotizada = $2
+        AND tipo = $3
+        AND condicion = $4
+        AND fuente = $5
+        AND timestamp_utc <= $6
+        AND timestamp_utc >= $6 - INTERVAL '72 hours'
+      ORDER BY timestamp_utc DESC
+      LIMIT 1;
+    `;
+
+    const values = [monedaBase, monedaCotizada, tipo, condicion, fuente, fechaConsulta];
+    const result = await this.db.query(query, values);
+
+    return result.rows[0] || null;
+  }
+
+  /**
+   * Procesa la conversión de divisas aplicando la ventana de tolerancia (HU-22).
+   */
+  async convertirConFallback(
+    monedaBase: string,
+    monedaCotizada: string,
+    tipo: string,
+    condicion: string,
+    fuente: string,
+    monto: number,
+    fechaConsulta: Date = new Date(),
+  ) {
+    // 1. Buscar la cotización más cercana en la ventana de 72h
+    const cotizacion = await this.obtenerCotizacionConFallback(
+      monedaBase,
+      monedaCotizada,
+      tipo,
+      condicion,
+      fuente,
+      fechaConsulta,
+    );
+
+    // 2. Si no hay registro dentro de las 72h, abortar con SIN_DATO
+    if (!cotizacion) {
+      return {
+        estado: 'SIN_DATO',
+        mensaje: 'Se superó el límite de 72 horas continuas sin cotización disponible.',
+        cotizacion_aproximada: false,
+        resultado: null,
+      };
+    }
+
+    // 3. Evaluar si la cotización devuelta es exacta o aproximada (fallback)
+    const timestampCotizacion = new Date(cotizacion.timestamp_utc).getTime();
+    const timestampBuscado = new Date(fechaConsulta).getTime();
+
+    // Si hay diferencia significativa de tiempo respecto al momento consultado, se considera aproximada
+    const esAproximada = timestampCotizacion < timestampBuscado;
+    const valorCotizacion = Number(cotizacion.valor);
+    const montoConvertido = monto * valorCotizacion;
+
+    return {
+      estado: 'OK',
+      cotizacion_aproximada: esAproximada,
+      montoOriginal: monto,
+      montoConvertido: montoConvertido,
+      cotizacionUsada: {
+        valor: valorCotizacion,
+        timestamp_utc: cotizacion.timestamp_utc,
+        fuente: cotizacion.fuente,
+      },
+    };
+  }
 }

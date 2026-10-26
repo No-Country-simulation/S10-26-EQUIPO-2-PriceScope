@@ -19,7 +19,12 @@ builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
 builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
 //builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
 //builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
-builder.Services.AddSingleton<IStoreScraper, CotoScrapedProducts>();
+
+// Scrapers
+builder.Services.AddSingleton<IStoreScraper, CotoStoreScraper>();
+builder.Services.AddSingleton<IStoreScraper, JumboStoreScraper>();
+
+
 // builder.Services.AddSingleton<IProductInfoProvider, JsonProductInfoProvider>();
 builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
 //builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();

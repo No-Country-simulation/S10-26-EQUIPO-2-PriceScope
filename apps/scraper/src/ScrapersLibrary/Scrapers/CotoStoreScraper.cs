@@ -7,9 +7,9 @@ using ScrapersLibrary.Seed;
 
 namespace ScrapersLibrary.Scrapers;
 
-public sealed class CotoScrapedProducts(
+public sealed class CotoStoreScraper(
     IProductInfoProvider infoProvider,
-    ILogger<CotoScrapedProducts> logger
+    ILogger<CotoStoreScraper> logger
 ) : IStoreScraper
 {
     public string StoreSlug => "coto";

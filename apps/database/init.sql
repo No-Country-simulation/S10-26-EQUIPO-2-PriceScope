@@ -406,6 +406,16 @@ INSERT INTO productos_canonicos (
 	'1',
 	'kg',
 	'x1'
+),
+(
+    'prod-mouse-inalambrico-ergonomico-pilas-nex',
+    (SELECT id FROM categorias WHERE slug = 'bienes-durables'),
+    'Nex',
+    'Msinaerg',
+    'Mouse Inalámbrico Ergonómico A Pilas Nex'
+    '1',
+    null,
+    null
 )
  ON CONFLICT (slug) DO UPDATE SET 
 	nombre_normalizado = EXCLUDED.nombre_normalizado,
@@ -489,6 +499,15 @@ INSERT INTO alias_tienda (
 	'22140415001',
 	'https://www.jumbo.com.ar/roast-beef-churrasco-novillito/p',
 	'MANUAL_SEED'
+),
+(
+    -- Mouse ergonomico
+    (SELECT id FROM productos_canonicos WHERE slug = 'prod-mouse-inalambrico-ergonomico-pilas-nex'),
+    (SELECT id FROM tiendas WHERE slug = 'disco'),
+    'Mouse',
+    '61131876007',
+    'https://www.disco.com.ar/mouse-inalambrico-ergonomico-a-pilas-nex/p',
+    'MANUAL_SEED'
 )
  ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
     alias_producto = EXCLUDED.alias_producto,

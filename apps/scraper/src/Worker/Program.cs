@@ -23,6 +23,7 @@ builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
 // Scrapers
 builder.Services.AddSingleton<IStoreScraper, CotoStoreScraper>();
 builder.Services.AddSingleton<IStoreScraper, JumboStoreScraper>();
+builder.Services.AddSingleton<IStoreScraper, DiscoStoreScraper>();
 
 
 // builder.Services.AddSingleton<IProductInfoProvider, JsonProductInfoProvider>();

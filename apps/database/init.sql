@@ -358,7 +358,7 @@ INSERT INTO productos_canonicos (
 	'x1'
 ),
 (
-	'prog-porotos-negros-coto-350g',
+	'prod-porotos-negros-coto-350g',
 	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
 	'Coto',
 	'Negros',
@@ -366,8 +366,48 @@ INSERT INTO productos_canonicos (
 	'0.35',
 	'kg',
 	'x1'
-
-) ON CONFLICT (slug) DO UPDATE SET 
+),
+(
+	'prod-suprema-pollo-granel-fresca',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Suprema de pollo',
+	'Suprema De Pollo Granel Fresca',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-milanesa-cerdo-rebozada',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Milanesa de Cerdo',
+	'Milanesa De Cerdo Rebozada',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-pollo-fresco-con-menudos',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Pollo Fresco',
+	'Pollo Fresco Con Menudos',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-roast-beef-churrasco-novitillo',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'La Hacienda',
+	'Churrasco',
+	'Roast Beef Churrasco Novillito',
+	'1',
+	'kg',
+	'x1'
+)
+ ON CONFLICT (slug) DO UPDATE SET 
 	nombre_normalizado = EXCLUDED.nombre_normalizado,
 	contenido_neto_valor = EXCLUDED.contenido_neto_valor,
 	updated_at = NOW();   -- verificá el nombre real de la columna
@@ -401,7 +441,7 @@ INSERT INTO alias_tienda (
 (
 	-- Grano de choclo
 	(SELECT id FROM productos_canonicos WHERE slug = 'prod-granos-choclos-amarillos-enteros-coto-300g'),
-	(SELECT id FROM tienda WHERE slug = 'coto'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
 	'Granos de Choclo',
 	'2800006099293',
 	'https://www.coto.com.ar/productos/granos-de-choclo-amarillo-enteros-coto-300g-/_/R-00609929-00609929-200',
@@ -409,14 +449,48 @@ INSERT INTO alias_tienda (
 ),
 (
 	-- Porotos negros
-	(SELECT id FROM productos_canonicos WHERE slug = 'prog-porotos-negros-coto-350g'),
-	(SELECT id FROM tienda WHERE slug = 'coto'),
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-porotos-negros-coto-350g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
 	'Porotos',
 	'2800005827613',
 	'https://www.coto.com.ar/productos/porotos-negros-coto-350g-/_/R-00582761-00582761-200',
 	'MANUAL_SEED'
-) ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
+),
+(	-- Supremas de pollo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-suprema-pollo-granel-fresca'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Suprema de pollo',
+	'22460226001',
+	'https://www.jumbo.com.ar/suprema-de-pollo-granel-fresca/p',
+	'MANUAL_SEED'
+),
+(	-- Milanesa de cerdo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-milanesa-cerdo-rebozada'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Milasena de Cerdo',
+	'22820301004',
+	'https://www.jumbo.com.ar/milanesa-de-cerdo-rebozada-2/p',
+	'MANUAL_SEED'
+),
+(
+	-- Pollo fresco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-pollo-fresco-con-menudos'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Pollo fresco',
+	'22440106001',
+	'https://www.jumbo.com.ar/pollo-fresco-con-menudos-3/p',
+	'MANUAL_SEED'
+),
+(
+	-- Churrasco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-roast-beef-churrasco-novitillo'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Churrasco',
+	'22140415001',
+	'https://www.jumbo.com.ar/roast-beef-churrasco-novillito/p',
+	'MANUAL_SEED'
+)
+ ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
     alias_producto = EXCLUDED.alias_producto,
     sku_tienda = EXCLUDED.sku_tienda;
-
 SELECT * from observaciones_precios

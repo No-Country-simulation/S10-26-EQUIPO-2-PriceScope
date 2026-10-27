@@ -135,12 +135,14 @@ export function useDashboardData() {
     );
   }, [data, selectedCategory]);
 
+  const isDownsampled = data?.grafico_evolucion.metadata.downsampling_aplicado ?? false;
+
   const referenceAreas = useMemo(
     () =>
-      data
+      data && !isDownsampled
         ? buildChartReferenceAreas(data.grafico_evolucion.series, data.grafico_evolucion.hitos)
         : [],
-    [data]
+    [data, isDownsampled]
   );
 
   return {

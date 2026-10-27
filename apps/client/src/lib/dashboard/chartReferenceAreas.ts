@@ -5,14 +5,15 @@ import { STATUS_COLORS } from "./trackerQuality";
 
 /**
  * Genera dinámicamente las áreas de referencia (cuadros sobre la gráfica)
- * detectando anomalías (Agotado, Error de Captura, Sin Dato) y eventos (Reduflación).
+ * detectando anomalías (Agotado, Error de Captura, Sin Dato), eventos (Reduflación)
+ * y advertencias cambiarias de contingencia (Fallback TTL <72h).
  * Utiliza directamente las etiquetas de fecha reales (startLabel y endLabel) sin sufijos sintéticos.
  */
 export function buildChartReferenceAreas(
   series: PuntoSerie[],
   hitos: HitoGrafico[] = []
 ): ChartReferenceArea[] {
-  if (!series || series.length < 2) {
+  if (!series || series.length === 0) {
     return [];
   }
 
@@ -34,8 +35,16 @@ export function buildChartReferenceAreas(
     const isReduflación =
       hitosDateSet.has(dateStr) ||
       (pt.motivo ? pt.motivo.toLowerCase().includes("reduflación") : false);
+    const isTtlFallback =
+      pt.estado_dato !== "SIN_DATO" &&
+      (Boolean(pt.cotizacion_aproximada) ||
+        (pt.motivo
+          ? pt.motivo.toLowerCase().includes("fallback") ||
+            (pt.motivo.toLowerCase().includes("ttl") &&
+              !pt.motivo.toLowerCase().includes("superado"))
+          : false));
 
-    let anomalyType: "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO" | "REDUFLACIÓN" | null = null;
+    let anomalyType: "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO" | "REDUFLACIÓN" | "TTL" | null = null;
 
     if (pt.estado_dato === "AGOTADO") {
       anomalyType = "AGOTADO";
@@ -45,6 +54,8 @@ export function buildChartReferenceAreas(
       anomalyType = "SIN_DATO";
     } else if (isReduflación) {
       anomalyType = "REDUFLACIÓN";
+    } else if (isTtlFallback) {
+      anomalyType = "TTL";
     }
 
     if (!anomalyType) {
@@ -59,8 +70,16 @@ export function buildChartReferenceAreas(
       const nextIsReduflación =
         hitosDateSet.has(nextDateStr) ||
         (nextPt.motivo ? nextPt.motivo.toLowerCase().includes("reduflación") : false);
+      const nextIsTtlFallback =
+        nextPt.estado_dato !== "SIN_DATO" &&
+        (Boolean(nextPt.cotizacion_aproximada) ||
+          (nextPt.motivo
+            ? nextPt.motivo.toLowerCase().includes("fallback") ||
+              (nextPt.motivo.toLowerCase().includes("ttl") &&
+                !nextPt.motivo.toLowerCase().includes("superado"))
+            : false));
 
-      let nextType: "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO" | "REDUFLACIÓN" | null = null;
+      let nextType: "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO" | "REDUFLACIÓN" | "TTL" | null = null;
       if (nextPt.estado_dato === "AGOTADO") {
         nextType = "AGOTADO";
       } else if (nextPt.estado_dato === "ERROR_CAPTURA") {
@@ -69,6 +88,8 @@ export function buildChartReferenceAreas(
         nextType = "SIN_DATO";
       } else if (nextIsReduflación) {
         nextType = "REDUFLACIÓN";
+      } else if (nextIsTtlFallback) {
+        nextType = "TTL";
       }
 
       if (nextType === anomalyType) {
@@ -144,6 +165,21 @@ export function buildChartReferenceAreas(
           fillColor: STATUS_COLORS.REDUFLACION.fill,
           fillOpacity: STATUS_COLORS.REDUFLACION.fillOpacity,
           labelColor: STATUS_COLORS.REDUFLACION.text,
+        });
+        break;
+      case "TTL":
+        areas.push({
+          id: `ttl-${x1}-${x2}`,
+          x1,
+          x2,
+          startIndex,
+          endIndex,
+          totalPoints: series.length,
+          label: STATUS_COLORS.TTL.label,
+          strokeColor: STATUS_COLORS.TTL.stroke,
+          fillColor: STATUS_COLORS.TTL.fill,
+          fillOpacity: STATUS_COLORS.TTL.fillOpacity,
+          labelColor: STATUS_COLORS.TTL.text,
         });
         break;
     }

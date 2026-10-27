@@ -36,23 +36,26 @@ export function DashboardEvolutionSection({
   downsamplingActive,
   referenceAreas = [],
 }: DashboardEvolutionSectionProps) {
+  // Los recuadros de referencia punteados (- - -) sólo se muestran en vista diaria fina; en agrupación semanal no se dibujan.
+  const effectiveReferenceAreas = downsamplingActive ? [] : referenceAreas;
+
   return (
     <Card className="space-y-5 p-6">
       <div className="flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-center">
         <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900">
-              Evolución Temporal de Precios vs. Referencia Cambiaria
-            </h2>
-            {downsamplingActive && (
-              <Badge variant="default" size="xs">
-                Agrupación activa ({chartData.length} pts)
-              </Badge>
-            )}
-          </div>
+          <h2 className="text-base font-bold text-slate-900">
+            Evolución Temporal de Precios vs. Referencia Cambiaria
+          </h2>
           <p className="mt-0.5 text-xs text-slate-500">
             Comparativa histórica de precios promedio frente al tipo de cambio de referencia
           </p>
+          {downsamplingActive && (
+            <div className="mt-2">
+              <Badge variant="default" size="xs">
+                Agrupación semanal
+              </Badge>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
@@ -131,7 +134,7 @@ export function DashboardEvolutionSection({
               showLegend={false}
               yAxisWidth={84}
               customTooltip={DashboardChartTooltip}
-              referenceAreas={referenceAreas}
+              referenceAreas={effectiveReferenceAreas}
               className="h-72"
             />
             <div className="mt-2 pr-3 pl-24">

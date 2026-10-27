@@ -95,6 +95,7 @@ export default function DashboardPage() {
         kpis={data?.kpis ?? null}
         activeCategory={activeCategoryMetric}
         totalProducts={totalProducts}
+        hasData={chartData.length > 0}
       />
 
       <DashboardEvolutionSection

@@ -1,49 +1,49 @@
 {
   "contexto": {
-    "frescura_datos_utc": "2026-10-18T14:00:00Z",
+    "frescura_datos_utc": "2026-10-27T14:00:00Z",
     "filtros_activos": {
       "moneda": "ARS",
-      "fecha_desde": "2026-09-19",
-      "fecha_hasta": "2026-10-18",
+      "fecha_desde": "2025-10-28",
+      "fecha_hasta": "2026-10-27",
       "tienda_id": null,
       "categoria_id": "canasta-basica"
     }
   },
   "kpis": {
     "variacion_pesos": {
-      "porcentaje": 25.0,
-      "fecha_inicial": "2026-09-19T00:00:00Z",
-      "fecha_final": "2026-10-18T00:00:00Z",
-      "cobertura_pct": 98.5,
-      "estado": "SUFICIENTE",
-      "regla_faltantes": "LOCF"
+      "porcentaje": 73.6,
+      "cobertura_pct": 98.4,
+      "regla_faltantes": "LOCF",
+      "fecha_inicial": "2025-10-28",
+      "fecha_final": "2026-10-27",
+      "estado": "SUFICIENTE"
     },
     "variacion_usd": {
-      "porcentaje": 5.0,
-      "cotizacion_usada": 1200.0,
+      "porcentaje": 39.5,
+      "cotizacion_usada": 1220,
       "fuente_cotizacion": "DolarAPI_Cierre",
       "tipo_cotizacion": "BLUE"
     },
     "comparacion_devaluacion": {
-      "diferencial_puntos": 5.0,
-      "variacion_precio_pct": 25.0,
-      "variacion_cotizacion_pct": 20.0
+      "diferencial_puntos": 49.1,
+      "variacion_precio_pct": 73.6,
+      "variacion_cotizacion_pct": 24.5
     }
   },
   "variacion_por_categoria": [
     {
       "categoria_id": "canasta-basica",
       "nombre": "Canasta Básica",
-      "variacion_mediana_pct": 5.0,
-      "cantidad_productos": 45,
+      "variacion_mediana_pct": 71.4,
+      "cantidad_productos": 82,
       "cobertura_pct": 98.4
     },
     {
       "categoria_id": "bienes-durables",
       "nombre": "Bienes Durables",
-      "variacion_mediana_pct": 3.2,
-      "cantidad_productos": 28,
-      "cobertura_pct": 91.0
+      "variacion_mediana_pct": 53.2,
+      "cantidad_productos": 53,
+      "cobertura_pct": 96.8
     }
   ],
   "grafico_evolucion": {
@@ -53,395 +53,5187 @@
     },
     "hitos": [
       {
-        "timestamp_utc": "2026-10-09T00:00:00Z",
+        "timestamp_utc": "2026-03-10T00:00:00Z",
         "tipo": "AUTOMATICO",
         "titulo": "Reduflación Detectada",
-        "descripcion": "Café molido La Virginia redujo empaque de 500g a 450g (-10.0%) manteniendo precio nominal en $12.000"
+        "descripcion": "Galletitas dulces redujeron empaque de 350g a 300g (-14.3%) manteniendo precio nominal."
       },
       {
-        "timestamp_utc": "2026-10-12T00:00:00Z",
+        "timestamp_utc": "2026-05-18T00:00:00Z",
+        "tipo": "MANUAL",
+        "titulo": "Jornada Comercial Hot Sale",
+        "descripcion": "Descuentos promocionales del 10% al 25% en retail y electrodomésticos."
+      },
+      {
+        "timestamp_utc": "2026-10-18T00:00:00Z",
+        "tipo": "AUTOMATICO",
+        "titulo": "Reduflación Detectada",
+        "descripcion": "Café molido La Virginia redujo empaque de 500g a 450g (-10.0%) manteniendo precio nominal en .000"
+      },
+      {
+        "timestamp_utc": "2026-10-21T00:00:00Z",
         "tipo": "MANUAL",
         "titulo": "Evento Comercial ElectroFest",
         "descripcion": "Inicio de jornada promocional en cadenas de electrodomésticos (Frávega y Musimundo)"
       }
     ],
     "banda_calidad_diaria": [
-      { "fecha": "2026-09-19", "estado": "VERDE" },
-      { "fecha": "2026-09-20", "estado": "VERDE" },
-      { "fecha": "2026-09-21", "estado": "VERDE" },
-      { "fecha": "2026-09-22", "estado": "VERDE" },
-      { "fecha": "2026-09-23", "estado": "VERDE" },
-      { "fecha": "2026-09-24", "estado": "VERDE" },
-      { "fecha": "2026-09-25", "estado": "VERDE" },
-      { "fecha": "2026-09-26", "estado": "VERDE" },
-      { "fecha": "2026-09-27", "estado": "VERDE" },
-      { "fecha": "2026-09-28", "estado": "VERDE" },
-      { "fecha": "2026-09-29", "estado": "VERDE" },
-      { "fecha": "2026-09-30", "estado": "AMARILLO" },
-      { "fecha": "2026-10-01", "estado": "AMARILLO" },
-      { "fecha": "2026-10-02", "estado": "AMARILLO" },
-      { "fecha": "2026-10-03", "estado": "VERDE" },
-      { "fecha": "2026-10-04", "estado": "VERDE" },
-      { "fecha": "2026-10-05", "estado": "VERDE" },
-      { "fecha": "2026-10-06", "estado": "VERDE" },
-      { "fecha": "2026-10-07", "estado": "VERDE" },
-      { "fecha": "2026-10-08", "estado": "VERDE" },
-      { "fecha": "2026-10-09", "estado": "VERDE" },
-      { "fecha": "2026-10-10", "estado": "VERDE" },
-      { "fecha": "2026-10-11", "estado": "VERDE" },
-      { "fecha": "2026-10-12", "estado": "VERDE" },
-      { "fecha": "2026-10-13", "estado": "VERDE" },
-      { "fecha": "2026-10-14", "estado": "ROJO" },
-      { "fecha": "2026-10-15", "estado": "VERDE" },
-      { "fecha": "2026-10-16", "estado": "VERDE" },
-      { "fecha": "2026-10-17", "estado": "VERDE" },
-      { "fecha": "2026-10-18", "estado": "VERDE" }
+      {
+        "fecha": "2025-10-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-10-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-10-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-10-31",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-01",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-02",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-09",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-15",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-16",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-22",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-23",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-11-29",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-11-30",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-06",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-07",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-13",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-14",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-20",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-21",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-27",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-28",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2025-12-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2025-12-31",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-03",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-04",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-10",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-11",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-14",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-15",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-17",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-18",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-24",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-25",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-01-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-01-31",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-01",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-07",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-14",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-15",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-21",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-22",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-02-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-02-28",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-01",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-07",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-14",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-15",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-21",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-22",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-28",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-29",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-03-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-03-31",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-04",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-05",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-11",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-12",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-18",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-19",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-22",
+        "estado": "ROJO"
+      },
+      {
+        "fecha": "2026-04-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-25",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-26",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-04-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-04-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-02",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-03",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-09",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-10",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-16",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-17",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-23",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-24",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-05-30",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-05-31",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-06",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-07",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-13",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-14",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-20",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-21",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-27",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-28",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-06-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-06-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-04",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-05",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-09",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-11",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-12",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-18",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-19",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-25",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-26",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-07-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-29",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-30",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-07-31",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-01",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-02",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-09",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-15",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-16",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-22",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-23",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-27",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-08-29",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-30",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-08-31",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-03",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-04",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-05",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-06",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-07",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-08",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-10",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-11",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-12",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-13",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-17",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-18",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-19",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-20",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-21",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-22",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-23",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-24",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-25",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-26",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-27",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-28",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-09-29",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-09-30",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-01",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-02",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-03",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-04",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-05",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-06",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-07",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-08",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-09",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-10",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-11",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-12",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-13",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-14",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-15",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-16",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-17",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-18",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-19",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-20",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-21",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-22",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-23",
+        "estado": "ROJO"
+      },
+      {
+        "fecha": "2026-10-24",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-25",
+        "estado": "AMARILLO"
+      },
+      {
+        "fecha": "2026-10-26",
+        "estado": "VERDE"
+      },
+      {
+        "fecha": "2026-10-27",
+        "estado": "VERDE"
+      }
     ],
     "series": [
       {
-        "timestamp_utc": "2026-09-19T00:00:00Z",
-        "precio_regular": 9600.0,
+        "timestamp_utc": "2025-10-28T00:00:00Z",
+        "precio_regular": 7200,
+        "precio_promocional": 6770,
+        "precio_usd": 7.35,
+        "cotizacion_aplicada": 980,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-10-29T00:00:00Z",
+        "precio_regular": 7230,
+        "precio_promocional": null,
+        "precio_usd": 7.36,
+        "cotizacion_aplicada": 983,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-10-30T00:00:00Z",
+        "precio_regular": 7250,
+        "precio_promocional": null,
+        "precio_usd": 7.35,
+        "cotizacion_aplicada": 986,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-10-31T00:00:00Z",
+        "precio_regular": 7280,
+        "precio_promocional": null,
+        "precio_usd": 7.36,
+        "cotizacion_aplicada": 989,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-01T00:00:00Z",
+        "precio_regular": 7310,
+        "precio_promocional": null,
+        "precio_usd": 7.38,
+        "cotizacion_aplicada": 991,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-02T00:00:00Z",
+        "precio_regular": 7330,
+        "precio_promocional": null,
+        "precio_usd": 7.45,
+        "cotizacion_aplicada": 984,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-03T00:00:00Z",
+        "precio_regular": 7360,
+        "precio_promocional": null,
+        "precio_usd": 7.46,
+        "cotizacion_aplicada": 987,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-04T00:00:00Z",
+        "precio_regular": 7280,
+        "precio_promocional": null,
+        "precio_usd": 7.35,
+        "cotizacion_aplicada": 990,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-05T00:00:00Z",
+        "precio_regular": 7310,
+        "precio_promocional": null,
+        "precio_usd": 7.37,
+        "cotizacion_aplicada": 992,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-06T00:00:00Z",
+        "precio_regular": 7340,
+        "precio_promocional": null,
+        "precio_usd": 7.38,
+        "cotizacion_aplicada": 995,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-07T00:00:00Z",
+        "precio_regular": 7370,
+        "precio_promocional": null,
+        "precio_usd": 7.46,
+        "cotizacion_aplicada": 988,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-08T00:00:00Z",
+        "precio_regular": 7390,
+        "precio_promocional": 6950,
+        "precio_usd": 7.46,
+        "cotizacion_aplicada": 991,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-09T00:00:00Z",
+        "precio_regular": 7420,
+        "precio_promocional": null,
+        "precio_usd": 7.47,
+        "cotizacion_aplicada": 993,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-10T00:00:00Z",
+        "precio_regular": 7450,
+        "precio_promocional": null,
+        "precio_usd": 7.48,
+        "cotizacion_aplicada": 996,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-11T00:00:00Z",
+        "precio_regular": 7370,
+        "precio_promocional": null,
+        "precio_usd": 7.38,
+        "cotizacion_aplicada": 999,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-12T00:00:00Z",
+        "precio_regular": 7400,
+        "precio_promocional": null,
+        "precio_usd": 7.46,
+        "cotizacion_aplicada": 992,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-13T00:00:00Z",
+        "precio_regular": 7430,
+        "precio_promocional": null,
+        "precio_usd": 7.47,
+        "cotizacion_aplicada": 994,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-14T00:00:00Z",
+        "precio_regular": 7460,
+        "precio_promocional": null,
+        "precio_usd": 7.48,
+        "cotizacion_aplicada": 997,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-15T00:00:00Z",
+        "precio_regular": 7490,
+        "precio_promocional": null,
+        "precio_usd": 7.49,
+        "cotizacion_aplicada": 1000,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-16T00:00:00Z",
+        "precio_regular": 7510,
+        "precio_promocional": null,
+        "precio_usd": 7.49,
+        "cotizacion_aplicada": 1003,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-17T00:00:00Z",
+        "precio_regular": 7540,
+        "precio_promocional": null,
+        "precio_usd": 7.58,
+        "cotizacion_aplicada": 995,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-18T00:00:00Z",
+        "precio_regular": 7470,
+        "precio_promocional": null,
+        "precio_usd": 7.48,
+        "cotizacion_aplicada": 998,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-19T00:00:00Z",
+        "precio_regular": 7490,
+        "precio_promocional": 7040,
+        "precio_usd": 7.48,
+        "cotizacion_aplicada": 1001,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-20T00:00:00Z",
+        "precio_regular": 7520,
+        "precio_promocional": null,
+        "precio_usd": 7.5,
+        "cotizacion_aplicada": 1003,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-21T00:00:00Z",
+        "precio_regular": 7550,
+        "precio_promocional": null,
+        "precio_usd": 7.5,
+        "cotizacion_aplicada": 1006,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-22T00:00:00Z",
+        "precio_regular": 7580,
+        "precio_promocional": null,
+        "precio_usd": 7.59,
+        "cotizacion_aplicada": 999,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-23T00:00:00Z",
+        "precio_regular": 7610,
+        "precio_promocional": null,
+        "precio_usd": 7.59,
+        "cotizacion_aplicada": 1002,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-24T00:00:00Z",
+        "precio_regular": 7640,
+        "precio_promocional": null,
+        "precio_usd": 7.61,
+        "cotizacion_aplicada": 1004,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-25T00:00:00Z",
+        "precio_regular": 7560,
+        "precio_promocional": null,
+        "precio_usd": 7.51,
+        "cotizacion_aplicada": 1007,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-26T00:00:00Z",
+        "precio_regular": 7590,
+        "precio_promocional": null,
+        "precio_usd": 7.51,
+        "cotizacion_aplicada": 1010,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-27T00:00:00Z",
+        "precio_regular": 7620,
+        "precio_promocional": null,
+        "precio_usd": 7.6,
+        "cotizacion_aplicada": 1002,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-28T00:00:00Z",
+        "precio_regular": 7640,
+        "precio_promocional": null,
+        "precio_usd": 7.6,
+        "cotizacion_aplicada": 1005,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-11-29T00:00:00Z",
+        "precio_regular": 7670,
+        "precio_promocional": null,
+        "precio_usd": 7.61,
+        "cotizacion_aplicada": 1008,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-11-30T00:00:00Z",
+        "precio_regular": 7700,
+        "precio_promocional": 7240,
+        "precio_usd": 7.62,
+        "cotizacion_aplicada": 1011,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-01T00:00:00Z",
+        "precio_regular": 7730,
+        "precio_promocional": null,
+        "precio_usd": 7.63,
+        "cotizacion_aplicada": 1013,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-02T00:00:00Z",
+        "precio_regular": 7650,
+        "precio_promocional": null,
+        "precio_usd": 7.6,
+        "cotizacion_aplicada": 1006,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-03T00:00:00Z",
+        "precio_regular": 7680,
+        "precio_promocional": null,
+        "precio_usd": 7.61,
+        "cotizacion_aplicada": 1009,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-04T00:00:00Z",
+        "precio_regular": 7710,
+        "precio_promocional": null,
+        "precio_usd": 7.63,
+        "cotizacion_aplicada": 1011,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-05T00:00:00Z",
+        "precio_regular": 7740,
+        "precio_promocional": null,
+        "precio_usd": 7.63,
+        "cotizacion_aplicada": 1014,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-06T00:00:00Z",
+        "precio_regular": 7770,
+        "precio_promocional": null,
+        "precio_usd": 7.64,
+        "cotizacion_aplicada": 1017,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-07T00:00:00Z",
+        "precio_regular": 7800,
+        "precio_promocional": null,
+        "precio_usd": 7.73,
+        "cotizacion_aplicada": 1009,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-08T00:00:00Z",
+        "precio_regular": 7830,
+        "precio_promocional": null,
+        "precio_usd": 7.74,
+        "cotizacion_aplicada": 1012,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-09T00:00:00Z",
+        "precio_regular": 7750,
+        "precio_promocional": null,
+        "precio_usd": 7.64,
+        "cotizacion_aplicada": 1015,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-10T00:00:00Z",
+        "precio_regular": 7780,
+        "precio_promocional": null,
+        "precio_usd": 7.64,
+        "cotizacion_aplicada": 1018,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-11T00:00:00Z",
+        "precio_regular": 7810,
+        "precio_promocional": 7340,
+        "precio_usd": 7.66,
+        "cotizacion_aplicada": 1020,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-12T00:00:00Z",
+        "precio_regular": 7840,
+        "precio_promocional": null,
+        "precio_usd": 7.74,
+        "cotizacion_aplicada": 1013,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-13T00:00:00Z",
+        "precio_regular": 7860,
+        "precio_promocional": null,
+        "precio_usd": 7.74,
+        "cotizacion_aplicada": 1016,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-14T00:00:00Z",
+        "precio_regular": 7890,
+        "precio_promocional": null,
+        "precio_usd": 7.75,
+        "cotizacion_aplicada": 1018,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-15T00:00:00Z",
+        "precio_regular": 7920,
+        "precio_promocional": null,
+        "precio_usd": 7.76,
+        "cotizacion_aplicada": 1021,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-16T00:00:00Z",
+        "precio_regular": 7850,
+        "precio_promocional": null,
+        "precio_usd": 7.67,
+        "cotizacion_aplicada": 1024,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-17T00:00:00Z",
+        "precio_regular": 7870,
+        "precio_promocional": null,
+        "precio_usd": 7.75,
+        "cotizacion_aplicada": 1016,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-18T00:00:00Z",
+        "precio_regular": 7900,
+        "precio_promocional": null,
+        "precio_usd": 7.75,
+        "cotizacion_aplicada": 1019,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-19T00:00:00Z",
+        "precio_regular": 7930,
+        "precio_promocional": null,
+        "precio_usd": 7.76,
+        "cotizacion_aplicada": 1022,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-20T00:00:00Z",
+        "precio_regular": 7960,
+        "precio_promocional": null,
+        "precio_usd": 7.77,
+        "cotizacion_aplicada": 1024,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-21T00:00:00Z",
+        "precio_regular": 7990,
+        "precio_promocional": null,
+        "precio_usd": 7.78,
+        "cotizacion_aplicada": 1027,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-22T00:00:00Z",
+        "precio_regular": 8020,
+        "precio_promocional": 7540,
+        "precio_usd": 7.86,
+        "cotizacion_aplicada": 1020,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-23T00:00:00Z",
+        "precio_regular": 7940,
+        "precio_promocional": null,
+        "precio_usd": 7.76,
+        "cotizacion_aplicada": 1023,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-24T00:00:00Z",
+        "precio_regular": 7970,
+        "precio_promocional": null,
+        "precio_usd": 7.78,
+        "cotizacion_aplicada": 1025,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-25T00:00:00Z",
+        "precio_regular": 8000,
+        "precio_promocional": null,
+        "precio_usd": 7.78,
+        "cotizacion_aplicada": 1028,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-26T00:00:00Z",
+        "precio_regular": 8030,
+        "precio_promocional": null,
+        "precio_usd": 7.79,
+        "cotizacion_aplicada": 1031,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-27T00:00:00Z",
+        "precio_regular": 8060,
+        "precio_promocional": null,
+        "precio_usd": 7.88,
+        "cotizacion_aplicada": 1023,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-28T00:00:00Z",
+        "precio_regular": 8090,
+        "precio_promocional": null,
+        "precio_usd": 7.88,
+        "cotizacion_aplicada": 1026,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2025-12-29T00:00:00Z",
+        "precio_regular": 8120,
+        "precio_promocional": null,
+        "precio_usd": 7.89,
+        "cotizacion_aplicada": 1029,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-30T00:00:00Z",
+        "precio_regular": 8040,
+        "precio_promocional": null,
+        "precio_usd": 7.8,
+        "cotizacion_aplicada": 1031,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2025-12-31T00:00:00Z",
+        "precio_regular": 8070,
+        "precio_promocional": null,
+        "precio_usd": 7.8,
+        "cotizacion_aplicada": 1034,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-01T00:00:00Z",
+        "precio_regular": 8100,
+        "precio_promocional": null,
+        "precio_usd": 7.89,
+        "cotizacion_aplicada": 1027,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-02T00:00:00Z",
+        "precio_regular": 8130,
+        "precio_promocional": 7640,
+        "precio_usd": 7.9,
+        "cotizacion_aplicada": 1029,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-03T00:00:00Z",
+        "precio_regular": 8160,
+        "precio_promocional": null,
+        "precio_usd": 7.91,
+        "cotizacion_aplicada": 1032,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-04T00:00:00Z",
+        "precio_regular": 8190,
+        "precio_promocional": null,
+        "precio_usd": 7.91,
+        "cotizacion_aplicada": 1035,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-05T00:00:00Z",
+        "precio_regular": 8210,
+        "precio_promocional": null,
+        "precio_usd": 7.92,
+        "cotizacion_aplicada": 1037,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-06T00:00:00Z",
+        "precio_regular": 8140,
+        "precio_promocional": null,
+        "precio_usd": 7.9,
+        "cotizacion_aplicada": 1030,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-07T00:00:00Z",
+        "precio_regular": 8170,
+        "precio_promocional": null,
+        "precio_usd": 7.91,
+        "cotizacion_aplicada": 1033,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-08T00:00:00Z",
+        "precio_regular": 8200,
+        "precio_promocional": null,
+        "precio_usd": 7.92,
+        "cotizacion_aplicada": 1035,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-09T00:00:00Z",
+        "precio_regular": 8230,
+        "precio_promocional": null,
+        "precio_usd": 7.93,
+        "cotizacion_aplicada": 1038,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-10T00:00:00Z",
+        "precio_regular": 8250,
+        "precio_promocional": null,
+        "precio_usd": 7.93,
+        "cotizacion_aplicada": 1041,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-11T00:00:00Z",
+        "precio_regular": 8280,
+        "precio_promocional": null,
+        "precio_usd": 8.01,
+        "cotizacion_aplicada": 1034,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-12T00:00:00Z",
+        "precio_regular": 8310,
+        "precio_promocional": null,
+        "precio_usd": 8.02,
+        "cotizacion_aplicada": 1036,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-13T00:00:00Z",
+        "precio_regular": 8240,
+        "precio_promocional": 7750,
+        "precio_usd": 7.93,
+        "cotizacion_aplicada": 1039,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-14T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1042,
+        "cotizacion_aproximada": false,
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock estacional"
+      },
+      {
+        "timestamp_utc": "2026-01-15T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1044,
+        "cotizacion_aproximada": false,
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock estacional"
+      },
+      {
+        "timestamp_utc": "2026-01-16T00:00:00Z",
+        "precio_regular": 8320,
+        "precio_promocional": null,
+        "precio_usd": 8.02,
+        "cotizacion_aplicada": 1037,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-17T00:00:00Z",
+        "precio_regular": 8350,
+        "precio_promocional": null,
+        "precio_usd": 8.03,
+        "cotizacion_aplicada": 1040,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-18T00:00:00Z",
+        "precio_regular": 8380,
+        "precio_promocional": null,
+        "precio_usd": 8.04,
+        "cotizacion_aplicada": 1042,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-19T00:00:00Z",
+        "precio_regular": 8410,
+        "precio_promocional": null,
+        "precio_usd": 8.05,
+        "cotizacion_aplicada": 1045,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-20T00:00:00Z",
+        "precio_regular": 8340,
+        "precio_promocional": null,
+        "precio_usd": 7.96,
+        "cotizacion_aplicada": 1048,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-21T00:00:00Z",
+        "precio_regular": 8370,
+        "precio_promocional": null,
+        "precio_usd": 8.05,
+        "cotizacion_aplicada": 1040,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-22T00:00:00Z",
+        "precio_regular": 8400,
+        "precio_promocional": null,
+        "precio_usd": 8.05,
+        "cotizacion_aplicada": 1043,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-23T00:00:00Z",
+        "precio_regular": 8420,
+        "precio_promocional": null,
+        "precio_usd": 8.05,
+        "cotizacion_aplicada": 1046,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-24T00:00:00Z",
+        "precio_regular": 8450,
+        "precio_promocional": 7940,
+        "precio_usd": 8.06,
+        "cotizacion_aplicada": 1048,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-25T00:00:00Z",
+        "precio_regular": 8480,
+        "precio_promocional": null,
+        "precio_usd": 8.07,
+        "cotizacion_aplicada": 1051,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-01-26T00:00:00Z",
+        "precio_regular": 8510,
+        "precio_promocional": null,
+        "precio_usd": 8.15,
+        "cotizacion_aplicada": 1044,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-27T00:00:00Z",
+        "precio_regular": 8440,
+        "precio_promocional": null,
+        "precio_usd": 8.07,
+        "cotizacion_aplicada": 1046,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-28T00:00:00Z",
+        "precio_regular": 8470,
+        "precio_promocional": null,
+        "precio_usd": 8.07,
+        "cotizacion_aplicada": 1049,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-29T00:00:00Z",
+        "precio_regular": 8490,
+        "precio_promocional": null,
+        "precio_usd": 8.07,
+        "cotizacion_aplicada": 1052,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-30T00:00:00Z",
+        "precio_regular": 8520,
+        "precio_promocional": null,
+        "precio_usd": 8.08,
+        "cotizacion_aplicada": 1054,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-01-31T00:00:00Z",
+        "precio_regular": 8550,
+        "precio_promocional": null,
+        "precio_usd": 8.17,
+        "cotizacion_aplicada": 1047,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-01T00:00:00Z",
+        "precio_regular": 8580,
+        "precio_promocional": null,
+        "precio_usd": 8.17,
+        "cotizacion_aplicada": 1050,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-02T00:00:00Z",
+        "precio_regular": 8610,
+        "precio_promocional": null,
+        "precio_usd": 8.18,
+        "cotizacion_aplicada": 1052,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-03T00:00:00Z",
+        "precio_regular": 8540,
+        "precio_promocional": null,
+        "precio_usd": 8.09,
+        "cotizacion_aplicada": 1055,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-04T00:00:00Z",
+        "precio_regular": 8570,
+        "precio_promocional": 8060,
+        "precio_usd": 8.1,
+        "cotizacion_aplicada": 1058,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-05T00:00:00Z",
+        "precio_regular": 8590,
+        "precio_promocional": null,
+        "precio_usd": 8.18,
+        "cotizacion_aplicada": 1050,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-06T00:00:00Z",
+        "precio_regular": 8620,
+        "precio_promocional": null,
+        "precio_usd": 8.19,
+        "cotizacion_aplicada": 1053,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-07T00:00:00Z",
+        "precio_regular": 8650,
+        "precio_promocional": null,
+        "precio_usd": 8.19,
+        "cotizacion_aplicada": 1056,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-08T00:00:00Z",
+        "precio_regular": 8680,
+        "precio_promocional": null,
+        "precio_usd": 8.2,
+        "cotizacion_aplicada": 1058,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-09T00:00:00Z",
+        "precio_regular": 8710,
+        "precio_promocional": null,
+        "precio_usd": 8.21,
+        "cotizacion_aplicada": 1061,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-10T00:00:00Z",
+        "precio_regular": 8640,
+        "precio_promocional": null,
+        "precio_usd": 8.2,
+        "cotizacion_aplicada": 1054,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-11T00:00:00Z",
+        "precio_regular": 8670,
+        "precio_promocional": null,
+        "precio_usd": 8.21,
+        "cotizacion_aplicada": 1056,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-12T00:00:00Z",
+        "precio_regular": 8700,
+        "precio_promocional": null,
+        "precio_usd": 8.22,
+        "cotizacion_aplicada": 1059,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-13T00:00:00Z",
+        "precio_regular": 8720,
+        "precio_promocional": null,
+        "precio_usd": 8.21,
+        "cotizacion_aplicada": 1062,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-14T00:00:00Z",
+        "precio_regular": 8750,
+        "precio_promocional": null,
+        "precio_usd": 8.22,
+        "cotizacion_aplicada": 1064,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-15T00:00:00Z",
+        "precio_regular": 8780,
+        "precio_promocional": 8250,
+        "precio_usd": 8.31,
+        "cotizacion_aplicada": 1057,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-16T00:00:00Z",
+        "precio_regular": 8810,
+        "precio_promocional": null,
+        "precio_usd": 8.31,
+        "cotizacion_aplicada": 1060,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-17T00:00:00Z",
+        "precio_regular": 8740,
+        "precio_promocional": null,
+        "precio_usd": 8.23,
+        "cotizacion_aplicada": 1062,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-18T00:00:00Z",
+        "precio_regular": 8770,
+        "precio_promocional": null,
+        "precio_usd": 8.23,
+        "cotizacion_aplicada": 1065,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-19T00:00:00Z",
+        "precio_regular": 8800,
+        "precio_promocional": null,
+        "precio_usd": 8.24,
+        "cotizacion_aplicada": 1068,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-20T00:00:00Z",
+        "precio_regular": 8830,
+        "precio_promocional": null,
+        "precio_usd": 8.33,
+        "cotizacion_aplicada": 1060,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-21T00:00:00Z",
+        "precio_regular": 8860,
+        "precio_promocional": null,
+        "precio_usd": 8.33,
+        "cotizacion_aplicada": 1063,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-22T00:00:00Z",
+        "precio_regular": 8880,
+        "precio_promocional": null,
+        "precio_usd": 8.33,
+        "cotizacion_aplicada": 1066,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-02-23T00:00:00Z",
+        "precio_regular": 8910,
+        "precio_promocional": null,
+        "precio_usd": 8.34,
+        "cotizacion_aplicada": 1068,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-24T00:00:00Z",
+        "precio_regular": 8840,
+        "precio_promocional": null,
+        "precio_usd": 8.25,
+        "cotizacion_aplicada": 1071,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-25T00:00:00Z",
+        "precio_regular": 8870,
+        "precio_promocional": null,
+        "precio_usd": 8.34,
+        "cotizacion_aplicada": 1064,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-26T00:00:00Z",
+        "precio_regular": 8900,
+        "precio_promocional": 8370,
+        "precio_usd": 8.35,
+        "cotizacion_aplicada": 1066,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-27T00:00:00Z",
+        "precio_regular": 8930,
+        "precio_promocional": null,
+        "precio_usd": 8.35,
+        "cotizacion_aplicada": 1069,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-02-28T00:00:00Z",
+        "precio_regular": 8960,
+        "precio_promocional": null,
+        "precio_usd": 8.36,
+        "cotizacion_aplicada": 1072,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-01T00:00:00Z",
+        "precio_regular": 8990,
+        "precio_promocional": null,
+        "precio_usd": 8.37,
+        "cotizacion_aplicada": 1074,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-02T00:00:00Z",
+        "precio_regular": 9020,
+        "precio_promocional": null,
+        "precio_usd": 8.45,
+        "cotizacion_aplicada": 1067,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-03T00:00:00Z",
+        "precio_regular": 8940,
+        "precio_promocional": null,
+        "precio_usd": 8.36,
+        "cotizacion_aplicada": 1070,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-04T00:00:00Z",
+        "precio_regular": 8970,
+        "precio_promocional": null,
+        "precio_usd": 8.37,
+        "cotizacion_aplicada": 1072,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-05T00:00:00Z",
+        "precio_regular": 9000,
+        "precio_promocional": null,
+        "precio_usd": 8.37,
+        "cotizacion_aplicada": 1075,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-06T00:00:00Z",
+        "precio_regular": 9030,
+        "precio_promocional": null,
+        "precio_usd": 8.38,
+        "cotizacion_aplicada": 1078,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-07T00:00:00Z",
+        "precio_regular": 9060,
+        "precio_promocional": null,
+        "precio_usd": 8.47,
+        "cotizacion_aplicada": 1070,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-08T00:00:00Z",
+        "precio_regular": 9090,
+        "precio_promocional": null,
+        "precio_usd": 8.47,
+        "cotizacion_aplicada": 1073,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-09T00:00:00Z",
+        "precio_regular": 9120,
+        "precio_promocional": 8570,
+        "precio_usd": 8.48,
+        "cotizacion_aplicada": 1076,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-10T00:00:00Z",
+        "precio_regular": 9040,
+        "precio_promocional": null,
+        "precio_usd": 8.39,
+        "cotizacion_aplicada": 1078,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-11T00:00:00Z",
+        "precio_regular": 9070,
+        "precio_promocional": null,
+        "precio_usd": 8.39,
+        "cotizacion_aplicada": 1081,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-12T00:00:00Z",
+        "precio_regular": 9100,
+        "precio_promocional": null,
+        "precio_usd": 8.47,
+        "cotizacion_aplicada": 1074,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-13T00:00:00Z",
+        "precio_regular": 9130,
+        "precio_promocional": null,
+        "precio_usd": 8.49,
+        "cotizacion_aplicada": 1076,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-14T00:00:00Z",
+        "precio_regular": 9160,
+        "precio_promocional": null,
+        "precio_usd": 8.49,
+        "cotizacion_aplicada": 1079,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-15T00:00:00Z",
+        "precio_regular": 9190,
+        "precio_promocional": null,
+        "precio_usd": 8.49,
+        "cotizacion_aplicada": 1082,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-16T00:00:00Z",
+        "precio_regular": 9220,
+        "precio_promocional": null,
+        "precio_usd": 8.51,
+        "cotizacion_aplicada": 1084,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-17T00:00:00Z",
+        "precio_regular": 9140,
+        "precio_promocional": null,
+        "precio_usd": 8.49,
+        "cotizacion_aplicada": 1077,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-18T00:00:00Z",
+        "precio_regular": 9170,
+        "precio_promocional": null,
+        "precio_usd": 8.5,
+        "cotizacion_aplicada": 1079,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-19T00:00:00Z",
+        "precio_regular": 9200,
+        "precio_promocional": null,
+        "precio_usd": 8.5,
+        "cotizacion_aplicada": 1082,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-20T00:00:00Z",
+        "precio_regular": 9230,
+        "precio_promocional": 8680,
+        "precio_usd": 8.51,
+        "cotizacion_aplicada": 1085,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-21T00:00:00Z",
+        "precio_regular": 9260,
+        "precio_promocional": null,
+        "precio_usd": 8.52,
+        "cotizacion_aplicada": 1087,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-22T00:00:00Z",
+        "precio_regular": 9290,
+        "precio_promocional": null,
+        "precio_usd": 8.6,
+        "cotizacion_aplicada": 1080,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-23T00:00:00Z",
+        "precio_regular": 9320,
+        "precio_promocional": null,
+        "precio_usd": 8.61,
+        "cotizacion_aplicada": 1083,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-24T00:00:00Z",
+        "precio_regular": 9250,
+        "precio_promocional": null,
+        "precio_usd": 8.53,
+        "cotizacion_aplicada": 1085,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-25T00:00:00Z",
+        "precio_regular": 9280,
+        "precio_promocional": null,
+        "precio_usd": 8.53,
+        "cotizacion_aplicada": 1088,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-26T00:00:00Z",
+        "precio_regular": 9300,
+        "precio_promocional": null,
+        "precio_usd": 8.52,
+        "cotizacion_aplicada": 1091,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-27T00:00:00Z",
+        "precio_regular": 9330,
+        "precio_promocional": null,
+        "precio_usd": 8.61,
+        "cotizacion_aplicada": 1083,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-28T00:00:00Z",
+        "precio_regular": 9360,
+        "precio_promocional": null,
+        "precio_usd": 8.62,
+        "cotizacion_aplicada": 1086,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-29T00:00:00Z",
+        "precio_regular": 9390,
+        "precio_promocional": null,
+        "precio_usd": 8.62,
+        "cotizacion_aplicada": 1089,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-03-30T00:00:00Z",
+        "precio_regular": 9420,
+        "precio_promocional": null,
+        "precio_usd": 8.63,
+        "cotizacion_aplicada": 1091,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-03-31T00:00:00Z",
+        "precio_regular": 9350,
+        "precio_promocional": 8790,
+        "precio_usd": 8.55,
+        "cotizacion_aplicada": 1094,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-01T00:00:00Z",
+        "precio_regular": 9380,
+        "precio_promocional": null,
+        "precio_usd": 8.63,
+        "cotizacion_aplicada": 1087,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-02T00:00:00Z",
+        "precio_regular": 9410,
+        "precio_promocional": null,
+        "precio_usd": 8.64,
+        "cotizacion_aplicada": 1089,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-03T00:00:00Z",
+        "precio_regular": 9440,
+        "precio_promocional": null,
+        "precio_usd": 8.64,
+        "cotizacion_aplicada": 1092,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-04T00:00:00Z",
+        "precio_regular": 9470,
+        "precio_promocional": null,
+        "precio_usd": 8.65,
+        "cotizacion_aplicada": 1095,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-05T00:00:00Z",
+        "precio_regular": 9500,
+        "precio_promocional": null,
+        "precio_usd": 8.66,
+        "cotizacion_aplicada": 1097,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-06T00:00:00Z",
+        "precio_regular": 9530,
+        "precio_promocional": null,
+        "precio_usd": 8.74,
+        "cotizacion_aplicada": 1090,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-07T00:00:00Z",
+        "precio_regular": 9450,
+        "precio_promocional": null,
+        "precio_usd": 8.65,
+        "cotizacion_aplicada": 1093,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-08T00:00:00Z",
+        "precio_regular": 9480,
+        "precio_promocional": null,
+        "precio_usd": 8.66,
+        "cotizacion_aplicada": 1095,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-09T00:00:00Z",
+        "precio_regular": 9510,
+        "precio_promocional": null,
+        "precio_usd": 8.66,
+        "cotizacion_aplicada": 1098,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-10T00:00:00Z",
+        "precio_regular": 9540,
+        "precio_promocional": null,
+        "precio_usd": 8.66,
+        "cotizacion_aplicada": 1101,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-11T00:00:00Z",
+        "precio_regular": 9570,
+        "precio_promocional": 9000,
+        "precio_usd": 8.76,
+        "cotizacion_aplicada": 1093,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-12T00:00:00Z",
+        "precio_regular": 9600,
+        "precio_promocional": null,
+        "precio_usd": 8.76,
+        "cotizacion_aplicada": 1096,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-13T00:00:00Z",
+        "precio_regular": 9630,
+        "precio_promocional": null,
+        "precio_usd": 8.77,
+        "cotizacion_aplicada": 1098,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-14T00:00:00Z",
+        "precio_regular": 9550,
+        "precio_promocional": null,
+        "precio_usd": 8.67,
+        "cotizacion_aplicada": 1101,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-15T00:00:00Z",
+        "precio_regular": 9580,
+        "precio_promocional": null,
+        "precio_usd": 8.68,
+        "cotizacion_aplicada": 1104,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-16T00:00:00Z",
+        "precio_regular": 9610,
+        "precio_promocional": null,
+        "precio_usd": 8.77,
+        "cotizacion_aplicada": 1096,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-17T00:00:00Z",
+        "precio_regular": 9640,
+        "precio_promocional": null,
+        "precio_usd": 8.77,
+        "cotizacion_aplicada": 1099,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-18T00:00:00Z",
+        "precio_regular": 9670,
+        "precio_promocional": null,
+        "precio_usd": 8.77,
+        "cotizacion_aplicada": 1102,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-19T00:00:00Z",
+        "precio_regular": 9700,
+        "precio_promocional": null,
+        "precio_usd": 8.79,
+        "cotizacion_aplicada": 1104,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-20T00:00:00Z",
+        "precio_regular": 9730,
+        "precio_promocional": null,
+        "precio_usd": 8.79,
+        "cotizacion_aplicada": 1107,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-21T00:00:00Z",
+        "precio_regular": 9660,
+        "precio_promocional": null,
+        "precio_usd": 8.78,
+        "cotizacion_aplicada": 1100,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-22T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1102,
+        "cotizacion_aproximada": false,
+        "estado_dato": "ERROR_CAPTURA",
+        "motivo": "HTTP 504 Gateway Timeout en portal origen"
+      },
+      {
+        "timestamp_utc": "2026-04-23T00:00:00Z",
+        "precio_regular": 9720,
+        "precio_promocional": null,
+        "precio_usd": 8.8,
+        "cotizacion_aplicada": 1105,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-24T00:00:00Z",
+        "precio_regular": 9750,
+        "precio_promocional": null,
+        "precio_usd": 8.8,
+        "cotizacion_aplicada": 1108,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-25T00:00:00Z",
+        "precio_regular": 9780,
+        "precio_promocional": null,
+        "precio_usd": 8.81,
+        "cotizacion_aplicada": 1110,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-26T00:00:00Z",
+        "precio_regular": 9810,
+        "precio_promocional": null,
+        "precio_usd": 8.89,
+        "cotizacion_aplicada": 1103,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-04-27T00:00:00Z",
+        "precio_regular": 9830,
+        "precio_promocional": null,
+        "precio_usd": 8.89,
+        "cotizacion_aplicada": 1106,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-28T00:00:00Z",
+        "precio_regular": 9760,
+        "precio_promocional": null,
+        "precio_usd": 8.81,
+        "cotizacion_aplicada": 1108,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-29T00:00:00Z",
+        "precio_regular": 9790,
+        "precio_promocional": null,
+        "precio_usd": 8.81,
+        "cotizacion_aplicada": 1111,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-04-30T00:00:00Z",
+        "precio_regular": 9820,
+        "precio_promocional": null,
+        "precio_usd": 8.82,
+        "cotizacion_aplicada": 1114,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-01T00:00:00Z",
+        "precio_regular": 9850,
+        "precio_promocional": null,
+        "precio_usd": 8.91,
+        "cotizacion_aplicada": 1106,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-02T00:00:00Z",
+        "precio_regular": 9880,
+        "precio_promocional": null,
+        "precio_usd": 8.91,
+        "cotizacion_aplicada": 1109,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-03T00:00:00Z",
+        "precio_regular": 9910,
+        "precio_promocional": 9320,
+        "precio_usd": 8.92,
+        "cotizacion_aplicada": 1111,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-04T00:00:00Z",
+        "precio_regular": 9940,
+        "precio_promocional": null,
+        "precio_usd": 8.92,
+        "cotizacion_aplicada": 1114,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-05T00:00:00Z",
+        "precio_regular": 9860,
+        "precio_promocional": null,
+        "precio_usd": 8.83,
+        "cotizacion_aplicada": 1117,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-06T00:00:00Z",
+        "precio_regular": 9890,
+        "precio_promocional": null,
+        "precio_usd": 8.92,
+        "cotizacion_aplicada": 1109,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-07T00:00:00Z",
+        "precio_regular": 9920,
+        "precio_promocional": null,
+        "precio_usd": 8.92,
+        "cotizacion_aplicada": 1112,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-08T00:00:00Z",
+        "precio_regular": 9950,
+        "precio_promocional": null,
+        "precio_usd": 8.92,
+        "cotizacion_aplicada": 1115,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-09T00:00:00Z",
+        "precio_regular": 9980,
+        "precio_promocional": null,
+        "precio_usd": 8.93,
+        "cotizacion_aplicada": 1117,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-10T00:00:00Z",
+        "precio_regular": 10010,
+        "precio_promocional": null,
+        "precio_usd": 8.94,
+        "cotizacion_aplicada": 1120,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-11T00:00:00Z",
+        "precio_regular": 10040,
+        "precio_promocional": null,
+        "precio_usd": 9.02,
+        "cotizacion_aplicada": 1113,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-12T00:00:00Z",
+        "precio_regular": 9970,
+        "precio_promocional": null,
+        "precio_usd": 8.94,
+        "cotizacion_aplicada": 1115,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-13T00:00:00Z",
+        "precio_regular": 10000,
+        "precio_promocional": null,
+        "precio_usd": 8.94,
+        "cotizacion_aplicada": 1118,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-14T00:00:00Z",
+        "precio_regular": 10030,
+        "precio_promocional": 9430,
+        "precio_usd": 8.95,
+        "cotizacion_aplicada": 1121,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-15T00:00:00Z",
+        "precio_regular": 10060,
+        "precio_promocional": null,
+        "precio_usd": 8.96,
+        "cotizacion_aplicada": 1123,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-16T00:00:00Z",
+        "precio_regular": 10090,
+        "precio_promocional": null,
+        "precio_usd": 9.04,
+        "cotizacion_aplicada": 1116,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-17T00:00:00Z",
+        "precio_regular": 10120,
+        "precio_promocional": null,
+        "precio_usd": 9.04,
+        "cotizacion_aplicada": 1119,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-18T00:00:00Z",
+        "precio_regular": 10150,
+        "precio_promocional": null,
+        "precio_usd": 9.05,
+        "cotizacion_aplicada": 1121,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-19T00:00:00Z",
+        "precio_regular": 10070,
+        "precio_promocional": null,
+        "precio_usd": 8.96,
+        "cotizacion_aplicada": 1124,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-20T00:00:00Z",
+        "precio_regular": 10100,
+        "precio_promocional": null,
+        "precio_usd": 8.97,
+        "cotizacion_aplicada": 1126,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-21T00:00:00Z",
+        "precio_regular": 10130,
+        "precio_promocional": null,
+        "precio_usd": 9.05,
+        "cotizacion_aplicada": 1119,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-22T00:00:00Z",
+        "precio_regular": 10160,
+        "precio_promocional": null,
+        "precio_usd": 9.06,
+        "cotizacion_aplicada": 1122,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-23T00:00:00Z",
+        "precio_regular": 10190,
+        "precio_promocional": null,
+        "precio_usd": 9.07,
+        "cotizacion_aplicada": 1124,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-24T00:00:00Z",
+        "precio_regular": 10220,
+        "precio_promocional": null,
+        "precio_usd": 9.07,
+        "cotizacion_aplicada": 1127,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-25T00:00:00Z",
+        "precio_regular": 10250,
+        "precio_promocional": 9640,
+        "precio_usd": 9.07,
+        "cotizacion_aplicada": 1130,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-26T00:00:00Z",
+        "precio_regular": 10170,
+        "precio_promocional": null,
+        "precio_usd": 9.06,
+        "cotizacion_aplicada": 1122,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-27T00:00:00Z",
+        "precio_regular": 10200,
+        "precio_promocional": null,
+        "precio_usd": 9.07,
+        "cotizacion_aplicada": 1125,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-28T00:00:00Z",
+        "precio_regular": 10230,
+        "precio_promocional": null,
+        "precio_usd": 9.07,
+        "cotizacion_aplicada": 1128,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-29T00:00:00Z",
+        "precio_regular": 10260,
+        "precio_promocional": null,
+        "precio_usd": 9.08,
+        "cotizacion_aplicada": 1130,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-05-30T00:00:00Z",
+        "precio_regular": 10290,
+        "precio_promocional": null,
+        "precio_usd": 9.08,
+        "cotizacion_aplicada": 1133,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-05-31T00:00:00Z",
+        "precio_regular": 10320,
+        "precio_promocional": null,
+        "precio_usd": 9.17,
+        "cotizacion_aplicada": 1126,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-01T00:00:00Z",
+        "precio_regular": 10350,
+        "precio_promocional": null,
+        "precio_usd": 9.18,
+        "cotizacion_aplicada": 1128,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-02T00:00:00Z",
+        "precio_regular": 10280,
+        "precio_promocional": null,
+        "precio_usd": 9.09,
+        "cotizacion_aplicada": 1131,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-03T00:00:00Z",
+        "precio_regular": 10310,
+        "precio_promocional": null,
+        "precio_usd": 9.1,
+        "cotizacion_aplicada": 1133,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-04T00:00:00Z",
+        "precio_regular": 10340,
+        "precio_promocional": null,
+        "precio_usd": 9.1,
+        "cotizacion_aplicada": 1136,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-05T00:00:00Z",
+        "precio_regular": 10370,
+        "precio_promocional": 9750,
+        "precio_usd": 9.19,
+        "cotizacion_aplicada": 1129,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-06T00:00:00Z",
+        "precio_regular": 10400,
+        "precio_promocional": null,
+        "precio_usd": 9.2,
+        "cotizacion_aplicada": 1131,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-07T00:00:00Z",
+        "precio_regular": 10430,
+        "precio_promocional": null,
+        "precio_usd": 9.2,
+        "cotizacion_aplicada": 1134,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-08T00:00:00Z",
+        "precio_regular": 10460,
+        "precio_promocional": null,
+        "precio_usd": 9.2,
+        "cotizacion_aplicada": 1137,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-09T00:00:00Z",
+        "precio_regular": 10380,
+        "precio_promocional": null,
+        "precio_usd": 9.11,
+        "cotizacion_aplicada": 1139,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-10T00:00:00Z",
+        "precio_regular": 10410,
+        "precio_promocional": null,
+        "precio_usd": 9.2,
+        "cotizacion_aplicada": 1132,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-11T00:00:00Z",
+        "precio_regular": 10440,
+        "precio_promocional": null,
+        "precio_usd": 9.2,
+        "cotizacion_aplicada": 1135,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-12T00:00:00Z",
+        "precio_regular": 10470,
+        "precio_promocional": null,
+        "precio_usd": 9.21,
+        "cotizacion_aplicada": 1137,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-13T00:00:00Z",
+        "precio_regular": 10500,
+        "precio_promocional": null,
+        "precio_usd": 9.21,
+        "cotizacion_aplicada": 1140,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-14T00:00:00Z",
+        "precio_regular": 10530,
+        "precio_promocional": null,
+        "precio_usd": 9.21,
+        "cotizacion_aplicada": 1143,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-15T00:00:00Z",
+        "precio_regular": 10560,
+        "precio_promocional": null,
+        "precio_usd": 9.3,
+        "cotizacion_aplicada": 1135,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-16T00:00:00Z",
+        "precio_regular": 10490,
+        "precio_promocional": 9860,
+        "precio_usd": 9.22,
+        "cotizacion_aplicada": 1138,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-17T00:00:00Z",
+        "precio_regular": 10520,
+        "precio_promocional": null,
+        "precio_usd": 9.23,
+        "cotizacion_aplicada": 1140,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-18T00:00:00Z",
+        "precio_regular": 10550,
+        "precio_promocional": null,
+        "precio_usd": 9.23,
+        "cotizacion_aplicada": 1143,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-19T00:00:00Z",
+        "precio_regular": 10580,
+        "precio_promocional": null,
+        "precio_usd": 9.23,
+        "cotizacion_aplicada": 1146,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-20T00:00:00Z",
+        "precio_regular": 10610,
+        "precio_promocional": null,
+        "precio_usd": 9.32,
+        "cotizacion_aplicada": 1138,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-21T00:00:00Z",
+        "precio_regular": 10640,
+        "precio_promocional": null,
+        "precio_usd": 9.33,
+        "cotizacion_aplicada": 1141,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-22T00:00:00Z",
+        "precio_regular": 10670,
+        "precio_promocional": null,
+        "precio_usd": 9.33,
+        "cotizacion_aplicada": 1144,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-23T00:00:00Z",
+        "precio_regular": 10590,
+        "precio_promocional": null,
+        "precio_usd": 9.24,
+        "cotizacion_aplicada": 1146,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-24T00:00:00Z",
+        "precio_regular": 10620,
+        "precio_promocional": null,
+        "precio_usd": 9.24,
+        "cotizacion_aplicada": 1149,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-25T00:00:00Z",
+        "precio_regular": 10650,
+        "precio_promocional": null,
+        "precio_usd": 9.33,
+        "cotizacion_aplicada": 1142,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-26T00:00:00Z",
+        "precio_regular": 10680,
+        "precio_promocional": null,
+        "precio_usd": 9.34,
+        "cotizacion_aplicada": 1144,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-27T00:00:00Z",
+        "precio_regular": 10710,
+        "precio_promocional": 10070,
+        "precio_usd": 9.34,
+        "cotizacion_aplicada": 1147,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-28T00:00:00Z",
+        "precio_regular": 10740,
+        "precio_promocional": null,
+        "precio_usd": 9.35,
+        "cotizacion_aplicada": 1149,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-06-29T00:00:00Z",
+        "precio_regular": 10770,
+        "precio_promocional": null,
+        "precio_usd": 9.35,
+        "cotizacion_aplicada": 1152,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-06-30T00:00:00Z",
+        "precio_regular": 10700,
+        "precio_promocional": null,
+        "precio_usd": 9.34,
+        "cotizacion_aplicada": 1145,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-01T00:00:00Z",
+        "precio_regular": 10730,
+        "precio_promocional": null,
+        "precio_usd": 9.35,
+        "cotizacion_aplicada": 1147,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-02T00:00:00Z",
+        "precio_regular": 10760,
+        "precio_promocional": null,
+        "precio_usd": 9.36,
+        "cotizacion_aplicada": 1150,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-03T00:00:00Z",
+        "precio_regular": 10790,
+        "precio_promocional": null,
+        "precio_usd": 9.36,
+        "cotizacion_aplicada": 1153,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-04T00:00:00Z",
+        "precio_regular": 10820,
+        "precio_promocional": null,
+        "precio_usd": 9.37,
+        "cotizacion_aplicada": 1155,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-05T00:00:00Z",
+        "precio_regular": 10850,
+        "precio_promocional": null,
+        "precio_usd": 9.45,
+        "cotizacion_aplicada": 1148,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-06T00:00:00Z",
+        "precio_regular": 10880,
+        "precio_promocional": null,
+        "precio_usd": 9.45,
+        "cotizacion_aplicada": 1151,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-07T00:00:00Z",
+        "precio_regular": 10800,
+        "precio_promocional": null,
+        "precio_usd": 9.37,
+        "cotizacion_aplicada": 1153,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-08T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1156,
+        "cotizacion_aproximada": false,
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
+      },
+      {
+        "timestamp_utc": "2026-07-09T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1159,
+        "cotizacion_aproximada": false,
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
+      },
+      {
+        "timestamp_utc": "2026-07-10T00:00:00Z",
+        "precio_regular": 10890,
+        "precio_promocional": null,
+        "precio_usd": 9.46,
+        "cotizacion_aplicada": 1151,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-11T00:00:00Z",
+        "precio_regular": 10920,
+        "precio_promocional": null,
+        "precio_usd": 9.46,
+        "cotizacion_aplicada": 1154,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-12T00:00:00Z",
+        "precio_regular": 10950,
+        "precio_promocional": null,
+        "precio_usd": 9.47,
+        "cotizacion_aplicada": 1156,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-13T00:00:00Z",
+        "precio_regular": 10980,
+        "precio_promocional": null,
+        "precio_usd": 9.47,
+        "cotizacion_aplicada": 1159,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-14T00:00:00Z",
+        "precio_regular": 10910,
+        "precio_promocional": null,
+        "precio_usd": 9.39,
+        "cotizacion_aplicada": 1162,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-15T00:00:00Z",
+        "precio_regular": 10940,
+        "precio_promocional": null,
+        "precio_usd": 9.48,
+        "cotizacion_aplicada": 1154,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-16T00:00:00Z",
+        "precio_regular": 10970,
+        "precio_promocional": null,
+        "precio_usd": 9.48,
+        "cotizacion_aplicada": 1157,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-17T00:00:00Z",
+        "precio_regular": 11000,
+        "precio_promocional": null,
+        "precio_usd": 9.48,
+        "cotizacion_aplicada": 1160,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-18T00:00:00Z",
+        "precio_regular": 11030,
+        "precio_promocional": null,
+        "precio_usd": 9.49,
+        "cotizacion_aplicada": 1162,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-19T00:00:00Z",
+        "precio_regular": 11060,
+        "precio_promocional": 10400,
+        "precio_usd": 9.49,
+        "cotizacion_aplicada": 1165,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-20T00:00:00Z",
+        "precio_regular": 11090,
+        "precio_promocional": null,
+        "precio_usd": 9.58,
+        "cotizacion_aplicada": 1158,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-21T00:00:00Z",
+        "precio_regular": 11010,
+        "precio_promocional": null,
+        "precio_usd": 9.49,
+        "cotizacion_aplicada": 1160,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-22T00:00:00Z",
+        "precio_regular": 11040,
+        "precio_promocional": null,
+        "precio_usd": 9.49,
+        "cotizacion_aplicada": 1163,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-23T00:00:00Z",
+        "precio_regular": 11070,
+        "precio_promocional": null,
+        "precio_usd": 9.5,
+        "cotizacion_aplicada": 1165,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-24T00:00:00Z",
+        "precio_regular": 11100,
+        "precio_promocional": null,
+        "precio_usd": 9.5,
+        "cotizacion_aplicada": 1168,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-25T00:00:00Z",
+        "precio_regular": 11130,
+        "precio_promocional": null,
+        "precio_usd": 9.59,
+        "cotizacion_aplicada": 1161,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-26T00:00:00Z",
+        "precio_regular": 11160,
         "precio_promocional": null,
         "precio_usd": 9.6,
+        "cotizacion_aplicada": 1163,
+        "cotizacion_aproximada": true,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1000.0,
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-07-27T00:00:00Z",
+        "precio_regular": 11190,
+        "precio_promocional": null,
+        "precio_usd": 9.6,
+        "cotizacion_aplicada": 1166,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-28T00:00:00Z",
+        "precio_regular": 11120,
+        "precio_promocional": null,
+        "precio_usd": 9.51,
+        "cotizacion_aplicada": 1169,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-29T00:00:00Z",
+        "precio_regular": 11150,
+        "precio_promocional": null,
+        "precio_usd": 9.52,
+        "cotizacion_aplicada": 1171,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-30T00:00:00Z",
+        "precio_regular": 11180,
+        "precio_promocional": 10510,
+        "precio_usd": 9.6,
+        "cotizacion_aplicada": 1164,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-07-31T00:00:00Z",
+        "precio_regular": 11210,
+        "precio_promocional": null,
+        "precio_usd": 9.61,
+        "cotizacion_aplicada": 1167,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-01T00:00:00Z",
+        "precio_regular": 11240,
+        "precio_promocional": null,
+        "precio_usd": 9.62,
+        "cotizacion_aplicada": 1169,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-02T00:00:00Z",
+        "precio_regular": 11270,
+        "precio_promocional": null,
+        "precio_usd": 9.62,
+        "cotizacion_aplicada": 1172,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-03T00:00:00Z",
+        "precio_regular": 11300,
+        "precio_promocional": null,
+        "precio_usd": 9.63,
+        "cotizacion_aplicada": 1174,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-04T00:00:00Z",
+        "precio_regular": 11220,
+        "precio_promocional": null,
+        "precio_usd": 9.61,
+        "cotizacion_aplicada": 1167,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-05T00:00:00Z",
+        "precio_regular": 11250,
+        "precio_promocional": null,
+        "precio_usd": 9.62,
+        "cotizacion_aplicada": 1170,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-06T00:00:00Z",
+        "precio_regular": 11280,
+        "precio_promocional": null,
+        "precio_usd": 9.62,
+        "cotizacion_aplicada": 1172,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-07T00:00:00Z",
+        "precio_regular": 11310,
+        "precio_promocional": null,
+        "precio_usd": 9.63,
+        "cotizacion_aplicada": 1175,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-08T00:00:00Z",
+        "precio_regular": 11340,
+        "precio_promocional": null,
+        "precio_usd": 9.63,
+        "cotizacion_aplicada": 1178,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-09T00:00:00Z",
+        "precio_regular": 11370,
+        "precio_promocional": null,
+        "precio_usd": 9.72,
+        "cotizacion_aplicada": 1170,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-10T00:00:00Z",
+        "precio_regular": 11400,
+        "precio_promocional": 10720,
+        "precio_usd": 9.72,
+        "cotizacion_aplicada": 1173,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-11T00:00:00Z",
+        "precio_regular": 11330,
+        "precio_promocional": null,
+        "precio_usd": 9.64,
+        "cotizacion_aplicada": 1175,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-12T00:00:00Z",
+        "precio_regular": 11360,
+        "precio_promocional": null,
+        "precio_usd": 9.64,
+        "cotizacion_aplicada": 1178,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-13T00:00:00Z",
+        "precio_regular": 11390,
+        "precio_promocional": null,
+        "precio_usd": 9.64,
+        "cotizacion_aplicada": 1181,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-14T00:00:00Z",
+        "precio_regular": 11420,
+        "precio_promocional": null,
+        "precio_usd": 9.74,
+        "cotizacion_aplicada": 1173,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-15T00:00:00Z",
+        "precio_regular": 11450,
+        "precio_promocional": null,
+        "precio_usd": 9.74,
+        "cotizacion_aplicada": 1176,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-16T00:00:00Z",
+        "precio_regular": 11480,
+        "precio_promocional": null,
+        "precio_usd": 9.74,
+        "cotizacion_aplicada": 1179,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-17T00:00:00Z",
+        "precio_regular": 11510,
+        "precio_promocional": null,
+        "precio_usd": 9.75,
+        "cotizacion_aplicada": 1181,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-18T00:00:00Z",
+        "precio_regular": 11440,
+        "precio_promocional": null,
+        "precio_usd": 9.66,
+        "cotizacion_aplicada": 1184,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-19T00:00:00Z",
+        "precio_regular": 11470,
+        "precio_promocional": null,
+        "precio_usd": 9.75,
+        "cotizacion_aplicada": 1177,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-20T00:00:00Z",
+        "precio_regular": 11500,
+        "precio_promocional": null,
+        "precio_usd": 9.75,
+        "cotizacion_aplicada": 1179,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-21T00:00:00Z",
+        "precio_regular": 11530,
+        "precio_promocional": 10840,
+        "precio_usd": 9.75,
+        "cotizacion_aplicada": 1182,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-22T00:00:00Z",
+        "precio_regular": 11560,
+        "precio_promocional": null,
+        "precio_usd": 9.76,
+        "cotizacion_aplicada": 1184,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-23T00:00:00Z",
+        "precio_regular": 11590,
+        "precio_promocional": null,
+        "precio_usd": 9.76,
+        "cotizacion_aplicada": 1187,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-24T00:00:00Z",
+        "precio_regular": 11620,
+        "precio_promocional": null,
+        "precio_usd": 9.85,
+        "cotizacion_aplicada": 1180,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-25T00:00:00Z",
+        "precio_regular": 11540,
+        "precio_promocional": null,
+        "precio_usd": 9.76,
+        "cotizacion_aplicada": 1182,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-26T00:00:00Z",
+        "precio_regular": 11570,
+        "precio_promocional": null,
+        "precio_usd": 9.76,
+        "cotizacion_aplicada": 1185,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-27T00:00:00Z",
+        "precio_regular": 11600,
+        "precio_promocional": null,
+        "precio_usd": 9.76,
+        "cotizacion_aplicada": 1188,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-28T00:00:00Z",
+        "precio_regular": 11630,
+        "precio_promocional": null,
+        "precio_usd": 9.77,
+        "cotizacion_aplicada": 1190,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-08-29T00:00:00Z",
+        "precio_regular": 11660,
+        "precio_promocional": null,
+        "precio_usd": 9.86,
+        "cotizacion_aplicada": 1183,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-30T00:00:00Z",
+        "precio_regular": 11690,
+        "precio_promocional": null,
+        "precio_usd": 9.86,
+        "cotizacion_aplicada": 1186,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-08-31T00:00:00Z",
+        "precio_regular": 11720,
+        "precio_promocional": null,
+        "precio_usd": 9.87,
+        "cotizacion_aplicada": 1188,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-01T00:00:00Z",
+        "precio_regular": 11650,
+        "precio_promocional": 10950,
+        "precio_usd": 9.78,
+        "cotizacion_aplicada": 1191,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-02T00:00:00Z",
+        "precio_regular": 11680,
+        "precio_promocional": null,
+        "precio_usd": 9.79,
+        "cotizacion_aplicada": 1193,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-03T00:00:00Z",
+        "precio_regular": 11710,
+        "precio_promocional": null,
+        "precio_usd": 9.87,
+        "cotizacion_aplicada": 1186,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-04T00:00:00Z",
+        "precio_regular": 11740,
+        "precio_promocional": null,
+        "precio_usd": 9.87,
+        "cotizacion_aplicada": 1189,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-05T00:00:00Z",
+        "precio_regular": 11770,
+        "precio_promocional": null,
+        "precio_usd": 9.88,
+        "cotizacion_aplicada": 1191,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-06T00:00:00Z",
+        "precio_regular": 11800,
+        "precio_promocional": null,
+        "precio_usd": 9.88,
+        "cotizacion_aplicada": 1194,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-07T00:00:00Z",
+        "precio_regular": 11830,
+        "precio_promocional": null,
+        "precio_usd": 9.88,
+        "cotizacion_aplicada": 1197,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-08T00:00:00Z",
+        "precio_regular": 11750,
+        "precio_promocional": null,
+        "precio_usd": 9.88,
+        "cotizacion_aplicada": 1189,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-09T00:00:00Z",
+        "precio_regular": 11780,
+        "precio_promocional": null,
+        "precio_usd": 9.88,
+        "cotizacion_aplicada": 1192,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-10T00:00:00Z",
+        "precio_regular": 11810,
+        "precio_promocional": null,
+        "precio_usd": 9.89,
+        "cotizacion_aplicada": 1194,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-11T00:00:00Z",
+        "precio_regular": 11840,
+        "precio_promocional": null,
+        "precio_usd": 9.89,
+        "cotizacion_aplicada": 1197,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-12T00:00:00Z",
+        "precio_regular": 11870,
+        "precio_promocional": 11160,
+        "precio_usd": 9.89,
+        "cotizacion_aplicada": 1200,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-13T00:00:00Z",
+        "precio_regular": 11900,
+        "precio_promocional": null,
+        "precio_usd": 9.98,
+        "cotizacion_aplicada": 1192,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-09-14T00:00:00Z",
+        "precio_regular": 11930,
+        "precio_promocional": null,
+        "precio_usd": 9.98,
+        "cotizacion_aplicada": 1195,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-15T00:00:00Z",
+        "precio_regular": 11860,
+        "precio_promocional": null,
+        "precio_usd": 9.9,
+        "cotizacion_aplicada": 1198,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-16T00:00:00Z",
+        "precio_regular": 11890,
+        "precio_promocional": null,
+        "precio_usd": 9.91,
+        "cotizacion_aplicada": 1200,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-17T00:00:00Z",
+        "precio_regular": 11920,
+        "precio_promocional": null,
+        "precio_usd": 9.91,
+        "cotizacion_aplicada": 1203,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-18T00:00:00Z",
+        "precio_regular": 11950,
+        "precio_promocional": null,
+        "precio_usd": 9.99,
+        "cotizacion_aplicada": 1196,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-09-19T00:00:00Z",
+        "precio_regular": 11980,
+        "precio_promocional": null,
+        "precio_usd": 10,
+        "cotizacion_aplicada": 1198,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-09-20T00:00:00Z",
-        "precio_regular": 9650.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.65,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1000.0,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1201,
         "cotizacion_aproximada": true,
-        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
       },
       {
         "timestamp_utc": "2026-09-21T00:00:00Z",
-        "precio_regular": 9650.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.65,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1000.0,
-        "cotizacion_aproximada": true,
-        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+        "precio_usd": null,
+        "cotizacion_aplicada": 1203,
+        "cotizacion_aproximada": false,
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
       },
       {
         "timestamp_utc": "2026-09-22T00:00:00Z",
-        "precio_regular": 9800.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.61,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1020.0,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1206,
         "cotizacion_aproximada": false,
-        "motivo": null
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
       },
       {
         "timestamp_utc": "2026-09-23T00:00:00Z",
-        "precio_regular": 9900.0,
-        "precio_promocional": null,
-        "precio_usd": 9.61,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1030.0,
+        "precio_regular": 12000,
+        "precio_promocional": 11280,
+        "precio_usd": 10.01,
+        "cotizacion_aplicada": 1199,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-09-24T00:00:00Z",
-        "precio_regular": 10000.0,
-        "precio_promocional": 9500.0,
-        "precio_usd": 9.62,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1040.0,
+        "precio_regular": 12030,
+        "precio_promocional": null,
+        "precio_usd": 10.02,
+        "cotizacion_aplicada": 1201,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-09-25T00:00:00Z",
-        "precio_regular": 10100.0,
-        "precio_promocional": 9500.0,
-        "precio_usd": 9.62,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1050.0,
+        "precio_regular": 12060,
+        "precio_promocional": null,
+        "precio_usd": 10.02,
+        "cotizacion_aplicada": 1204,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-09-26T00:00:00Z",
-        "precio_regular": 10250.0,
+        "precio_regular": 12090,
         "precio_promocional": null,
-        "precio_usd": 9.67,
+        "precio_usd": 10.02,
+        "cotizacion_aplicada": 1207,
+        "cotizacion_aproximada": true,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1060.0,
-        "cotizacion_aproximada": false,
-        "motivo": null
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-09-27T00:00:00Z",
-        "precio_regular": 10300.0,
+        "precio_regular": 12120,
         "precio_promocional": null,
-        "precio_usd": 9.72,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1060.0,
+        "precio_usd": 10.02,
+        "cotizacion_aplicada": 1209,
         "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
         "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-09-28T00:00:00Z",
-        "precio_regular": 10300.0,
+        "precio_regular": 12150,
         "precio_promocional": null,
-        "precio_usd": 9.72,
+        "precio_usd": 10.11,
+        "cotizacion_aplicada": 1202,
+        "cotizacion_aproximada": false,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1060.0,
-        "cotizacion_aproximada": true,
-        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+        "motivo": null
       },
       {
         "timestamp_utc": "2026-09-29T00:00:00Z",
-        "precio_regular": 10500.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.72,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1080.0,
+        "precio_usd": null,
+        "cotizacion_aplicada": null,
         "cotizacion_aproximada": false,
-        "motivo": null
+        "estado_dato": "SIN_DATO",
+        "motivo": "Sin cotización (>72h límite TTL superado)"
       },
       {
         "timestamp_utc": "2026-09-30T00:00:00Z",
         "precio_regular": null,
         "precio_promocional": null,
         "precio_usd": null,
-        "estado_dato": "AGOTADO",
         "cotizacion_aplicada": null,
         "cotizacion_aproximada": false,
-        "motivo": "Quiebre de stock en tienda"
+        "estado_dato": "SIN_DATO",
+        "motivo": "Sin cotización (>72h límite TTL superado)"
       },
       {
         "timestamp_utc": "2026-10-01T00:00:00Z",
-        "precio_regular": null,
+        "precio_regular": 12130,
         "precio_promocional": null,
-        "precio_usd": null,
-        "estado_dato": "AGOTADO",
-        "cotizacion_aplicada": null,
+        "precio_usd": 10.02,
+        "cotizacion_aplicada": 1210,
         "cotizacion_aproximada": false,
-        "motivo": "Quiebre de stock en tienda"
-      },
-      {
-        "timestamp_utc": "2026-10-02T00:00:00Z",
-        "precio_regular": null,
-        "precio_promocional": null,
-        "precio_usd": null,
-        "estado_dato": "AGOTADO",
-        "cotizacion_aplicada": null,
-        "cotizacion_aproximada": false,
-        "motivo": "Quiebre de stock en tienda"
-      },
-      {
-        "timestamp_utc": "2026-10-03T00:00:00Z",
-        "precio_regular": 10900.0,
-        "precio_promocional": null,
-        "precio_usd": 9.82,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1110.0,
-        "cotizacion_aproximada": false,
         "motivo": null
       },
       {
-        "timestamp_utc": "2026-10-04T00:00:00Z",
-        "precio_regular": 10950.0,
+        "timestamp_utc": "2026-10-02T00:00:00Z",
+        "precio_regular": 12160,
         "precio_promocional": null,
-        "precio_usd": 9.86,
+        "precio_usd": 10.03,
+        "cotizacion_aplicada": 1212,
+        "cotizacion_aproximada": false,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1110.0,
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-03T00:00:00Z",
+        "precio_regular": 12190,
+        "precio_promocional": null,
+        "precio_usd": 10.12,
+        "cotizacion_aplicada": 1205,
         "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-04T00:00:00Z",
+        "precio_regular": 12220,
+        "precio_promocional": 11490,
+        "precio_usd": 10.12,
+        "cotizacion_aplicada": 1208,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
         "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-10-05T00:00:00Z",
-        "precio_regular": 10950.0,
+        "precio_regular": 12250,
         "precio_promocional": null,
-        "precio_usd": 9.86,
+        "precio_usd": 10.12,
+        "cotizacion_aplicada": 1210,
+        "cotizacion_aproximada": false,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1110.0,
-        "cotizacion_aproximada": true,
-        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+        "motivo": null
       },
       {
         "timestamp_utc": "2026-10-06T00:00:00Z",
-        "precio_regular": 11100.0,
+        "precio_regular": 12180,
         "precio_promocional": null,
-        "precio_usd": 9.82,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1130.0,
+        "precio_usd": 10.04,
+        "cotizacion_aplicada": 1213,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-10-07T00:00:00Z",
-        "precio_regular": 11200.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.82,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1140.0,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1215,
         "cotizacion_aproximada": false,
-        "motivo": null
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
       },
       {
         "timestamp_utc": "2026-10-08T00:00:00Z",
-        "precio_regular": 11300.0,
+        "precio_regular": null,
         "precio_promocional": null,
-        "precio_usd": 9.83,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1150.0,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1208,
         "cotizacion_aproximada": false,
-        "motivo": null
+        "estado_dato": "AGOTADO",
+        "motivo": "Quiebre de stock en tienda"
       },
       {
         "timestamp_utc": "2026-10-09T00:00:00Z",
-        "precio_regular": 11450.0,
+        "precio_regular": 12270,
         "precio_promocional": null,
-        "precio_usd": 9.87,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1160.0,
+        "precio_usd": 10.13,
+        "cotizacion_aplicada": 1211,
         "cotizacion_aproximada": false,
-        "motivo": "Hito: Reduflación detectada (500g -> 450g)"
-      },
-      {
-        "timestamp_utc": "2026-10-10T00:00:00Z",
-        "precio_regular": 11500.0,
-        "precio_promocional": null,
-        "precio_usd": 9.91,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1160.0,
-        "cotizacion_aproximada": false,
         "motivo": null
       },
       {
-        "timestamp_utc": "2026-10-11T00:00:00Z",
-        "precio_regular": 11500.0,
+        "timestamp_utc": "2026-10-10T00:00:00Z",
+        "precio_regular": 12300,
         "precio_promocional": null,
-        "precio_usd": 9.91,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1160.0,
+        "precio_usd": 10.14,
+        "cotizacion_aplicada": 1213,
         "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-11T00:00:00Z",
+        "precio_regular": 12330,
+        "precio_promocional": null,
+        "precio_usd": 10.14,
+        "cotizacion_aplicada": 1216,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
         "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-10-12T00:00:00Z",
-        "precio_regular": 11600.0,
-        "precio_promocional": 10900.0,
-        "precio_usd": 9.91,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1170.0,
+        "precio_regular": 12360,
+        "precio_promocional": null,
+        "precio_usd": 10.14,
+        "cotizacion_aplicada": 1219,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-10-13T00:00:00Z",
-        "precio_regular": 11700.0,
+        "precio_regular": 12290,
         "precio_promocional": null,
-        "precio_usd": 9.92,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1180.0,
+        "precio_usd": 10.15,
+        "cotizacion_aplicada": 1211,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-10-14T00:00:00Z",
-        "precio_regular": null,
+        "precio_regular": 12320,
         "precio_promocional": null,
-        "precio_usd": null,
-        "estado_dato": "ERROR_CAPTURA",
-        "cotizacion_aplicada": null,
+        "precio_usd": 10.15,
+        "cotizacion_aplicada": 1214,
         "cotizacion_aproximada": false,
-        "motivo": "HTTP 503 Service Unavailable en portal origen"
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
       },
       {
         "timestamp_utc": "2026-10-15T00:00:00Z",
-        "precio_regular": 11850.0,
-        "precio_promocional": null,
-        "precio_usd": 9.96,
+        "precio_regular": 12350,
+        "precio_promocional": 11610,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1216,
+        "cotizacion_aproximada": false,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1190.0,
-        "cotizacion_aproximada": true,
-        "motivo": "Fallback cambiario 24h aplicado"
+        "motivo": null
       },
       {
         "timestamp_utc": "2026-10-16T00:00:00Z",
-        "precio_regular": 11950.0,
+        "precio_regular": 12380,
         "precio_promocional": null,
-        "precio_usd": 9.96,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1200.0,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1219,
         "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
         "motivo": null
       },
       {
         "timestamp_utc": "2026-10-17T00:00:00Z",
-        "precio_regular": 12000.0,
+        "precio_regular": 12410,
         "precio_promocional": null,
-        "precio_usd": 10.0,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1222,
+        "cotizacion_aproximada": true,
         "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1200.0,
-        "cotizacion_aproximada": false,
-        "motivo": null
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
       },
       {
         "timestamp_utc": "2026-10-18T00:00:00Z",
-        "precio_regular": 12000.0,
+        "precio_regular": 12440,
         "precio_promocional": null,
-        "precio_usd": 10.0,
-        "estado_dato": "DATO_VALIDO",
-        "cotizacion_aplicada": 1200.0,
+        "precio_usd": 10.25,
+        "cotizacion_aplicada": 1214,
         "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Hito: Reduflación detectada (500g -> 450g)"
+      },
+      {
+        "timestamp_utc": "2026-10-19T00:00:00Z",
+        "precio_regular": 12470,
+        "precio_promocional": null,
+        "precio_usd": 10.25,
+        "cotizacion_aplicada": 1217,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-20T00:00:00Z",
+        "precio_regular": 12390,
+        "precio_promocional": null,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1220,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-21T00:00:00Z",
+        "precio_regular": 12420,
+        "precio_promocional": null,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1222,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-22T00:00:00Z",
+        "precio_regular": 12450,
+        "precio_promocional": null,
+        "precio_usd": 10.16,
+        "cotizacion_aplicada": 1225,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-23T00:00:00Z",
+        "precio_regular": null,
+        "precio_promocional": null,
+        "precio_usd": null,
+        "cotizacion_aplicada": 1217,
+        "cotizacion_aproximada": false,
+        "estado_dato": "ERROR_CAPTURA",
+        "motivo": "HTTP 503 Service Unavailable en portal origen"
+      },
+      {
+        "timestamp_utc": "2026-10-24T00:00:00Z",
+        "precio_regular": 12510,
+        "precio_promocional": null,
+        "precio_usd": 10.25,
+        "cotizacion_aplicada": 1220,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
         "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-25T00:00:00Z",
+        "precio_regular": 12540,
+        "precio_promocional": null,
+        "precio_usd": 10.25,
+        "cotizacion_aplicada": 1223,
+        "cotizacion_aproximada": true,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": "Fallback cambiario fin de semana (TTL < 48h)"
+      },
+      {
+        "timestamp_utc": "2026-10-26T00:00:00Z",
+        "precio_regular": 12570,
+        "precio_promocional": 11820,
+        "precio_usd": 10.26,
+        "cotizacion_aplicada": 1225,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
+      },
+      {
+        "timestamp_utc": "2026-10-27T00:00:00Z",
+        "precio_regular": 12500,
+        "precio_promocional": null,
+        "precio_usd": 10.18,
+        "cotizacion_aplicada": 1228,
+        "cotizacion_aproximada": false,
+        "estado_dato": "DATO_VALIDO",
+        "motivo": null
       }
     ]
   },
   "pipeline_status": {
     "estado_global": "OPERATIVO",
-    "frescura_general_utc": "2026-10-18T14:00:00Z",
+    "frescura_general_utc": "2026-10-27T14:00:00Z",
     "alerta_atraso_24h": false,
     "tiendas": [
       {
         "tienda_id": "carrefour",
         "nombre": "Carrefour",
-        "ultima_corrida_utc": "2026-10-18T14:00:00Z",
+        "ultima_corrida_utc": "2026-10-27T14:00:00Z",
         "estado_corrida": "EXITOSA",
         "circuit_breaker_open": false,
         "fallback_activo": false,
         "publicaciones_procesadas": 42,
         "publicaciones_fallidas": 0,
-        "cobertura_pct": 100.0
+        "cobertura_pct": 100
       },
       {
         "tienda_id": "jumbo",
         "nombre": "Jumbo",
-        "ultima_corrida_utc": "2026-10-18T14:05:00Z",
+        "ultima_corrida_utc": "2026-10-27T14:05:00Z",
         "estado_corrida": "EXITOSA",
         "circuit_breaker_open": false,
         "fallback_activo": false,
         "publicaciones_procesadas": 40,
         "publicaciones_fallidas": 2,
-        "cobertura_pct": 95.0
+        "cobertura_pct": 95
       },
       {
         "tienda_id": "fravega",
         "nombre": "Frávega",
-        "ultima_corrida_utc": "2026-10-18T14:10:00Z",
+        "ultima_corrida_utc": "2026-10-27T14:10:00Z",
         "estado_corrida": "EXITOSA",
         "circuit_breaker_open": false,
         "fallback_activo": false,
         "publicaciones_procesadas": 28,
         "publicaciones_fallidas": 0,
-        "cobertura_pct": 100.0
+        "cobertura_pct": 100
       },
       {
         "tienda_id": "musimundo",
         "nombre": "Musimundo",
-        "ultima_corrida_utc": "2026-10-18T14:15:00Z",
+        "ultima_corrida_utc": "2026-10-27T14:15:00Z",
         "estado_corrida": "ADVERTENCIA",
         "circuit_breaker_open": false,
         "fallback_activo": true,

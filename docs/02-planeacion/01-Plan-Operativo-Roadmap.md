@@ -16,11 +16,11 @@
 | **Proyecto** | PriceScope — Monitor de Inflación Real Multimoneda |
 | **Organización / Programa** | Simulación Laboral Abierta — NoCountry |
 | **Sector de Negocio** | FinTech / Analítica Económica (B2B Analytics) |
-| **Versión** | **1.0** (Oficial para Ejecución y Sincronización de Células) |
-| **Fecha de Emisión** | 16 de Octubre de 2026 |
+| **Versión** | **1.1** (Actualización de Avance de Sprints y Homologación) |
+| **Fecha de Emisión** | 23 de Octubre de 2026 |
 | **Ubicación en Repositorio** | `docs/02-planeacion/01-Plan-Operativo-Roadmap.md` |
-| **Documentos Vinculantes** | `01-SRS-PriceScope.md`, `02-API-Contracts-OpenAPI.md`, `03-Data-Model-TimescaleDB.md`, `04-Business-Rules-Math-Logic.md`, `05-Software-Architecture-Pipeline.md`, `06-QA-Test-Matrix.md` |
-| **Estado** | En Revisión y Aprobación Técnica por Células Operativas |
+| **Documentos Vinculantes** | `01-SRS-PriceScope.md`, `02-API-Contracts-OpenAPI.md`, `03-Data-Model-TimescaleDB.md`, `04-Business-Rules-Math-Logic.md`, `05-Software-Architecture-Pipeline.md`, `06-QA-Test-Matrix.md`, `07-Frontend-UX-UI-Specs.md`, `08-Casos-de-Uso-Use-Cases.md` |
+| **Estado** | En Ejecución (Fase 1 - Sprint 3) |
 
 ---
 
@@ -30,6 +30,7 @@
 | Versión | Fecha | Autor | Descripción del Cambio |
 | :--- | :--- | :--- | :--- |
 | **1.0** | 2026-10-16 | Equipo PriceScope | Definición del roadmap operativo de 4 semanas, distribución por células, desglose de Sprints 1 a 4 con enfoque Local-First para Fase 1, transición a Fase 1.5 en cloud y criterios de Definition of Done (DoD). |
+| **1.1** | 2026-10-23 | Equipo PriceScope | Actualización del stack oficial (.NET 10, NestJS 12, Next.js 16 + React 19 + Tailwind v4), confirmación de cierre de Sprints 1 y 2, estado de Sprint 3 e inclusión de vinculación con especificaciones 002, 003 y 004. |
 
 ### ACTA DE APROBACIÓN TÉCNICA (SIGN-OFF)
 | Rol Operativo | Célula de Trabajo | Integrante Asignado | Estado de Revisión | Firma / Fecha |
@@ -56,7 +57,7 @@ timeline
 
 ### Principios Operativos del Equipo:
 1. **Prioridad Absoluta al Flujo Local-First (Semanas 1 a 3):**
-   * Toda la infraestructura (PostgreSQL 15 + TimescaleDB) corre localmente vía `docker-compose.yml`.
+   * Toda la infraestructura (PostgreSQL 16 + TimescaleDB) corre localmente vía `docker-compose.yml`.
    * C# / ASP.NET Core (.NET 10) con Hangfire ejecuta los scrapers y realiza `bulk insert` directo a la base de datos sin depender de latencias o cuotas de red externas.
    * La API en NestJS computa la mediana y sincronización cambiaria en local.
    * El cliente Next.js consume la API en `localhost:3000`.
@@ -74,8 +75,8 @@ timeline
 flowchart TD
     subgraph Celulas ["Ecosistema Monorepo PriceScope"]
         SCRAP["E-Scrapper (3 Devs)<br/>- Alejandro Hernández (Lead)<br/>- Anthony Ciprian<br/>- Sebastian Torres<br/>Stack: C# .NET 10, Hangfire, Playwright"]
-        API["E-API (2 Devs)<br/>- Luis Feliz (Lead)<br/>- Yenny Castro<br/>Stack: NestJS, TypeScript, TimescaleDB"]
-        FRONT["E-F/UX/UI (1 Dev)<br/>- Juan Camilo García (Lead)<br/>Stack: Next.js, React, Tailwind, Recharts"]
+        API["E-API (2 Devs)<br/>- Luis Feliz (Lead)<br/>- Yenny Castro<br/>Stack: NestJS 12, TypeScript, PostgreSQL 16 + TimescaleDB"]
+        FRONT["E-F/UX/UI (1 Dev)<br/>- Juan Camilo García (Lead)<br/>Stack: Next.js 16, React 19, Tailwind CSS v4, Recharts 3.10"]
         QA["E-QA (2 QA Analysts)<br/>- Gonzalo Cecchín (Tech Lead / PO)<br/>- Karina Luvianos (QA Lead)<br/>Foco: Automatización, Datos, Certificación"]
     end
 ```
@@ -84,32 +85,35 @@ flowchart TD
 
 ## 3. Desglose Operativo por Sprints (Roadmap de 4 Semanas)
 
-### 3.1 Sprint 1 (Semana 1) — Cimientos de Datos, Modelado y Scrapers Base
+### 3.1 Sprint 1 (Semana 1) — Cimientos de Datos, Modelado y Scrapers Base `[COMPLETADO]`
 * **Meta del Sprint:** Levantar el entorno local con Docker Compose, validar el DDL de TimescaleDB, iniciar la extracción de las primeras 2 tiendas en C# y configurar las estructuras base de NestJS y Next.js.
+* **Estado:** **100% Ejecutado y Aprobado.** Entorno Docker levantado, esquema DDL idempotentizado (`apps/database/init.sql`), pipeline de CI activo y shell de UI inicial configurado.
 
 | Célula | Entregables y Tareas Técnicas | Historias Vinculadas | Criterio de Éxito del Sprint |
 | :--- | :--- | :--- | :--- |
 | **`E-Scrapper`** | Configuración de proyecto ASP.NET Core (.NET 10), integración de Hangfire y Playwright .NET. Extracción piloto de Carrefour y Jumbo desde `seed.json`. Implementación del DTO con validación anti-cero. | `HU-02`, `HU-03`, `HU-04` | 50 productos de Carrefour y Jumbo extraídos en consola con precios válidos y stocks clasificados. |
-| **`E-API`** | Puesta a punto de PostgreSQL 15 + TimescaleDB en `docker-compose.yml`. Ejecución de DDL (`03-Data-Model-TimescaleDB.md`). Setup de NestJS con TypeScript y endpoints mock iniciales (`GET /api/v1/dashboard`). Ingesta horaria de divisas (DolarAPI). | `HU-21`, `HU-22`, `HU-23` | Base de datos local levantada con hypertables particionadas y cron de cotización financiera persistiendo USD. |
+| **`E-API`** | Puesta a punto de PostgreSQL 16 + TimescaleDB en `docker-compose.yml`. Ejecución de DDL (`03-Data-Model-TimescaleDB.md`). Setup de NestJS con TypeScript y endpoints mock iniciales (`GET /api/v1/dashboard`). Ingesta horaria de divisas (DolarAPI). | `HU-21`, `HU-22`, `HU-23` | Base de datos local levantada con hypertables particionadas y cron de cotización financiera persistiendo USD. |
 | **`E-F/UX/UI`** | Setup del workspace Next.js (`apps/client`). Configuración de Tailwind CSS y tipografía corporativa (Plus Jakarta Sans / Inter). Maquetación estática de la interfaz ejecutiva: Header, Tarjetas KPI y Sidebar. | `HU-41`, `HU-42` | Shell de la aplicación Next.js corriendo localmente con paleta institucional y estructura responsive. |
 | **`E-QA`** | Generación de datasets sintéticos para pruebas unitarias de mediana (`TC-MATH-01`, `TC-MATH-02`). Armado de la suite de pruebas unitarias en el pipeline de CI (`.github/workflows/`). | `TC-MATH-01..03` | Tests unitarios matemáticos ejecutándose en GitHub Actions en verde sobre mocks. |
 
 ---
 
-### 3.2 Sprint 2 (Semana 2) — Integración de Pipeline, Mediana y Gráficos
+### 3.2 Sprint 2 (Semana 2) — Integración de Pipeline, Mediana y Gráficos `[COMPLETADO]`
 * **Meta del Sprint:** Completar las 4 tiendas de scraping, persistir por bulk insert en TimescaleDB, calcular la mediana estadística en NestJS y pintar la serie temporal en Next.js.
+* **Estado:** **100% Ejecutado y Aprobado.** Interfaz web completada bajo especificaciones formales (`apps/client/specs/002`, `003`, `004`), modo mock transparente, gráficas Recharts adaptadas con downsampling, módulo de alertas y trazabilidad forense operativa.
 
 | Célula | Entregables y Tareas Técnicas | Historias Vinculadas | Criterio de Éxito del Sprint |
 | :--- | :--- | :--- | :--- |
 | **`E-Scrapper`** | Extracción de Frávega y Musimundo. Orquestación de ejecuciones concurrentes en Hangfire con reintentos exponenciales. Conexión de bulk insert directo hacia `observaciones_precios`. | `HU-02`, `HU-03`, `HU-05` | 4 tiendas scrapeadas de forma programada e insertadas en la base de datos sin duplicados. |
 | **`E-API`** | Implementación del cálculo de Mediana por categoría (`percentile_cont(0.5)`) y cruce de cotización de cierre a las 23:59:59 ART con fallback a 48h/72h (`SIN_DATO`). Lógica de paginación a 50 registros (`HU-46`). | `HU-30`, `HU-23`, `HU-46` | Endpoints `GET /dashboard`, `GET /alerts` y `GET /traceability` retornando datos reales calculados desde la base de datos. |
-| **`E-F/UX/UI`** | Integración de Recharts/Chart.js para visualización de series temporales. Implementación del selector de moneda (ARS / USD Blue / Oficial). Integración de la franja semafórica de calidad (verde, amarillo, rojo). | `HU-43`, `HU-44`, `HU-48` | Gráfico renderizando datos reales de la API local con soporte de cambio de divisa y franja de calidad. |
+| **`E-F/UX/UI`** | Integración de Recharts/Tremor Raw para visualización de series temporales. Selector de moneda (ARS / USD Blue / Oficial). Franja semafórica de calidad (verde, amarillo, rojo). Módulo de alertas paginado y ficha de trazabilidad con fallback de mocks. | `HU-43`, `HU-44`, `HU-48` | Gráfico renderizando series continuas con cambio de divisa, downsampling automático y cobertura de pruebas unitarias Vitest. |
 | **`E-QA`** | Ejecución de pruebas de resiliencia temporal: simulación de cortes cambiarios a 24h, 48h y 72h (`TC-RESIL-01..04`). Verificación de rechazo con código 422 en peticiones `limit > 50`. | `TC-RESIL-01..04`, `TC-PERF-01..02` | Validado el corte de serie (*gap*) ante más de 72h sin cotización y rechazo RFC 7807 de paginación. |
 
 ---
 
-### 3.3 Sprint 3 (Semana 3) — Optimización, Auditoría QA y Despliegue de Fase 1 (MVP)
+### 3.3 Sprint 3 (Semana 3) — Optimización, Auditoría QA y Despliegue de Fase 1 (MVP) `[EN CURSO]`
 * **Meta del Sprint:** Downsampling para 60 FPS, auditoría completa de los 17 casos de prueba por `E-QA`, firma de Sign-off y despliegue del MVP a servidores de producción.
+* **Estado:** **En Ejecución Activa.** Integración cruzada backend-frontend, estabilización de continuous aggregates en TimescaleDB y corrida de la matriz de homologación QA.
 
 | Célula | Entregables y Tareas Técnicas | Historias Vinculadas | Criterio de Éxito del Sprint |
 | :--- | :--- | :--- | :--- |

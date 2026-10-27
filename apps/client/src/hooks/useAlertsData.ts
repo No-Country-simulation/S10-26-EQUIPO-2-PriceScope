@@ -61,6 +61,7 @@ export function useAlertsData(): UseAlertsDataReturn {
   const isLoading = resolvedQueryKey !== currentQueryKey;
 
   const sidebar = useContext(SidebarContext);
+  const setSidebarAlertCount = sidebar?.setAlertCount;
 
   useEffect(() => {
     let isCancelled = false;
@@ -81,7 +82,9 @@ export function useAlertsData(): UseAlertsDataReturn {
           setMilestones(milestonesRes);
           setResolvedQueryKey(currentQueryKey);
           const criticals = alertsRes.alertas.filter((a) => a.diferencial_puntos > 10).length;
-          sidebar?.setAlertCount(criticals);
+          if (setSidebarAlertCount) {
+            setSidebarAlertCount(criticals);
+          }
         }
       })
       .catch((error) => {
@@ -94,7 +97,7 @@ export function useAlertsData(): UseAlertsDataReturn {
     return () => {
       isCancelled = true;
     };
-  }, [currentQueryKey, currentPage, storeFilter, categoryFilter, severityFilter, sidebar]);
+  }, [currentQueryKey, currentPage, storeFilter, categoryFilter, severityFilter, setSidebarAlertCount]);
 
   const setSeverityFilter = useCallback((severity: SeverityLevel) => {
     setSeverityFilterState(severity);

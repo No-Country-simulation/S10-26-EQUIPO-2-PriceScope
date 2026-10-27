@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>d0407ff9-b256-48c8-9d06-4d40de021a7e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.21" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
+    <PackageReference Include="Npgsql" Version="10.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

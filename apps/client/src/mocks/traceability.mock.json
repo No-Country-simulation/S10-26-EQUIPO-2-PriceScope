@@ -13,8 +13,8 @@
     },
     "hitos_reduflacion": [
       {
-        "id": "red-20261015-001",
-        "timestamp_utc": "2026-10-15T14:30:00Z",
+        "id": "red-20261025-001",
+        "timestamp_utc": "2026-10-25T14:30:00Z",
         "tipo": "REDUFLACION",
         "titulo": "Hito de Reduflación Registrado",
         "descripcion": "Reducción de presentación de 500g a 450g (-10.0%). El precio nominal se mantuvo en $12.000, pero el costo real por kilogramo saltó de $24.000 a $26.666,67/kg (+11.1%).",
@@ -28,7 +28,7 @@
     ],
     "historico_observaciones": [
       {
-        "timestamp_utc": "2026-10-17T14:30:00Z",
+        "timestamp_utc": "2026-10-27T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-virginia-500g",
@@ -46,7 +46,7 @@
         "motivo_faltante": null
       },
       {
-        "timestamp_utc": "2026-10-16T14:30:00Z",
+        "timestamp_utc": "2026-10-26T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-virginia-500g",
@@ -64,7 +64,7 @@
         "motivo_faltante": null
       },
       {
-        "timestamp_utc": "2026-10-15T14:30:00Z",
+        "timestamp_utc": "2026-10-25T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-virginia-500g",
@@ -82,7 +82,7 @@
         "motivo_faltante": "Fallback cambiario 24h aplicado"
       },
       {
-        "timestamp_utc": "2026-10-14T14:30:00Z",
+        "timestamp_utc": "2026-10-24T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-virginia-500g",
@@ -100,7 +100,7 @@
         "motivo_faltante": "Sin stock en góndola digital"
       },
       {
-        "timestamp_utc": "2026-10-13T14:30:00Z",
+        "timestamp_utc": "2026-10-23T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-virginia-500g",
@@ -134,7 +134,7 @@
     "hitos_reduflacion": [],
     "historico_observaciones": [
       {
-        "timestamp_utc": "2026-10-17T14:30:00Z",
+        "timestamp_utc": "2026-10-27T14:30:00Z",
         "tienda_id": "jumbo",
         "tienda_nombre": "Jumbo",
         "url_origen": "https://www.jumbo.com.ar/aceite-girasol-natura-1-5l",
@@ -152,7 +152,7 @@
         "motivo_faltante": null
       },
       {
-        "timestamp_utc": "2026-10-16T14:30:00Z",
+        "timestamp_utc": "2026-10-26T14:30:00Z",
         "tienda_id": "jumbo",
         "tienda_nombre": "Jumbo",
         "url_origen": "https://www.jumbo.com.ar/aceite-girasol-natura-1-5l",
@@ -170,7 +170,7 @@
         "motivo_faltante": null
       },
       {
-        "timestamp_utc": "2026-10-15T14:30:00Z",
+        "timestamp_utc": "2026-10-25T14:30:00Z",
         "tienda_id": "jumbo",
         "tienda_nombre": "Jumbo",
         "url_origen": "https://www.jumbo.com.ar/aceite-girasol-natura-1-5l",
@@ -204,7 +204,7 @@
     "hitos_reduflacion": [],
     "historico_observaciones": [
       {
-        "timestamp_utc": "2026-10-17T14:30:00Z",
+        "timestamp_utc": "2026-10-27T14:30:00Z",
         "tienda_id": "fravega",
         "tienda_nombre": "Frávega",
         "url_origen": "https://www.fravega.com/p/smart-tv-55-uhd-samsung",
@@ -222,7 +222,7 @@
         "motivo_faltante": null
       },
       {
-        "timestamp_utc": "2026-10-16T14:30:00Z",
+        "timestamp_utc": "2026-10-26T14:30:00Z",
         "tienda_id": "fravega",
         "tienda_nombre": "Frávega",
         "url_origen": "https://www.fravega.com/p/smart-tv-55-uhd-samsung",
@@ -256,7 +256,7 @@
     "hitos_reduflacion": [],
     "historico_observaciones": [
       {
-        "timestamp_utc": "2026-10-17T14:30:00Z",
+        "timestamp_utc": "2026-10-27T14:30:00Z",
         "tienda_id": "carrefour",
         "tienda_nombre": "Carrefour",
         "url_origen": "https://www.carrefour.com.ar/yerba-mate-playadito-suave-1kg",

@@ -10,18 +10,21 @@ interface DashboardKpiGridProps {
   kpis: DashboardResponse["kpis"] | null;
   activeCategory: VariacionCategoria | null;
   totalProducts?: number;
+  hasData?: boolean;
 }
 
 /**
- * Grilla ejecutiva de 4 tarjetas KPI del Dashboard con soporte de carga Skeleton.
+ * Grilla ejecutiva de 4 tarjetas KPI del Dashboard con soporte de carga Skeleton
+ * y estado neutralizado cuando no hay datos en la base de datos o en la consulta.
  */
 export function DashboardKpiGrid({
   isLoading,
   kpis,
   activeCategory,
   totalProducts = 0,
+  hasData = true,
 }: DashboardKpiGridProps) {
-  if (isLoading || !kpis || !activeCategory) {
+  if (isLoading) {
     return (
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
@@ -41,6 +44,65 @@ export function DashboardKpiGrid({
             </div>
           </Card>
         ))}
+      </section>
+    );
+  }
+
+  // Estado cuando no hay observaciones en la base de datos para la fecha o filtros seleccionados
+  if (!hasData || !kpis || !activeCategory) {
+    return (
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiCard
+          className="h-full"
+          title="Variación ARS"
+          metric="--"
+          subtitle="Sin cotizaciones para el período"
+          icon="$"
+          accent="blue"
+          badgeVariant="neutral"
+          badgeText="Sin datos"
+          footerLabel="Muestra ponderada"
+          footerValue="0 productos (0%)"
+        />
+
+        <KpiCard
+          className="h-full"
+          title="Variación USD"
+          metric="--"
+          subtitle="Sin cotización de referencia en DB"
+          icon="US$"
+          accent="emerald"
+          badgeVariant="neutral"
+          badgeText="Sin datos"
+          footerLabel="Fijación cambiaria"
+          footerValue="Sin registro"
+        />
+
+        <KpiCard
+          className="h-full"
+          title="vs. Devaluación"
+          metric="--"
+          subtitle="Diferencial neto no disponible"
+          icon={<RiScales3Line className="size-3.5" />}
+          accent="amber"
+          badgeVariant="neutral"
+          badgeText="Sin datos"
+          footerLabel="Divergencia real"
+          footerValue="Sin divergencia"
+        />
+
+        <KpiCard
+          className="h-full"
+          title="Mediana Categoría"
+          metric="--"
+          subtitle="Sin productos registrados en DB"
+          icon="M"
+          accent="purple"
+          badgeVariant="neutral"
+          badgeText="Sin datos"
+          footerLabel="Cobertura muestral"
+          footerValue="0%"
+        />
       </section>
     );
   }

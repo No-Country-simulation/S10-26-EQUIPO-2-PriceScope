@@ -399,6 +399,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Carrefour",
       "ultima_corrida_utc": "2026-10-16T14:00:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 42,
       "publicaciones_fallidas": 0,
       "cobertura_pct": 100.0
@@ -408,6 +410,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Jumbo",
       "ultima_corrida_utc": "2026-10-16T14:05:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 40,
       "publicaciones_fallidas": 2,
       "cobertura_pct": 95.0
@@ -417,6 +421,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Frávega",
       "ultima_corrida_utc": "2026-10-16T14:10:00Z",
       "estado_corrida": "EXITOSA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 28,
       "publicaciones_fallidas": 0,
       "cobertura_pct": 100.0
@@ -426,6 +432,8 @@ Con el propósito de mitigar riesgos de integración y permitir el avance simult
       "nombre": "Musimundo",
       "ultima_corrida_utc": "2026-10-16T14:15:00Z",
       "estado_corrida": "ADVERTENCIA",
+      "circuit_breaker_open": false,
+      "fallback_activo": false,
       "publicaciones_procesadas": 25,
       "publicaciones_fallidas": 3,
       "cobertura_pct": 89.2

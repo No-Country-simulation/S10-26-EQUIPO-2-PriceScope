@@ -64,9 +64,21 @@ export const SidebarContext = createContext<SidebarContextType | null>(null);
  */
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [pilotStores, setPilotStores] = useState<readonly PilotStoreItem[]>(DEFAULT_PILOT_STORES);
-  const [lastUpdatedLabel, setLastUpdatedLabel] = useState<string>("Hoy 14:00 ART");
-  const [alertCount, setAlertCount] = useState<number>(3);
+  const [pilotStores, setPilotStoresState] = useState<readonly PilotStoreItem[]>(DEFAULT_PILOT_STORES);
+  const [lastUpdatedLabel, setLastUpdatedLabelState] = useState<string>("Hoy 14:00 ART");
+  const [alertCount, setAlertCountState] = useState<number>(3);
+
+  const setPilotStores = useCallback((stores: readonly PilotStoreItem[]) => {
+    setPilotStoresState(stores);
+  }, []);
+
+  const setLastUpdatedLabel = useCallback((label: string) => {
+    setLastUpdatedLabelState(label);
+  }, []);
+
+  const setAlertCount = useCallback((count: number) => {
+    setAlertCountState(count);
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -103,7 +115,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [setPilotStores, setLastUpdatedLabel, setAlertCount]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
@@ -148,7 +160,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
       alertCount,
       setAlertCount,
     }),
-    [isCollapsed, toggleSidebar, pilotStores, lastUpdatedLabel, alertCount]
+    [isCollapsed, toggleSidebar, pilotStores, setPilotStores, lastUpdatedLabel, setLastUpdatedLabel, alertCount, setAlertCount]
   );
 
   return (

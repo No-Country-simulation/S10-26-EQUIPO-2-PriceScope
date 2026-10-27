@@ -219,7 +219,7 @@ export function LineChart({
                 connectNulls={lineConnectNulls}
                 strokeOpacity={activeLegend && activeLegend !== category ? 0.25 : 1}
                 className={cx(getColorClassName(color, "stroke"))}
-                dot={false}
+                dot={data.length === 1 ? { r: 5, strokeWidth: 2 } : false}
                 shape={(lineProps) => (
                   <ExtendedLineShape
                     {...lineProps}

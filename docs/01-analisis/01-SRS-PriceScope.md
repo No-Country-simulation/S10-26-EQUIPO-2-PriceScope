@@ -19,7 +19,7 @@
 | **Versión** | 1.0 (Oficial Aprobada para Desarrollo) |
 | **Fecha de Emisión** | 16 de Octubre de 2026 |
 | **Ubicación en Repositorio** | `docs/01-analisis/01-SRS-PriceScope.md` |
-| **Documentos Vinculantes** | `02-API-Contracts-OpenAPI.md`, `03-Data-Model-TimescaleDB.md`, `04-Business-Rules-Math-Logic.md` |
+| **Documentos Vinculantes** | `02-API-Contracts-OpenAPI.md`, `03-Data-Model-TimescaleDB.md`, `04-Business-Rules-Math-Logic.md`, `08-Casos-de-Uso-Use-Cases.md` |
 | **Estado** | En Revisión y Aprobación Técnica |
 
 ---
@@ -37,6 +37,7 @@ Versión | Fecha       | Autor               | Descripción del Cambio
 --------|-------------|---------------------|-----------------------------------
 0.1     | 2026-10-12  | Equipo PriceScope   | Borrador inicial de HU (45 ítems)
 1.0     | 2026-10-16  | Juan Camilo García  | Reestructuración oficial: inclusión de HU-00 (Seed JSON), HU-46 y HU-47, formalización matemática (Mediana, Cierre UTC,  TTL 72h) y matriz E-Team.
+1.1     | 2026-10-20  | Equipo PriceScope   | Sincronización con 08-Casos-de-Uso: incorporación de CU-12 (HU-17/18/19/41) en Anexo C, marcación explícita de HUs diferidas (Fase 1.5/2), umbral de cobertura mínima del 80% (HU-29) y cotización default USD Blue (venta, cierre 23:59:59 ART).
 
 ### ACTA DE APROBACIÓN DE ALCANCE (SIGN-OFF)
 La firma de este apartado formaliza los requerimientos funcionales y no 
@@ -789,7 +790,7 @@ PriceScope implementa una política vinculante de extracción automatizada étic
 * **Para:** Interpretar la solidez estadística antes de tomar decisiones corporativas.
 * **Criterios de Aceptación:**
   * [ ] Todo KPI expone: `fecha_inicial`, `fecha_final`, `cobertura_pct` y regla aplicada (LOCF).
-  * [ ] Si la cobertura es inferior al umbral mínimo, informa `SIN_DATOS_SUFICIENTES`.
+  * [ ] Si la cobertura muestral es inferior al umbral mínimo del **80%** (`cobertura_pct < 80%`), informa `SIN_DATOS_SUFICIENTES`.
 * **Datos de Prueba Sugeridos:**
   * Muestra con 1 día de faltante → Informa cobertura del 95.0% y regla LOCF aplicada.
 * **Pantallas / Endpoints Involucrados:** Metadatos de KPIs en el Dashboard.
@@ -1177,19 +1178,22 @@ PriceScope implementa una política vinculante de extracción automatizada étic
 
 ## 9. Anexo C: Mapa de Casos de Uso del Sistema (CU)
 
+> **Nota de Trazabilidad:** El desarrollo completo de flujos principales, flujos alternativos, excepciones y criterios de aceptación de estos 12 Casos de Uso se encuentra en [`08-Casos-de-Uso-Use-Cases.md`](08-Casos-de-Uso-Use-Cases.md). Las Historias de Usuario entre paréntesis corresponden al alcance condicional o post-MVP (Fase 1.5 / Fase 2).
+
 | Caso de Uso (CU) | Nombre del Proceso Funcional | Historias de Usuario Asociadas (HU) | Células Involucradas |
 | :--- | :--- | :--- | :--- |
-| **CU-01** | Ingesta y Captura Diaria de Precios | HU-00, HU-01, HU-02, HU-03, HU-04, HU-05, HU-06 | `E-Scrapper`, `E-API` |
-| **CU-02** | Normalización y Matching Canónico | HU-07, HU-08, HU-09, HU-10, HU-11 | `E-API`, `E-F/UX/UI` |
-| **CU-03** | Clasificación de Precios, Stock y Reduflación | HU-12, HU-13, HU-14, HU-15, HU-16 | `E-Scrapper`, `E-API` |
+| **CU-01** | Ingesta y Captura Diaria de Precios | HU-00, (HU-01 diferida Fase 1.5), HU-02, HU-03, HU-04, HU-05, HU-06 | `E-Scrapper`, `E-API` |
+| **CU-02** | Normalización y Matching Canónico | HU-07, HU-08 (1:1 seed en MVP), HU-09, (HU-10 diferida Fase 1.5), HU-11 | `E-API`, `E-F/UX/UI` |
+| **CU-03** | Clasificación de Precios, Stock y Reduflación | HU-12, (HU-13 diferida Fase 2), HU-14, HU-15, HU-16 | `E-Scrapper`, `E-API` |
 | **CU-04** | Ingesta y Validación de Divisas | HU-20, HU-21, HU-22 | `E-API` |
 | **CU-05** | Conversión Temporal y Cierre Cambiario | HU-23, HU-24, HU-25 | `E-API` |
-| **CU-06** | Cálculo de Variaciones y Mediana por Categoría | HU-26, HU-27, HU-28, HU-29, HU-30, HU-31 | `E-API` |
-| **CU-07** | Visualización en Dashboard, Gráficas y Filtros | HU-32, HU-33, HU-34, HU-35, HU-36 | `E-F/UX/UI`, `E-API` |
+| **CU-06** | Cálculo de Variaciones y Mediana por Categoría | HU-26, HU-27, HU-28, HU-29, HU-30, (HU-31 diferida Fase 2) | `E-API` |
+| **CU-07** | Visualización en Dashboard, Gráficas y Filtros | HU-32, HU-33, (HU-34 diferida Fase 2), HU-35, HU-36 | `E-F/UX/UI`, `E-API` |
 | **CU-08** | Detección y Exposición de Alertas e Hitos | HU-37, HU-38, HU-39 | `E-API`, `E-F/UX/UI` |
-| **CU-09** | Curaduría y Auditoría de Datos | HU-40, HU-41, HU-42 | `E-API`, `E-F/UX/UI` |
+| **CU-09** | Curaduría y Auditoría Manual de Datos *(Fase 1.5/2)* | (HU-40), HU-41 (curaduría manual), (HU-42) | `E-API`, `E-F/UX/UI` |
 | **CU-10** | Monitoreo Operativo y Calidad del Pipeline | HU-43, HU-44, HU-45 | `E-Scrapper`, `E-API`, `E-F/UX/UI` |
 | **CU-11** | Optimización, Paginación y Rendimiento UI | HU-46, HU-47 | `E-API`, `E-F/UX/UI`, `E-QA` |
+| **CU-12** | Persistencia Histórica, Estado del Dato y Trazabilidad Forense | HU-17, HU-18, HU-19, HU-41 (bitácora append-only automática) | `E-API`, `E-F/UX/UI` |
 
 ---
 
@@ -1198,12 +1202,12 @@ PriceScope implementa una política vinculante de extracción automatizada étic
 Las siguientes definiciones técnicas y de negocio han sido formalizadas para el desarrollo del MVP y quedan sujetas a validación del Tech Lead / PO (Gonzalo Cecchín):
 
 1. **Conjunto de Tiendas Piloto:** Confirmación de las 4 tiendas iniciales: Carrefour y Jumbo (Supermercados / Canasta Básica); Frávega y Musimundo (Electrodomésticos / Bienes Durables).
-2. **Método de Agregación Definitivo (HU-30):** Uso exclusivo de la Mediana de las variaciones porcentuales individuales para calcular la variación por categoría, prohibiendo el promedio simple no ponderado.
-3. **Umbrales Numéricos de Matching (Anexo B):** Aprobación automática en $\ge 0.85$, rechazo automático en $\le 0.40$ y asignación a Zona Gris entre $0.41$ y $0.84$.
-4. **Proveedor de Cotizaciones Cambiarias (HU-20):** Implementación base con DolarAPI (o Bluelytics) para cotización oficial y paralela/blue.
-5. **Criterio de Sincronización Cambiaria (HU-23):** Emparejamiento al "Cierre del Día" tomando la última cotización anterior a las 23:59:59 de la hora local del mercado, gestionado 100% en el Backend sobre timestamps en UTC.
+2. **Método de Agregación Definitivo (HU-30):** Uso exclusivo de la Mediana de las variaciones porcentuales individuales para calcular la variación por categoría, prohibiendo el promedio simple no ponderado, con umbral mínimo de cobertura muestral del **80%** (`< 80% → SIN_DATOS_SUFICIENTES`).
+3. **Umbrales Numéricos de Matching (Anexo B):** En MVP (Fase 1) el matching opera de forma determinística 1:1 desde `seed.json`. Para Fase 1.5 se aplica aprobación automática en $\ge 0.85$, rechazo automático en $\le 0.40$ y asignación a Zona Gris entre $0.41$ y $0.84$ (HU-10 diferida a Fase 1.5).
+4. **Proveedor y Serie Cambiaria por Defecto (HU-20):** Implementación base con DolarAPI (o Bluelytics) para cotización oficial y paralela/blue. La serie por defecto en consultas es **USD Blue/Paralela (condición venta, cierre)**, manteniendo USD Oficial disponible en los filtros con explicación explícita.
+5. **Criterio de Sincronización Cambiaria (HU-23):** Emparejamiento al "Cierre del Día" tomando la última cotización anterior a las **23:59:59 ART (UTC-3)** de la fecha local del mercado, gestionado 100% en el Backend sobre timestamps en UTC.
 6. **Ventana de Tolerancia Cambiaria / TTL (HU-22):** Límite máximo de 72 horas para cotizaciones de respaldo; presencia obligatoria del flag `"cotizacion_aproximada": true` y corte de serie a `SIN_DATO` si se supera el plazo.
-7. **Taxonomía de Faltantes (Anexo A):** Adopción de los tres estados (`AGOTADO`, `ERROR_CAPTURA`, `SIN_DATO`) con prohibición estricta del valor numérico cero (`0`).
+7. **Taxonomía de Faltantes (Anexo A):** Adopción de los cuatro valores cerrados en `enum_estado_dato` (`DATO_VALIDO`, `AGOTADO`, `ERROR_CAPTURA`, `SIN_DATO`) con prohibición estricta del valor numérico cero (`0`). Las respuestas `HTTP 404` se tipifican como `AGOTADO` sin reintento registrando `'HTTP_404_DESPUBLICADO'` en `motivo_faltante`.
 8. **Protección de Rendimiento y Memoria (HU-46 y HU-47):** Límite obligatorio de 50 registros por página en listados masivos y downsampling semanal por mediana en consultas que superen los 3 meses.
 9. **Visibilidad de la Ficha de Trazabilidad (HU-35):** Acceso libre tanto para el analista interno como para el cliente corporativo en el entorno de demostración.
 10. **Autenticación y Roles de Acceso:** Excluidos del MVP (acceso abierto para la demo de la simulación laboral); marcados como deuda técnica prioritaria para el pase a producción.

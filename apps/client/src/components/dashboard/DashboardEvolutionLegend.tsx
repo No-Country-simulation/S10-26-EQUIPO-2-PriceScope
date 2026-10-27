@@ -4,6 +4,7 @@ import { STATUS_COLORS } from "@/lib/dashboard";
 
 const ALL_LEGEND_ITEMS = [
   { id: "valido", label: STATUS_COLORS.VALIDO.label, colorClass: STATUS_COLORS.VALIDO.tailwindBg },
+  { id: "ttl", label: STATUS_COLORS.TTL.label, colorClass: STATUS_COLORS.TTL.tailwindBg },
   {
     id: "agotado",
     label: STATUS_COLORS.AGOTADO.label,
@@ -23,13 +24,14 @@ const ALL_LEGEND_ITEMS = [
 ];
 
 export interface DashboardEvolutionLegendProps {
-  trackerData: TrackerBlockProps[];
+  trackerData?: TrackerBlockProps[];
 }
 
 /**
- * Leyenda de estados visibles en la sección de evolución del dashboard.
+ * Leyenda dinámica de estados: muestra exclusivamente los indicadores
+ * presentes en la barra semafórica activa del tracker.
  */
-export function DashboardEvolutionLegend({ trackerData }: DashboardEvolutionLegendProps) {
+export function DashboardEvolutionLegend({ trackerData = [] }: DashboardEvolutionLegendProps) {
   const activeItems = useMemo(() => {
     const presentColors = new Set(trackerData.map((item) => item.color));
     return ALL_LEGEND_ITEMS.filter((item) => presentColors.has(item.colorClass));

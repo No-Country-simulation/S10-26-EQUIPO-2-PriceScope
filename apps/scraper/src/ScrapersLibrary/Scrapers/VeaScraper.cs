@@ -107,21 +107,47 @@ public sealed class VeaScraper(
 
     private async Task ProcessProduct(IPage page, ScrapedProduct product)
     {
-        await page.GotoAsync(product.Url, new PageGotoOptions
+        var response = await page.GotoAsync(product.Url, new PageGotoOptions
         {
             WaitUntil = WaitUntilState.DOMContentLoaded,
             Timeout = 60_000
         });
 
+        if (response?.Status == 404)
+        {
+            MarkAsUnpublished(product);
+            product.CapturedAt = DateTime.UtcNow;
+            return;
+        }
+        else if (response?.Status == 403)
+        {
+            MarkAsBlocked(product);
+            product.CapturedAt = DateTime.UtcNow;
+        }
+        else if (response?.Status is < 200 or >= 300)
+        {
+            throw new Exception($"Unknown Error. HTTP_{response.Status}");
+        }
+
         // wait for elements to appear
         var productBoxLocator = page.Locator(".vtex-flex-layout-0-x-flexCol--product-box").First;
-        await productBoxLocator.WaitForAsync(new LocatorWaitForOptions
+        try
         {
-            State = WaitForSelectorState.Attached,
-            Timeout = 30_000
-        });
+            await productBoxLocator.WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Attached,
+                Timeout = 30_000
+            });
+        }
+        catch (TimeoutException)
+        {
+            MarkAsUnpublished(product);
+            product.CapturedAt = DateTime.UtcNow;
+            return;
+        }
 
         var currentPriceLocator = productBoxLocator.Locator("#priceContainer").First;
+
         await currentPriceLocator.WaitForAsync(new LocatorWaitForOptions
         {
             State = WaitForSelectorState.Attached,
@@ -143,29 +169,10 @@ public sealed class VeaScraper(
             crossOutPrice = ParsePrice(crossOutPriceText);
         }
 
-        // get stock availability
-        var addToCartButton = productBoxLocator
-            .Locator(".vtex-flex-layout-0-x-flexRow--buyButton .vtex-addToCart-button");
-
-        bool isOutOfStock = false;
-
-        if (await addToCartButton.CountAsync() > 0)
-        {
-            string buttonText = await addToCartButton.InnerTextAsync();
-            isOutOfStock = (await addToCartButton.IsDisabledAsync()) ||
-                               Regex.IsMatch(buttonText, @"agotado|sin stock|no disponible",
-                                   RegexOptions.IgnoreCase) ||
-                               await page.GetByText("Producto agotado", new PageGetByTextOptions { Exact = false })
-                                   .CountAsync() > 0;
-        }
-
         // fill prices
-        if (isOutOfStock || (currentPrice == 0 && crossOutPrice is null))
+        if (currentPrice == 0 && crossOutPrice is null)
         {
-            product.RegularPrice = null;
-            product.PromoPrice = null;
-            product.Available = false;
-            product.DataState = ScrapedProductStatus.AGOTADO;
+            MarkAsUnpublished(product);
         }
         else
         {
@@ -181,12 +188,13 @@ public sealed class VeaScraper(
         // ARS is the default value
         // product.CurrencyCode = "ARS";
         // bienes durables son siempre 1
-        // product.NetContent = 1;
-
+        product.NetContent = 1;
+        product.Pack = 1;
         product.CapturedAt = DateTime.UtcNow;
-        product.NetContentUnit = Unit.None;
+        product.NetContentUnit = Unit.unidad;
+
         product.Error = string.Empty;
-        product.UnitPrice = null;
+        product.UnitPrice = product.RegularPrice;
     }
 
     private static decimal ParsePrice(string text)
@@ -198,5 +206,25 @@ public sealed class VeaScraper(
         }
 
         return price;
+    }
+
+    private static void MarkAsUnpublished(ScrapedProduct product)
+    {
+        product.RegularPrice = null;
+        product.PromoPrice = null;
+        product.UnitPrice = null;
+        product.Available = false;
+        product.DataState = ScrapedProductStatus.AGOTADO;
+        product.Error = "HTTP_404_DESPUBLICADO";
+    }
+
+    private static void MarkAsBlocked(ScrapedProduct product)
+    {
+        product.RegularPrice = null;
+        product.PromoPrice = null;
+        product.UnitPrice = null;
+        product.Available = false;
+        product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
+        product.Error = "HTTP_403_ACCESS_BLOCKED";
     }
 }

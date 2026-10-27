@@ -8,6 +8,31 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+# NUESTRO ESTANDAR DE INGENIERIA & DEVBRAIN BOX (OBLIGATORIO)
+
+1. **PASO CERO OBLIGATORIO (PRE-FLIGHT INMEDIATO):**
+   - **PROHIBIDO** realizar cualquier acción (planificar, responder, explorar archivos con read_file/grep o escribir código) sin invocar PRIMERO:
+     `get_surgical_context(task_query="<descripción_de_la_tarea>", project_id="S10-26-EQUIPO-2-PriceScope", workspace_path="E:\\S10-26-EQUIPO-2-PriceScope")`.
+   - **PROHIBIDO LEER DOCUMENTOS EN DISCO:** Los requerimientos, contratos API y reglas de negocio viven centralizados en DevBrain. NO busques ni leas archivos Markdown (`.md`), PDFs ni especificaciones en el disco local; DevBrain ya te entrega las especificaciones completas con autoridad canónica.
+   - Si el payload recomienda una skill en `recommended_skills`, cárgala inmediatamente con `load_dev_skill(skill_slug)`.
+   - **Autonomía DENTRO de la documentación:** Si los contratos, flujos y reglas ya están definidos en el contexto devuelto, ejecuta de principio a fin sin interrumpir y **sin salirte un solo milímetro de la documentación**.
+   - **Freno de Mano (Hard Stop) en Ambigüedades:** Si encuentras un vacío, contradicción o decisión no documentada en el contexto, **PROHIBIDO ASUMIR O TOMAR DECISIONES SIN CONSENTIMIENTO**. Detente, plantea el dilema con 2 opciones claras al usuario y, tras su respuesta, persiste la decisión con `remember_project_lesson(project_id, title, lesson)`.
+
+2. **Principios Innegociables ("Nuestro Estándar"):**
+   - **SOLID, Clean Code, DRY, KISS, YAGNI y Separación de Responsabilidades (SoC).**
+   - **Edición Quirúrgica Obligatoria (Diff-First):** PROHIBIDO reescribir archivos enteros (`write_file` con sobrescritura total) para modificaciones puntuales. Usa OBLIGATORIAMENTE herramientas de edición localizada (`edit_file` / reemplazo de bloques) sustituyendo solo las líneas afectadas. Preserva imports, comentarios y funciones existentes.
+   - **Anti-Reinspección Redundante:** PROHIBIDO volver a leer archivos completos que ya fueron inspeccionados en la sesión. Confía en el contexto previo o apóyate en el mapa AST (`code_map`). Si necesitas verificar algo puntual en archivos grandes, usa OBLIGATORIAMENTE lectura acotada por rangos (`StartLine`/`EndLine`).
+   - **Modularidad y SRP:** Componentes y módulos pequeños (~40-100 líneas) con una sola razón para cambiar. Extraer lógica pura, servicios y custom hooks fuera de la vista.
+   - **Cero Prop Drilling:** Prohibido pasar props por más de 2 niveles sin usarlas; aplicar composición (`children` / slots), estado derivado, custom hooks o Context acotado.
+   - **Calidad Cero Tolerancia:** Tipado estricto (CERO `any`), validación en fronteras de confianza (Zod / Pydantic), reutilización de primitivos UI oficiales y 0 errores/warnings.
+   - **Filtro Ponytail y Eficiencia de Tokens:** La solución más simple y completa que resuelva el problema real, sin wrappers especulativos ni relleno conversacional.
+
+3. **Auditoría Hostil Pre-Entrega (`sdd-reviewer` / `the-critic`):**
+   - Prohibida la autocomplacencia: al revisar código propio o de un subagente, adopta perspectiva adversarial (`state-data-flow`, `cybersecurity-auditor`, `qa-and-browser`).
+   - Busca activamente fallos de estado en React (`useEffect` síncrono, estado derivado en `useState`), casos borde (`0 items`, textos largos, doble clic, error 500) y violaciones de contratos antes de dar por terminada cualquier tarea.
+
+---
+
 # AGENTS.md — PriceScope Client (apps/client)
 
 PriceScope es una plataforma B2B de analítica económica e inteligencia de mercado para monitorear la inflación real multimoneda (ARS / USD Blue / Oficial) orientada a directores financieros (CFOs) y analistas macroeconómicos.

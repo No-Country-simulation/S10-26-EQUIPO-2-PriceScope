@@ -9,7 +9,6 @@ export class CurrencyService {
   constructor(private readonly db: DatabaseService) { }
 
   async registrarCotizacion(dto: CreateCotizacionDto) {
-    // Validación estricta exigida por la HU-21
     if (!dto.monedaBase || !dto.monedaCotizada || !dto.tipo || !dto.fuente || !dto.condicion) {
       throw new BadRequestException('Cotización rechazada: Faltan metadatos de procedencia obligatorios.');
     }
@@ -31,21 +30,21 @@ export class CurrencyService {
             `;
 
     const values = [
-      dto.timestamp,          // $1 -> timestamp_utc
-      dto.monedaBase,         // $2 -> moneda_base
-      dto.monedaCotizada,     // $3 -> moneda_cotizada
-      dto.tipo,               // $4 -> tipo
-      dto.condicion,          // $5 -> condicion
-      dto.valor,              // $6 -> valor
-      dto.fuente,             // $7 -> fuente
-      dto.urlFuente || null,  // $8 -> url_fuente (opcional, si viene en el DTO o se manda null)
-      new Date(),             // $9 -> created_at (fecha y hora actual del servidor)
+      dto.timestamp,
+      dto.monedaBase,
+      dto.monedaCotizada,
+      dto.tipo,
+      dto.condicion,
+      dto.valor,
+      dto.fuente,
+      dto.urlFuente || null,
+      new Date(),
     ];
 
     try {
       const result = await this.db.query(query, values);
       if (result.rows.length === 0) {
-        this.logger.debug('Cotización ya existente (mismo timestamp, tipo, condición y fuente): se omite.');
+        this.logger.debug('Cotización ya existente: se omite.');
         return {
           message: 'Cotización ya registrada previamente, no se duplicó',
           data: null,
@@ -62,9 +61,6 @@ export class CurrencyService {
     }
   }
 
-  /**
-   * Busca la cotización más reciente aplicando una ventana de tolerancia de hasta 72 horas (Fallback HU-22).
-   */
   async obtenerCotizacionConFallback(
     monedaBase: string,
     monedaCotizada: string,
@@ -73,29 +69,38 @@ export class CurrencyService {
     fuente: string,
     fechaConsulta: Date = new Date(),
   ) {
+    const fechaIso = fechaConsulta instanceof Date
+      ? fechaConsulta.toISOString()
+      : new Date(fechaConsulta).toISOString();
+
     const query = `
-      SELECT timestamp_utc, moneda_base, moneda_cotizada, tipo, condicion, valor, fuente, url_fuente
-      FROM cotizaciones_divisas
-      WHERE moneda_base = $1
-        AND moneda_cotizada = $2
-        AND tipo = $3
-        AND condicion = $4
-        AND fuente = $5
-        AND timestamp_utc <= $6
-        AND timestamp_utc >= $6 - INTERVAL '72 hours'
-      ORDER BY timestamp_utc DESC
-      LIMIT 1;
+      SELECT * 
+      FROM fn_obtener_cotizacion_cierre(
+        $1::TIMESTAMPTZ, 
+        $2::enum_tipo_cambio, 
+        $3::enum_condicion_cambio, 
+        $4::VARCHAR
+      );
     `;
 
-    const values = [monedaBase, monedaCotizada, tipo, condicion, fuente, fechaConsulta];
-    const result = await this.db.query(query, values);
+    const fuenteParam = fuente && fuente.trim() !== '' ? fuente : null;
 
-    return result.rows[0] || null;
+    const values = [
+      fechaIso,
+      tipo,
+      condicion,
+      fuenteParam,
+    ];
+
+    try {
+      const result = await this.db.query(query, values);
+      return result.rows[0] || null;
+    } catch (error) {
+      this.logger.error('Error detallado en fn_obtener_cotizacion_cierre:', error);
+      throw new BadRequestException(`Error al consultar cotización con fallback: ${(error as Error).message}`);
+    }
   }
 
-  /**
-   * Procesa la conversión de divisas aplicando la ventana de tolerancia (HU-22).
-   */
   async convertirConFallback(
     monedaBase: string,
     monedaCotizada: string,
@@ -105,7 +110,6 @@ export class CurrencyService {
     monto: number,
     fechaConsulta: Date = new Date(),
   ) {
-    // 1. Buscar la cotización más cercana en la ventana de 72h
     const cotizacion = await this.obtenerCotizacionConFallback(
       monedaBase,
       monedaCotizada,
@@ -115,34 +119,37 @@ export class CurrencyService {
       fechaConsulta,
     );
 
-    // 2. Si no hay registro dentro de las 72h, abortar con SIN_DATO
-    if (!cotizacion) {
+    if (!cotizacion || cotizacion.estado_sincronizacion === 'SIN_DATO' || !cotizacion.cotizacion_aplicada) {
       return {
         estado: 'SIN_DATO',
-        mensaje: 'Se superó el límite de 72 horas continuas sin cotización disponible.',
+        mensaje: 'No se encontró un valor de cotización válido dentro del rango permitido.',
         cotizacion_aproximada: false,
         resultado: null,
       };
     }
 
-    // 3. Evaluar si la cotización devuelta es exacta o aproximada (fallback)
-    const timestampCotizacion = new Date(cotizacion.timestamp_utc).getTime();
-    const timestampBuscado = new Date(fechaConsulta).getTime();
+    // Mapeo corregido usando cotizacion_aplicada devuelta por la función SQL
+    const valorCotizacion = Number(cotizacion.cotizacion_aplicada);
 
-    // Si hay diferencia significativa de tiempo respecto al momento consultado, se considera aproximada
-    const esAproximada = timestampCotizacion < timestampBuscado;
-    const valorCotizacion = Number(cotizacion.valor);
+    if (isNaN(valorCotizacion) || valorCotizacion === 0) {
+      return {
+        estado: 'SIN_DATO',
+        mensaje: 'No se encontró un valor de cotización válido.',
+        cotizacion_aproximada: false,
+        resultado: null,
+      };
+    }
+
     const montoConvertido = monto * valorCotizacion;
 
     return {
       estado: 'OK',
-      cotizacion_aproximada: esAproximada,
+      cotizacion_aproximada: Boolean(cotizacion.cotizacion_aproximada ?? false),
       montoOriginal: monto,
       montoConvertido: montoConvertido,
       cotizacionUsada: {
         valor: valorCotizacion,
-        timestamp_utc: cotizacion.timestamp_utc,
-        fuente: cotizacion.fuente,
+        fuente: cotizacion.fuente_cotizacion ?? fuente,
       },
     };
   }

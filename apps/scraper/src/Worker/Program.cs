@@ -77,7 +77,8 @@ builder.Services.AddHangfireServer((sp, opts) =>
 });
 
 var app = builder.Build();
-var startupLogger = app.Logger;
+var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+startupLogger.LogDebug("Iniciando el scraper worker...");
 
 var retryOptions = app.Services
     .GetRequiredService<IOptions<HangfireRetryOptions>>()
@@ -97,7 +98,7 @@ var storeSlugs = app.Services.GetServices<IStoreScraper>()
     .Select(scraper => scraper.StoreSlug);
 var storeSlugSet = storeSlugs.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-startupLogger.LogInformation(
+startupLogger.LogDebug(
     "Scraper worker iniciado. Scrapers registrados: {StoreSlugs}",
     string.Join(", ", storeSlugSet.Order(StringComparer.OrdinalIgnoreCase)));
 
@@ -123,7 +124,7 @@ foreach (var recurringJob in recurringJobs.Where(job =>
     }
 
     RecurringJob.RemoveIfExists(recurringJob.Id);
-    startupLogger.LogInformation(
+    startupLogger.LogDebug(
         "Se eliminó el recurring job obsoleto {RecurringJobId}; la tienda ya no está registrada.",
         recurringJob.Id);
 }
@@ -138,7 +139,7 @@ foreach (var storeSlug in storeSlugSet)
         dailyScraperOptions.CronExpression,
         new RecurringJobOptions { TimeZone = timeZone });
 
-    startupLogger.LogInformation(
+    startupLogger.LogDebug(
         "Recurring job {RecurringJobId} configurado con cron {CronExpression} ({TimeZoneId}).",
         recurringJobId,
         dailyScraperOptions.CronExpression,

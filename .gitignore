@@ -4,6 +4,9 @@
 .env.*.local
 !.env.example
 
+#archvios sql
+1_pricescope_seed_mock_data_claude_good.sql
+
 # Dependencias
 node_modules/
 dist/

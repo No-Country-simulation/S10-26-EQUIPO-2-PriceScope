@@ -259,7 +259,9 @@ REFRESH MATERIALIZED VIEW agg_precios_semanales;
 -- ============================================================================
 CREATE OR REPLACE FUNCTION fn_obtener_cotizacion_cierre(
     p_fecha_captura TIMESTAMPTZ,
-    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'
+    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'::enum_tipo_cambio,
+    p_condicion enum_condicion_cambio DEFAULT 'venta'::enum_condicion_cambio,
+    p_fuente VARCHAR DEFAULT NULL
 )
 RETURNS TABLE (
     cotizacion_aplicada NUMERIC(12,4),
@@ -285,7 +287,8 @@ BEGIN
         'OK'::VARCHAR(20) AS estado_sincronizacion
     FROM cotizaciones_divisas c
     WHERE c.tipo = p_tipo_cambio
-      AND c.condicion = 'venta'
+      AND c.condicion = p_condicion
+      AND (p_fuente IS NULL OR c.fuente = p_fuente)
       AND c.timestamp_utc <= v_cierre_local_utc
       AND c.timestamp_utc >= v_limite_ttl_utc
     ORDER BY c.timestamp_utc DESC
@@ -295,7 +298,7 @@ BEGIN
         RETURN QUERY SELECT NULL::NUMERIC(12,4), FALSE, NULL::VARCHAR(50), 'SIN_DATO'::VARCHAR(20);
     END IF;
 END;
-$$ LANGUAGE plpgsql STABLE;
+$function$ LANGUAGE plpgsql STABLE;
 
 -- ============================================================================
 -- 10. POBLACIÓN DETERMINÍSTICA BASE (HU-00 Seed Data Idempotente)

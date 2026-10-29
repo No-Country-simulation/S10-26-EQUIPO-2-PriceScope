@@ -412,12 +412,12 @@ INSERT INTO productos_canonicos (
     (SELECT id FROM categorias WHERE slug = 'bienes-durables'),
     'Nex',
     'Msinaerg',
-    'Mouse Inalámbrico Ergonómico A Pilas Nex'
+    'Mouse Inalámbrico Ergonómico A Pilas Nex',
     '1',
-    null,
-    null
+    'unidad',
+    'x1'
 )
- ON CONFLICT (slug) DO UPDATE SET 
+ON CONFLICT (slug) DO UPDATE SET
 	nombre_normalizado = EXCLUDED.nombre_normalizado,
 	contenido_neto_valor = EXCLUDED.contenido_neto_valor,
 	updated_at = NOW();   -- verificá el nombre real de la columna
@@ -429,7 +429,7 @@ INSERT INTO alias_tienda (
 	sku_tienda,
 	url_origen,
 	metodo_matching
-) VALUES 
+) VALUES
 (
 	-- Choclo
 	(SELECT id FROM productos_canonicos WHERE slug = 'prod-choclo-entero-ciudad-del-lago-300g'),

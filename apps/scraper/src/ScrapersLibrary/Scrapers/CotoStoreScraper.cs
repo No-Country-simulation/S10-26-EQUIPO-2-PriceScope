@@ -22,7 +22,7 @@ public sealed class CotoStoreScraper(
             StoreSlug,
             cancellationToken);
 
-        logger.LogInformation(
+        logger.LogDebug(
             "Coto: se recibieron {Count} productos para procesar; comenzando desde {ContinueFrom}.",
             products.Count,
             continueFrom);
@@ -36,112 +36,137 @@ public sealed class CotoStoreScraper(
             yield break;
         }
 
-        logger.LogInformation("Coto: lanzando Chromium...");
+        logger.LogDebug("Coto: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
             new BrowserTypeLaunchOptions { Headless = true });
-        logger.LogInformation("Coto: Chromium listo");
+        logger.LogDebug("Coto: Chromium listo");
 
         await using var context = await browser.NewContextAsync();
-        var page = await context.NewPageAsync();
-        page.SetDefaultNavigationTimeout(30_000);
-        page.SetDefaultTimeout(30_000);
 
-        for (var index = continueFrom; index < products.Count; index++)
+        try 
         {
-            var product = products[index];
-            ScrapedProduct result;
+            // await context.RouteAsync("**/*", async route => {
+            //     var resourceType = route.Request.ResourceType;
+            //     if (resourceType is "document" or "script" or "fetch" or "xhr") 
+            //     {
+            //         await route.ContinueAsync();
+            //     }
+            //     else 
+            //     {
+            //         await route.AbortAsync();
+            //     }
+            // });
 
-            try
-            {   
-                logger.LogInformation(
-                    "Coto: procesando producto {Index}/{Total}: {Url}",
-                    index + 1,
-                    products.Count,
-                    product.Url);
+            var page = await context.NewPageAsync();
+            page.SetDefaultNavigationTimeout(30_000);
+            page.SetDefaultTimeout(30_000);
 
-                cancellationToken.ThrowIfCancellationRequested();
+            for (var index = continueFrom; index < products.Count; index++)
+            {
+                var product = products[index];
+                ScrapedProduct result;
 
-                await page.GotoAsync(
-                    product.Url,
-                    new PageGotoOptions
+                try
+                {
+                    logger.LogDebug(
+                        "Coto: procesando producto {Index}/{Total}: {Url}",
+                        index + 1,
+                        products.Count,
+                        product.Url);
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await page.GotoAsync(
+                        product.Url,
+                        new PageGotoOptions
+                        {
+                            WaitUntil = WaitUntilState.DOMContentLoaded
+                        });
+
+                    logger.LogDebug("Pagina cargada {Url}", page.Url);
+
+                    var description = page.Locator("h1.title");
+                    await description.WaitForAsync(new LocatorWaitForOptions
                     {
-                        WaitUntil = WaitUntilState.DOMContentLoaded
+                        State = WaitForSelectorState.Visible
                     });
 
-                logger.LogInformation("Pagina cargada {Url}", page.Url);
+                    var publicPrice = ParsePrice(
+                        await page.Locator("var.price").InnerTextAsync());
 
-                var description = page.Locator("h1.title.text-dark.fw-bolder");
-                await description.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Visible
-                });
+                    var regularPrice = await TryParsePriceAsync(
+                        page.Locator("div.mt-2"));
 
-                var publicPrice = ParsePrice(
-                    await page.Locator("var.price").InnerTextAsync());
+                    var unitPrice = await TryParseUnitPriceAsync(page);
+                    var isOutOfStock = await IsOutOfStockAsync(page);
 
-                var regularPrice = await TryParsePriceAsync(
-                    page.Locator("div.mt-2"));
-
-                var unitPrice = await TryParseUnitPriceAsync(page);
-                var isOutOfStock = await IsOutOfStockAsync(page);
-
-                if (isOutOfStock)
-                {
-                    MarkAsUnavailable(product);
-                }
-                else
-                {
-                    var effectivePrice = publicPrice ?? regularPrice;
-
-                    if (effectivePrice is null)
+                    if (isOutOfStock)
                     {
-                        throw new InvalidDataException(
-                            "No se encontró un precio válido para el producto.");
+                        MarkAsUnavailable(product);
+                    }
+                    else
+                    {
+                        var effectivePrice = publicPrice ?? regularPrice;
+
+                        if (effectivePrice is not null)
+                        {
+                            product.CapturedAt = DateTime.UtcNow;
+                            product.CurrencyCode = "ARS";
+                            product.RegularPrice = regularPrice ?? effectivePrice;
+                            product.PromoPrice = regularPrice is > 0 &&
+                                effectivePrice < regularPrice
+                                    ? effectivePrice
+                                    : null;
+                            product.UnitPrice = unitPrice ?? effectivePrice;
+                            product.Available = true;
+                            product.DataState = ScrapedProductStatus.DATO_VALIDO;
+                            product.Error = string.Empty;
+                        }
+                        else
+                        {
+                            throw new InvalidDataException(
+                                "No se encontró un precio válido para el producto.");
+                        }
                     }
 
-                    product.CapturedAt = DateTime.UtcNow;
-                    product.CurrencyCode = "ARS";
-                    product.RegularPrice = regularPrice ?? effectivePrice;
-                    product.PromoPrice = regularPrice is > 0 &&
-                        effectivePrice < regularPrice
-                            ? effectivePrice
-                            : null;
-                    product.UnitPrice = unitPrice ?? effectivePrice;
-                    product.Available = true;
-                    product.DataState = ScrapedProductStatus.DATO_VALIDO;
-                    product.Error = string.Empty;
+                    logger.LogDebug(
+                        "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
+                        index + 1,
+                        products.Count,
+                        product.DataState,
+                        product.Url);
+                    result = product;
+                }
+                catch (PlaywrightException exception)
+                {
+                    MarkAsCaptureError(product, exception.Message);
+                    logger.LogWarning(
+                        exception,
+                        "Error de Playwright procesando producto de Coto: {Url}",
+                        product.Url);
+                    result = product;
+                }
+                catch (Exception exception) when (
+                    exception is not OperationCanceledException)
+                {
+                    MarkAsCaptureError(product, exception.Message);
+                    logger.LogError(
+                        exception,
+                        "Error procesando producto de Coto: {Url}",
+                        product.Url);
+                    result = product;
                 }
 
-                logger.LogInformation(
-                    "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
-                    index + 1,
-                    products.Count,
-                    product.DataState,
-                    product.Url);
-                result = product;
+                yield return result;
             }
-            catch (PlaywrightException exception)
-            {
-                MarkAsCaptureError(product, exception.Message);
-                logger.LogWarning(
-                    exception,
-                    "Error de Playwright procesando producto de Coto: {Url}",
-                    product.Url);
-                result = product;
-            }
-            catch (Exception exception) when (
-                exception is not OperationCanceledException)
-            {
-                MarkAsCaptureError(product, exception.Message);
-                logger.LogError(
-                    exception,
-                    "Error procesando producto de Coto: {Url}",
-                    product.Url);
-                result = product;
-            }
-
-            yield return result;
+        }
+        finally
+        {
+            logger.LogDebug("Coto: cerrando Chromium...");
+            await context.CloseAsync();
+            await browser.CloseAsync();
+            logger.LogDebug("Coto: Chromium cerrado");
         }
     }
 

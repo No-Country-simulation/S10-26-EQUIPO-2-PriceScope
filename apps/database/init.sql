@@ -420,6 +420,8 @@ INSERT INTO productos_canonicos (
 ON CONFLICT (slug) DO UPDATE SET
 	nombre_normalizado = EXCLUDED.nombre_normalizado,
 	contenido_neto_valor = EXCLUDED.contenido_neto_valor,
+	contenido_neto_unidad = EXCLUDED.contenido_neto_unidad,
+	pack = EXCLUDED.pack, -- Esto fue agregado para asegurar que los cambios en el pack se reflejen correctamente
 	updated_at = NOW();   -- verificá el nombre real de la columna
 
 INSERT INTO alias_tienda (

@@ -42,7 +42,23 @@ public sealed class JumboStoreScraper(
             new BrowserTypeLaunchOptions { Headless = true });
         logger.LogInformation("Jumbo: Chromium listo");
 
-        await using var context = await browser.NewContextAsync();
+        var probePage = await browser.NewPageAsync();
+        var ua = (await probePage.EvaluateAsync<string>("navigator.userAgent"))
+            .Replace("HeadlessChrome", "Chrome");
+
+        await using var context = await browser.NewContextAsync(
+            new BrowserNewContextOptions
+            {
+                Locale = "es-AR",
+                TimezoneId = "America/Argentina/Buenos_Aires",
+                UserAgent = ua,
+                ViewportSize = new ViewportSize { Width = 1366, Height = 768 },
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                {
+                    { "Accept-Language", "es-AR,es;q=0.9" }
+                }
+            });
+
         var page = await context.NewPageAsync();
         page.SetDefaultNavigationTimeout(30_000);
         page.SetDefaultTimeout(30_000);
@@ -53,7 +69,7 @@ public sealed class JumboStoreScraper(
             ScrapedProduct result;
 
             try
-            {   
+            {
                 logger.LogInformation(
                     "Jumbo: procesando producto {Index}/{Total}: {Url}",
                     index + 1,

@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using Hangfire.Storage;
 using Microsoft.Extensions.Options;
@@ -64,6 +65,17 @@ builder.Services
         "The Hangfire retry delays must contain non-negative values.")
     .ValidateOnStart();
 
+builder.Services
+    .AddOptions<HangfireDashboardOptions>()
+    .BindConfiguration(HangfireDashboardOptions.SectionName)
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.Username),
+        "The Hangfire dashboard username is required.")
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.Password),
+        "The Hangfire dashboard password is required.")
+    .ValidateOnStart();
+
 builder.Services.AddHangfireServer((sp, opts) =>
 {
     int workerCount = builder.Configuration.GetValue<int>("Hangfire:WorkerCount");
@@ -80,6 +92,10 @@ var app = builder.Build();
 var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
 startupLogger.LogDebug("Iniciando el scraper worker...");
 
+var dashboardOptions = app.Services
+    .GetRequiredService<IOptions<HangfireDashboardOptions>>()
+    .Value;
+
 var retryOptions = app.Services
     .GetRequiredService<IOptions<HangfireRetryOptions>>()
     .Value;
@@ -91,7 +107,15 @@ GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
     OnAttemptsExceeded = AttemptsExceededAction.Fail
 });
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization =
+    [
+        new HangfireDashboardAuthorizationFilter(
+            dashboardOptions.Username,
+            dashboardOptions.Password)
+    ]
+});
 app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" }));
 
 var storeSlugs = app.Services.GetServices<IStoreScraper>()

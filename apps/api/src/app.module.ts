@@ -5,9 +5,10 @@ import { CurrencyModule } from './modules/currency/currency.module';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DashboardModule } from './modules/dashboard/dashboard.module'
+import { AlertsModule } from './modules/alerts/alerts.module'
 
 @Module({
-    imports: [ScheduleModule.forRoot(), DatabaseModule, CurrencyModule, DashboardModule],
+    imports: [ScheduleModule.forRoot(), DatabaseModule, CurrencyModule, DashboardModule, AlertsModule],
   controllers: [AppController],
   providers: [AppService],
 })

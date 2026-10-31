@@ -42,9 +42,24 @@ public sealed class CotoStoreScraper(
             new BrowserTypeLaunchOptions { Headless = true });
         logger.LogDebug("Coto: Chromium listo");
 
-        await using var context = await browser.NewContextAsync();
+        var probePage = await browser.NewPageAsync();
+        var ua = (await probePage.EvaluateAsync<string>("navigator.userAgent"))
+            .Replace("HeadlessChrome", "Chrome");
 
-        try 
+        await using var context = await browser.NewContextAsync(
+            new BrowserNewContextOptions
+            {
+                Locale = "es-AR",
+                TimezoneId = "America/Argentina/Buenos_Aires",
+                UserAgent = ua,
+                ViewportSize = new ViewportSize { Width = 1366, Height = 768 },
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                {
+                    { "Accept-Language", "es-AR,es;q=0.9" }
+                }
+            });
+
+        try
         {
             // await context.RouteAsync("**/*", async route => {
             //     var resourceType = route.Request.ResourceType;

@@ -1,4 +1,4 @@
-﻿namespace Worker;
+﻿namespace Worker.Options;
 
 public sealed class DailyScraperOptions
 {

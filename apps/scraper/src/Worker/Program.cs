@@ -1,5 +1,4 @@
 using Hangfire;
-using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using Hangfire.Storage;
 using Microsoft.Extensions.Options;
@@ -8,8 +7,9 @@ using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Seed;
 using ScrapersLibrary.Validators;
-using Worker;
+using Worker.Authorization;
 using Worker.Jobs;
+using Worker.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 

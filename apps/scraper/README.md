@@ -19,20 +19,20 @@ Desde la raíz del repositorio, inicia PostgreSQL con el compose principal:
 docker compose up -d timescaledb
 ```
 
-Configura la cadena de conexión para el proceso local y ejecuta el Worker:
+Configura la cadena de conexión para el proceso local, el username y password para el dashboard de Hangfire y ejecuta el Worker:
 
 ```powershell
-$env:ConnectionStrings__Postgres = "Host=localhost;Port=5432;Database=pricescope;Username=postgres;Password=postgres"
+dotnet user-secrets set "ConnectionStrings:Postgres" "Host=localhost;Port=5432;Database=pricescope;Username=postgres;Password=postgres" --project apps/scraper/src/Worker/Worker.csproj
+dotnet user-secrets set "Hangfire:Dashboard:Username" "admin" --project apps/scraper/src/Worker/Worker.csproj
+dotnet user-secrets set "Hangfire:Dashboard:Password" "<una contraseña segura>" --project apps/scraper/src/Worker/Worker.csproj
 dotnet run --project apps/scraper/src/Worker/Worker.csproj
 ```
 
-El dashboard de Hangfire que muestra los recurring jobs estará en https://localhost:7479/hangfire/recurring. La aplicación requiere `ConnectionStrings:Postgres` y falla al iniciar si la cadena no está configurada o no puede conectarse a PostgreSQL.
+El dashboard de Hangfire que muestra los recurring jobs estará en https://localhost:7479/hangfire/recurring y solicitará autenticación HTTP Basic. La aplicación requiere `ConnectionStrings:Postgres` y credenciales no vacías en `Hangfire:Dashboard:Username` y `Hangfire:Dashboard:Password`; falla al iniciar si falta alguna configuración requerida. No expongas el dashboard por HTTP sin un proxy TLS.
 
 ## Ejecutar con Docker Compose
 
-**Nota**: Necesita revision. No se puede acceder al dashboard de hangfire.
-
-Desde la raíz del repositorio:
+Define `POSTGRES_CONNECTION`, `HANGFIRE_DASHBOARD_USERNAME` y `HANGFIRE_DASHBOARD_PASSWORD` en el entorno o en un archivo `.env`. Después corre este comando:
 
 ```powershell
 docker compose -f apps/scraper/src/compose.yaml up --build

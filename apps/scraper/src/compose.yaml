@@ -22,7 +22,7 @@ services:
       ASPNETCORE_URLS: http://+:8080
       Hangfire__Dashboard__Username: ${HANGFIRE_DASHBOARD_USERNAME:?Set HANGFIRE_DASHBOARD_USERNAME}
       Hangfire__Dashboard__Password: ${HANGFIRE_DASHBOARD_PASSWORD:?Set HANGFIRE_DASHBOARD_PASSWORD}
-      ConnectionStrings__Postgres: Host=timescaledb;Port=5432;Database=pricescope;Username=postgres;Password=postgres
+      ConnectionStrings__Postgres: ${POSTGRES_CONNECTION:?Set POSTGRES_CONNECTION}
     ports:
       - "8080:8080"
     depends_on:

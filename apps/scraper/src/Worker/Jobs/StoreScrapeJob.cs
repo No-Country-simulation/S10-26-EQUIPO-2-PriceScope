@@ -21,7 +21,7 @@ public sealed class StoreScrapeJob(
 
         if (!await repository.IsStoreActive(scraper.StoreSlug, cancellationToken))
         {
-            logger.LogDebug("Skipping inactive scraper {ScraperSlug}", scraper.StoreSlug);
+            logger.LogInformation("Skipping inactive scraper {ScraperSlug}", scraper.StoreSlug);
             return;
         }
 
@@ -39,17 +39,12 @@ public sealed class StoreScrapeJob(
             attempt = await repository.BeginAttemptAsync(currentRunId, cancellationToken);
         }
 
-        logger.LogDebug(
+        int continueFrom = run?.ProductsProcessed ?? 0;
+        logger.LogInformation(
             "Starting scraper {ScraperSlug}, run {RunId}, attempt {Attempt}",
             scraper.StoreSlug,
             currentRunId,
             attempt);
-
-        int continueFrom = run?.ProductsProcessed ?? 0;
-        logger.LogDebug(
-            "Ejecutando {ScraperSlug} desde el producto {ContinueFrom}.",
-            scraper.StoreSlug,
-            continueFrom);
 
         try
         {

@@ -36,11 +36,11 @@ public sealed class JumboStoreScraper(
             yield break;
         }
 
-        logger.LogInformation("Jumbo: lanzando Chromium...");
+        logger.LogTrace("Jumbo: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
             new BrowserTypeLaunchOptions { Headless = true });
-        logger.LogInformation("Jumbo: Chromium listo");
+        logger.LogTrace("Jumbo: Chromium listo");
 
         var probePage = await browser.NewPageAsync();
         var ua = (await probePage.EvaluateAsync<string>("navigator.userAgent"))
@@ -70,7 +70,7 @@ public sealed class JumboStoreScraper(
 
             try
             {
-                logger.LogInformation(
+                logger.LogDebug(
                     "Jumbo: procesando producto {Index}/{Total}: {Url}",
                     index + 1,
                     products.Count,
@@ -85,7 +85,7 @@ public sealed class JumboStoreScraper(
                         WaitUntil = WaitUntilState.DOMContentLoaded
                     });
 
-                logger.LogInformation("Pagina cargada {Url}", page.Url);
+                logger.LogTrace("Pagina cargada {Url}", page.Url);
 
                 var description = page.Locator("span.vtex-store-components-3-x-productBrand");
                 await description.WaitForAsync(new LocatorWaitForOptions
@@ -129,7 +129,7 @@ public sealed class JumboStoreScraper(
                     product.Error = string.Empty;
                 }
 
-                logger.LogInformation(
+                logger.LogDebug(
                     "Jumbo: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
                     index + 1,
                     products.Count,

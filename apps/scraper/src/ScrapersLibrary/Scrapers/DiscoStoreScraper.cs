@@ -36,11 +36,11 @@ public sealed class DiscoStoreScraper(
             yield break;
         }
 
-        logger.LogInformation("Disco: lanzando Chromium...");
+        logger.LogTrace("Disco: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
             new BrowserTypeLaunchOptions { Headless = true });
-        logger.LogInformation("Disco: Chromium listo");
+        logger.LogTrace("Disco: Chromium listo");
 
         var probePage = await browser.NewPageAsync();
         var ua = (await probePage.EvaluateAsync<string>("navigator.userAgent"))
@@ -70,7 +70,7 @@ public sealed class DiscoStoreScraper(
 
             try
             {
-                logger.LogInformation(
+                logger.LogDebug(
                     "Disco: procesando producto {Index}/{Total}: {Url}",
                     index + 1,
                     products.Count,
@@ -85,7 +85,7 @@ public sealed class DiscoStoreScraper(
                         WaitUntil = WaitUntilState.DOMContentLoaded
                     });
 
-                logger.LogInformation("Pagina cargada {Url}", page.Url);
+                logger.LogTrace("Pagina cargada {Url}", page.Url);
 
                 var description = page.Locator("span.vtex-store-components-3-x-productBrand");
                 await description.WaitForAsync(new LocatorWaitForOptions
@@ -129,7 +129,7 @@ public sealed class DiscoStoreScraper(
                     product.Error = string.Empty;
                 }
 
-                logger.LogInformation(
+                logger.LogDebug(
                     "Disco: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
                     index + 1,
                     products.Count,

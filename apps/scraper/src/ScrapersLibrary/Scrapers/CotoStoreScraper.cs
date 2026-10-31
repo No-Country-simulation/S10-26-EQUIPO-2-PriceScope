@@ -22,7 +22,7 @@ public sealed class CotoStoreScraper(
             StoreSlug,
             cancellationToken);
 
-        logger.LogDebug(
+        logger.LogInformation(
             "Coto: se recibieron {Count} productos para procesar; comenzando desde {ContinueFrom}.",
             products.Count,
             continueFrom);
@@ -36,11 +36,11 @@ public sealed class CotoStoreScraper(
             yield break;
         }
 
-        logger.LogDebug("Coto: lanzando Chromium...");
+        logger.LogTrace("Coto: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
             new BrowserTypeLaunchOptions { Headless = true });
-        logger.LogDebug("Coto: Chromium listo");
+        logger.LogTrace("Coto: Chromium listo");
 
         var probePage = await browser.NewPageAsync();
         var ua = (await probePage.EvaluateAsync<string>("navigator.userAgent"))
@@ -99,7 +99,7 @@ public sealed class CotoStoreScraper(
                             WaitUntil = WaitUntilState.DOMContentLoaded
                         });
 
-                    logger.LogDebug("Pagina cargada {Url}", page.Url);
+                    logger.LogTrace("Pagina cargada {Url}", page.Url);
 
                     var description = page.Locator("h1.title");
                     await description.WaitForAsync(new LocatorWaitForOptions
@@ -178,10 +178,10 @@ public sealed class CotoStoreScraper(
         }
         finally
         {
-            logger.LogDebug("Coto: cerrando Chromium...");
+            logger.LogTrace("Coto: cerrando Chromium...");
             await context.CloseAsync();
             await browser.CloseAsync();
-            logger.LogDebug("Coto: Chromium cerrado");
+            logger.LogTrace("Coto: Chromium cerrado");
         }
     }
 

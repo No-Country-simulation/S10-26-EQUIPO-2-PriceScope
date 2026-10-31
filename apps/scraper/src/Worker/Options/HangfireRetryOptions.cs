@@ -1,6 +1,4 @@
-﻿using Hangfire;
-
-namespace Worker;
+﻿namespace Worker.Options;
 
 public sealed class HangfireRetryOptions
 {

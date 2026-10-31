@@ -1,9 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
-using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
 
-namespace Worker;
+namespace Worker.Authorization;
 
 public sealed class HangfireDashboardAuthorizationFilter : IDashboardAuthorizationFilter
 {

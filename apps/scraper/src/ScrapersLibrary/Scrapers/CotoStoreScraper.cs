@@ -197,11 +197,12 @@ public sealed class CotoStoreScraper(
 
     private static async Task<decimal?> TryParseUnitPriceAsync(IPage page)
     {
-        var locator = page.Locator("div.mb-5").Filter(
+        var locator = page.Locator(
+            "div.mb-5, span.vtex-custom-unit-price").Filter(
             new LocatorFilterOptions
             {
                 HasTextRegex = new Regex(
-                    @"Precio por.*Kilo",
+                    @"Precio\s+por.*(?:Kilo|Kg|Gramo|G|Unidad|Un\.)",
                     RegexOptions.IgnoreCase)
             });
 
@@ -210,7 +211,21 @@ public sealed class CotoStoreScraper(
             return null;
         }
 
-        return ParsePrice(await locator.First.InnerTextAsync());
+        var text = await locator.First.InnerTextAsync();
+        var currencyMatch = Regex.Match(
+            text,
+            @"(?:\$|ARS)\s*\d[\d.]*([,]\d+)?",
+            RegexOptions.IgnoreCase);
+
+        if (currencyMatch.Success)
+        {
+            return ParsePrice(currencyMatch.Value);
+        }
+
+        var prices = Regex.Matches(text, @"\d[\d.]*([,]\d+)?");
+        return prices.Count > 0
+            ? ParsePrice(prices[^1].Value)
+            : null;
     }
 
     private static async Task<bool> IsOutOfStockAsync(IPage page)

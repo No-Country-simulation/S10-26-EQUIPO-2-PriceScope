@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.PostgreSql;
+using Hangfire.Storage;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using ScrapersLibrary.Persistence;
@@ -17,7 +18,14 @@ var connectionString = builder.Configuration.GetConnectionString("Postgres")
 builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
 builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
 //builder.Services.AddSingleton<IScrapeRepository, MockScrapeRepository>();
-builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
+//builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
+
+// Scrapers
+builder.Services.AddSingleton<IStoreScraper, CotoStoreScraper>();
+builder.Services.AddSingleton<IStoreScraper, JumboStoreScraper>();
+builder.Services.AddSingleton<IStoreScraper, DiscoStoreScraper>();
+
+
 // builder.Services.AddSingleton<IProductInfoProvider, JsonProductInfoProvider>();
 builder.Services.AddSingleton<IProductInfoProvider, PostgresProductInfoProvider>();
 //builder.Services.AddSingleton<IProductInfoProvider, MockProductInfoProvider>();
@@ -69,6 +77,8 @@ builder.Services.AddHangfireServer((sp, opts) =>
 });
 
 var app = builder.Build();
+var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+startupLogger.LogDebug("Iniciando el scraper worker...");
 
 var retryOptions = app.Services
     .GetRequiredService<IOptions<HangfireRetryOptions>>()
@@ -86,6 +96,11 @@ app.MapGet("/", () => Results.Ok(new { service = "PriceScope Scraping Hangfire" 
 
 var storeSlugs = app.Services.GetServices<IStoreScraper>()
     .Select(scraper => scraper.StoreSlug);
+var storeSlugSet = storeSlugs.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+startupLogger.LogDebug(
+    "Scraper worker iniciado. Scrapers registrados: {StoreSlugs}",
+    string.Join(", ", storeSlugSet.Order(StringComparer.OrdinalIgnoreCase)));
 
 var dailyScraperOptions = app.Services
     .GetRequiredService<IOptions<DailyScraperOptions>>()
@@ -97,7 +112,24 @@ if (TimeZoneInfo.TryFindSystemTimeZoneById(dailyScraperOptions.TimeZoneId, out v
         $"The configured time zone '{dailyScraperOptions.TimeZoneId}' is invalid or unsupported.");
 }
 
-foreach (var storeSlug in storeSlugs)
+const string recurringJobPrefix = "daily-scraper-";
+var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
+foreach (var recurringJob in recurringJobs.Where(job =>
+    job.Id.StartsWith(recurringJobPrefix, StringComparison.OrdinalIgnoreCase)))
+{
+    var storeSlug = recurringJob.Id[recurringJobPrefix.Length..];
+    if (storeSlugSet.Contains(storeSlug))
+    {
+        continue;
+    }
+
+    RecurringJob.RemoveIfExists(recurringJob.Id);
+    startupLogger.LogDebug(
+        "Se eliminó el recurring job obsoleto {RecurringJobId}; la tienda ya no está registrada.",
+        recurringJob.Id);
+}
+
+foreach (var storeSlug in storeSlugSet)
 {
     var recurringJobId = $"daily-scraper-{storeSlug}";
 
@@ -106,6 +138,12 @@ foreach (var storeSlug in storeSlugs)
         job => job.ExecuteAsync(storeSlug, CancellationToken.None),
         dailyScraperOptions.CronExpression,
         new RecurringJobOptions { TimeZone = timeZone });
+
+    startupLogger.LogDebug(
+        "Recurring job {RecurringJobId} configurado con cron {CronExpression} ({TimeZoneId}).",
+        recurringJobId,
+        dailyScraperOptions.CronExpression,
+        dailyScraperOptions.TimeZoneId);
 }
 
 await app.RunAsync();

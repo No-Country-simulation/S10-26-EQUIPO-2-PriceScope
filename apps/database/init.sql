@@ -308,213 +308,210 @@ ON CONFLICT (slug) DO UPDATE SET
     descripcion = EXCLUDED.descripcion;
 
 INSERT INTO tiendas (slug, nombre, url_base, tipo) VALUES
-('carrefour', 'Carrefour Argentina', 'https://www.carrefour.com.ar', 'supermercado'),
+('coto', 'Coto Argentina', 'https://www.coto.com.ar', 'supermercado'),
 ('jumbo', 'Jumbo Argentina', 'https://www.jumbo.com.ar', 'supermercado'),
-('fravega', 'Frávega Argentina', 'https://www.fravega.com', 'electro'),
-('musimundo', 'Musimundo Argentina', 'https://www.musimundo.com', 'electro')
+('disco', 'Disco Argentina', 'https://www.disco.com.ar', 'electro'),
+('vea', 'Vea Argentina', 'https://www.vea.com.ar', 'electro')
 ON CONFLICT (slug) DO UPDATE SET 
     nombre = EXCLUDED.nombre,
     url_base = EXCLUDED.url_base,
     tipo = EXCLUDED.tipo;
 
-INSERT INTO productos_canonicos (slug, categoria_id, marca, modelo, nombre_normalizado, contenido_neto_valor, contenido_neto_unidad, pack)
-VALUES 
+INSERT INTO productos_canonicos (
+	slug,
+	categoria_id,
+	marca,
+	modelo,
+	nombre_normalizado,
+	contenido_neto_valor,
+	contenido_neto_unidad,
+	pack
+) VALUES 
 (
-    'prod-cafe-molido-la-morenita-500g', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'La Morenita', 
-    'Clásico', 
-    'Café tostado molido clásico La Morenita 500g', 
-    0.5, 
-    'kg', 
-    'x1'
+	'prod-choclo-entero-ciudad-del-lago-300g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Ciudad del Lago',
+	'Entero',
+	'Choclo Entero Ciudad Del Lago 300 Gr',
+	'0.3',
+	'kg',
+	'x1'
 ),
 (
-    'prod-aceite-girasol-natura-1-5l', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'Natura', 
-    'Puro Girasol', 
-    'Aceite de girasol Natura 1.5 L', 
-    1.5, 
-    'L', 
-    'x1'
+	'prod-atun-desmenuzado-al-natural-ciudad-del-lago-170g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Ciudad del Lago',
+	'Desmenuzado',
+	'Atún Desmenuzado Al Natural Ciudad Del Lago 170g',
+	'0.17',
+	'kg',
+	'x1'
+), 
+(
+	'prod-granos-choclos-amarillos-enteros-coto-300g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Coto',
+	'Entero',
+	'Granos de choclo amarillo enteros COTO 300g',
+	'0.3',
+	'kg',
+	'x1'
 ),
 (
-    'prod-leche-entera-la-serenisima-1l', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'La Serenísima', 
-    'Clásica UAT', 
-    'Leche entera UAT La Serenísima clásica 1 L', 
-    1.0, 
-    'L', 
-    'x1'
+	'prod-porotos-negros-coto-350g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Coto',
+	'Negros',
+	'Porotos negros COTO 350g',
+	'0.35',
+	'kg',
+	'x1'
 ),
 (
-    'prod-arroz-largo-fino-lucchetti-1kg', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'Lucchetti', 
-    'Largo Fino', 
-    'Arroz largo fino Lucchetti 1 kg', 
-    1.0, 
-    'kg', 
-    'x1'
+	'prod-suprema-pollo-granel-fresca',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Suprema de pollo',
+	'Suprema De Pollo Granel Fresca',
+	'1',
+	'kg',
+	'x1'
 ),
 (
-    'prod-smarttv-samsung-55-du7000-4k', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Samsung', 
-    'DU7000', 
-    'Smart TV Samsung 55 pulgadas 4K UHD Crystal DU7000', 
-    1.0, 
-    'unidad', 
-    'x1'
+	'prod-milanesa-cerdo-rebozada',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Milanesa de Cerdo',
+	'Milanesa De Cerdo Rebozada',
+	'1',
+	'kg',
+	'x1'
 ),
 (
-    'prod-heladera-gafa-hgn358b-310l', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Gafa', 
-    'HGN358B', 
-    'Heladera con freezer Gafa HGN358B blanca 310 L', 
-    1.0, 
-    'unidad', 
-    'x1'
+	'prod-pollo-fresco-con-menudos',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Pollo Fresco',
+	'Pollo Fresco Con Menudos',
+	'1',
+	'kg',
+	'x1'
 ),
 (
-    'prod-lavarropas-drean-next-8-12-8kg', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Drean', 
-    'Next 8.12 Eco', 
-    'Lavarropas automático Drean Next 8.12 Eco 8 kg 1200 RPM', 
-    1.0, 
-    'unidad', 
+	'prod-roast-beef-churrasco-novitillo',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'La Hacienda',
+	'Churrasco',
+	'Roast Beef Churrasco Novillito',
+	'1',
+	'kg',
+	'x1'
+),
+(
+    'prod-mouse-inalambrico-ergonomico-pilas-nex',
+    (SELECT id FROM categorias WHERE slug = 'bienes-durables'),
+    'Nex',
+    'Msinaerg',
+    'Mouse Inalámbrico Ergonómico A Pilas Nex',
+    '1',
+    'unidad',
     'x1'
 )
-ON CONFLICT (slug) DO UPDATE SET 
-    nombre_normalizado = EXCLUDED.nombre_normalizado,
-    contenido_neto_valor = EXCLUDED.contenido_neto_valor,
-    updated_at = NOW();
+ON CONFLICT (slug) DO UPDATE SET
+	nombre_normalizado = EXCLUDED.nombre_normalizado,
+	contenido_neto_valor = EXCLUDED.contenido_neto_valor,
+	contenido_neto_unidad = EXCLUDED.contenido_neto_unidad,
+	pack = EXCLUDED.pack, -- Esto fue agregado para asegurar que los cambios en el pack se reflejen correctamente
+	updated_at = NOW();   -- verificá el nombre real de la columna
 
-INSERT INTO alias_tienda (producto_canonico_id, tienda_id, alias_producto, sku_tienda, url_origen, metodo_matching)
-VALUES 
--- Café
+INSERT INTO alias_tienda (
+	producto_canonico_id,
+	tienda_id,
+	alias_producto,
+	sku_tienda,
+	url_origen,
+	metodo_matching
+) VALUES
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Café molido La Morenita clásico 500 g',
-    'CAR-684279',
-    'https://www.carrefour.com.ar/cafe-molido-la-morenita-clasico-500-g/p',
-    'MANUAL_SEED'
+	-- Choclo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-choclo-entero-ciudad-del-lago-300g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Choclo Entero',
+	'2800004817349', -- EL SKU ES EL EAN del supermercado
+	'https://www.coto.com.ar/productos/choclo-entero-ciudad-del-lago-300-gr-/_/R-00481734-00481734-200',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Café molido La Morenita clásico 500 gr',
-    'JUM-128450',
-    'https://www.jumbo.com.ar/cafe-molido-la-morenita-clasico-500-gr/p',
-    'MANUAL_SEED'
-),
--- Aceite
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Aceite de girasol Natura 1.5 L',
-    'CAR-693155',
-    'https://www.carrefour.com.ar/aceite-de-girasol-natura-15-l/p',
-    'MANUAL_SEED'
+	-- Atún
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-atun-desmenuzado-al-natural-ciudad-del-lago-170g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Atún Desmenuzado',
+	'2800000707019',
+	'https://www.coto.com.ar/productos/atun-desmenuzado-al-natural-ciudad-del-lago-170g-/_/R-00070701-00070701-200',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Aceite de girasol Natura 1.5 L botella',
-    'JUM-349821',
-    'https://www.jumbo.com.ar/aceite-de-girasol-natura-1-5-l/p',
-    'MANUAL_SEED'
-),
--- Leche
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Leche entera La Serenísima clásica 1 L',
-    'CAR-674681',
-    'https://www.carrefour.com.ar/leche-entera-la-serenisima-clasica-1-l/p',
-    'MANUAL_SEED'
+	-- Grano de choclo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-granos-choclos-amarillos-enteros-coto-300g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Granos de Choclo',
+	'2800006099293',
+	'https://www.coto.com.ar/productos/granos-de-choclo-amarillo-enteros-coto-300g-/_/R-00609929-00609929-200',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Leche entera clásica La Serenísima 1 L brik',
-    'JUM-542190',
-    'https://www.jumbo.com.ar/leche-entera-la-serenisima-clasica-1-l/p',
-    'MANUAL_SEED'
+	-- Porotos negros
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-porotos-negros-coto-350g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Porotos',
+	'2800005827613',
+	'https://www.coto.com.ar/productos/porotos-negros-coto-350g-/_/R-00582761-00582761-200',
+	'MANUAL_SEED'
 ),
--- Arroz
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Arroz largo fino Lucchetti 1 kg',
-    'CAR-693245',
-    'https://www.carrefour.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
+(	-- Supremas de pollo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-suprema-pollo-granel-fresca'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Suprema de pollo',
+	'22460226001',
+	'https://www.jumbo.com.ar/suprema-de-pollo-granel-fresca/p',
+	'MANUAL_SEED'
 ),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Arroz largo fino Lucchetti bolsa 1 kg',
-    'JUM-872341',
-    'https://www.jumbo.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
-),
--- Smart TV
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Smart TV 55" 4K UHD Samsung Crystal DU7000 UN55DU7000GCZB',
-    'FRA-DU7000-55',
-    'https://www.fravega.com/p/smart-tv-55-4k-uhd-samsung-du7000-un55du7000gczb/',
-    'MANUAL_SEED'
+(	-- Milanesa de cerdo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-milanesa-cerdo-rebozada'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Milasena de Cerdo',
+	'22820301004',
+	'https://www.jumbo.com.ar/milanesa-de-cerdo-rebozada-2/p',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Smart TV Samsung 55" 4K UHD UN55DU7000',
-    'MUS-55DU7000',
-    'https://www.musimundo.com/televisores/smart-tv/smart-tv-55-4k-uhd-samsung-un55du7000/p',
-    'MANUAL_SEED'
-),
--- Heladera
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Heladera con Freezer Gafa HGN358B Blanca 310 L',
-    'FRA-HGN358B',
-    'https://www.fravega.com/p/heladera-con-freezer-gafa-hgn358b-blanca-310-l/',
-    'MANUAL_SEED'
+	-- Pollo fresco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-pollo-fresco-con-menudos'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Pollo fresco',
+	'22440106001',
+	'https://www.jumbo.com.ar/pollo-fresco-con-menudos-3/p',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Heladera Gafa HGN358B Blanca 310 L',
-    'MUS-HGN358B',
-    'https://www.musimundo.com/heladeras-y-freezers/heladeras/heladera-gafa-hgn358b-blanca-310-l/p',
-    'MANUAL_SEED'
-),
--- Lavarropas
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Lavarropas Automático Drean Next 8.12 Eco 8 kg 1200 RPM',
-    'FRA-NEXT812',
-    'https://www.fravega.com/p/lavarropas-automatico-drean-next-8-12-eco-8-kg-1200-rpm/',
-    'MANUAL_SEED'
+	-- Churrasco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-roast-beef-churrasco-novitillo'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Churrasco',
+	'22140415001',
+	'https://www.jumbo.com.ar/roast-beef-churrasco-novillito/p',
+	'MANUAL_SEED'
 ),
 (
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Lavarropas Drean Next 8.12 Eco 8 kg',
-    'MUS-NEXT812',
-    'https://www.musimundo.com/lavado/lavarropas/lavarropas-drean-next-8-12-eco-8kg/p',
+    -- Mouse ergonomico
+    (SELECT id FROM productos_canonicos WHERE slug = 'prod-mouse-inalambrico-ergonomico-pilas-nex'),
+    (SELECT id FROM tiendas WHERE slug = 'disco'),
+    'Mouse',
+    '61131876007',
+    'https://www.disco.com.ar/mouse-inalambrico-ergonomico-a-pilas-nex/p',
     'MANUAL_SEED'
 )
-ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
+ ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
     alias_producto = EXCLUDED.alias_producto,
     sku_tienda = EXCLUDED.sku_tienda;
+SELECT * from observaciones_precios

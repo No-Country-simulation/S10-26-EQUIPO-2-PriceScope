@@ -54,6 +54,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
                    products_succeeded, products_with_problems, last_error
             FROM scrape_runs
             WHERE store_slug = @storeSlug
+              AND status IN ('PENDIENTE', 'EN_PROCESO')
               AND created_at >= now() - INTERVAL '10 hours'
             ORDER BY created_at DESC
             LIMIT 1;

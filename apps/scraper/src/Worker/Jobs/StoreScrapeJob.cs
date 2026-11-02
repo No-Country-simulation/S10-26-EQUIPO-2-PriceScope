@@ -25,44 +25,46 @@ public sealed class StoreScrapeJob(
             return;
         }
 
-        var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
-        Guid currentRunId;
+        Guid? currentRunId = null;
         int attempt = 1;
-
-        if (run is null)
-        {
-            currentRunId = await repository.CreateRunAsync(storeSlug, cancellationToken);
-        }
-        else
-        {
-            currentRunId = run.RunId;
-            attempt = await repository.BeginAttemptAsync(currentRunId, cancellationToken);
-        }
-
-        int continueFrom = run?.ProductsProcessed ?? 0;
-        logger.LogInformation(
-            "Starting scraper {ScraperSlug}, run {RunId}, attempt {Attempt}",
-            scraper.StoreSlug,
-            currentRunId,
-            attempt);
 
         try
         {
+            var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
+            int continueFrom = run?.ProductsProcessed ?? 0;
+
+            if (run is null)
+            {
+                currentRunId = await repository.CreateRunAsync(storeSlug, cancellationToken);
+            }
+            else
+            {
+                currentRunId = run.RunId;
+                attempt = await repository.BeginAttemptAsync(currentRunId.Value, cancellationToken);
+            }
+
+            var runId = currentRunId.Value;
+            logger.LogInformation(
+                "Starting scraper {ScraperSlug}, run {RunId}, attempt {Attempt}",
+                scraper.StoreSlug,
+                runId,
+                attempt);
+
             await foreach (var product in scraper.ScrapeAsync(continueFrom, cancellationToken)
                 .WithCancellation(cancellationToken))
             {
                 // TODO: Decide what to do here. If save products one by one or in batches.
                 if (productValidator.Validate(product))
                 {
-                    await repository.SaveProductAsync(currentRunId, product, cancellationToken);
+                    await repository.SaveProductAsync(runId, product, cancellationToken);
                 }
                 else
                 {
-                    await repository.SaveCaptureErrorAsync(currentRunId, product, cancellationToken);
+                    await repository.SaveCaptureErrorAsync(runId, product, cancellationToken);
                 }
             }
 
-            var metrics = await repository.MarkSucceededAsync(currentRunId, cancellationToken);
+            var metrics = await repository.MarkSucceededAsync(runId, cancellationToken);
 
             logger.LogInformation(
                 "Completed scraper on store {StoreSlug}, run {RunId}: {Processed} processed, " +
@@ -75,10 +77,15 @@ public sealed class StoreScrapeJob(
         }
         catch (Exception exception)
         {
+            if (currentRunId is not Guid runId)
+            {
+                throw;
+            }
+
             // TODO: Replace this hard coded value with a setting
             var retryPending = attempt <= 5;
             var metrics = await repository.MarkFailedAsync(
-                currentRunId,
+                runId,
                 exception,
                 retryPending,
                 CancellationToken.None);
@@ -89,7 +96,7 @@ public sealed class StoreScrapeJob(
                 "retry pending: {RetryPending}. {Processed} processed, {Succeeded} successful, " +
                 "{Problems} with problems",
                 scraper.StoreSlug,
-                currentRunId,
+                runId,
                 attempt,
                 retryPending,
                 metrics.ProductsProcessed,

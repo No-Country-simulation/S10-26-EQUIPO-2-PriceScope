@@ -25,6 +25,15 @@ public class MockScrapeRepository : IScrapeRepository
         return Task.FromResult(true);
     }
 
+    public Task<ScrapeRunMetrics> MarkCancelledAsync(
+        Guid runId,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(new ScrapeRunMetrics(
+            runId, "CoolStore", ScrapeRunStatus.ABORTADA, 1, 100, 90, 10, exception.ToString()));
+    }
+
     public Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken)
     {
         return Task.FromResult(new ScrapeRunMetrics(

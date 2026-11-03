@@ -1,0 +1,22 @@
+name: Deploy scraper to production
+
+on:
+  push:
+    branches: main
+    paths:
+      - 'apps/scraper/**'
+      - '.github/workflows/cd-scraper-production.yml'
+      - '.github/workflows/deploy-scraper.yml'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-scraper.yml
+    with:
+      environment: production
+      resource-group: pricescope-rg
+      container-app-name: ca-scraper-production
+    secrets: inherit

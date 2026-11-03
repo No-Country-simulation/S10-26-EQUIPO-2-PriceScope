@@ -75,6 +75,28 @@ public sealed class StoreScrapeJob(
                 metrics.ProductsSucceeded,
                 metrics.ProductsWithProblems);
         }
+        catch (OperationCanceledException exception) when (cancellationToken.IsCancellationRequested)
+        {
+            if (currentRunId is Guid runId)
+            {
+                var metrics = await repository.MarkCancelledAsync(
+                    runId,
+                    exception,
+                    CancellationToken.None);
+
+                logger.LogWarning(
+                    "Scraper {ScraperName}, run {RunId}, attempt {Attempt} was cancelled. " +
+                    "{Processed} processed, {Succeeded} successful, {Problems} with problems",
+                    scraper.StoreSlug,
+                    runId,
+                    attempt,
+                    metrics.ProductsProcessed,
+                    metrics.ProductsSucceeded,
+                    metrics.ProductsWithProblems);
+            }
+
+            throw;
+        }
         catch (Exception exception)
         {
             if (currentRunId is not Guid runId)

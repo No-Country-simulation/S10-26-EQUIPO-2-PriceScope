@@ -157,6 +157,21 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         return await GetMetricsAsync(runId, cancellationToken);
     }
 
+    public async Task<ScrapeRunMetrics> MarkCancelledAsync(
+        Guid runId,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            UPDATE scrape_runs
+            SET status = @status::enum_estado_corrida, finished_at = now(), last_error = @error
+            WHERE run_id = @runId;
+            """;
+        await RefreshMetricsAsync(runId, cancellationToken);
+        await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken, ScrapeRunStatus.ABORTADA);
+        return await GetMetricsAsync(runId, cancellationToken);
+    }
+
     public async Task<ScrapeRunMetrics> MarkFailedAsync(
         Guid runId,
         Exception exception,

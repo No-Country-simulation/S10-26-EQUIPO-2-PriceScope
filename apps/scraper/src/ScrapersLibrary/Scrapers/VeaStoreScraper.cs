@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace ScrapersLibrary.Scrapers;
 
-public sealed class VeaScraper(
+public sealed class VeaStoreScraper(
     IProductInfoProvider infoProvider,
-    ILogger<VeaScraper> logger) : IStoreScraper
+    ILogger<VeaStoreScraper> logger) : IStoreScraper
 {
     private static readonly CultureInfo ArgentineCulture = CultureInfo.GetCultureInfo("es-AR");
 

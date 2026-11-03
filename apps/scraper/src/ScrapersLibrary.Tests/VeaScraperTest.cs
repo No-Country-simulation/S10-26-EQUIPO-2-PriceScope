@@ -17,9 +17,9 @@ public class VeaScraperTest
                 options.TimestampFormat = "HH:mm:ss ";
             }));
 
-        var scraper = new VeaScraper(
+        var scraper = new VeaStoreScraper(
             new MockVeaProductInfoProvider(),
-            loggerFactory.CreateLogger<VeaScraper>());
+            loggerFactory.CreateLogger<VeaStoreScraper>());
 
         List<ScrapedProduct> products = [];
 

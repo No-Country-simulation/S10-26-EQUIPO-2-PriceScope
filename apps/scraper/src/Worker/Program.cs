@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IScrapeRepository, PostgresScrapeRepository>();
 //builder.Services.AddSingleton<IStoreScraper, ExampleStoreScraper>();
 
 // Scrapers
+builder.Services.AddSingleton<IStoreScraper, VeaStoreScraper>();
 builder.Services.AddSingleton<IStoreScraper, CotoStoreScraper>();
 builder.Services.AddSingleton<IStoreScraper, JumboStoreScraper>();
 builder.Services.AddSingleton<IStoreScraper, DiscoStoreScraper>();
@@ -122,7 +123,7 @@ var storeSlugs = app.Services.GetServices<IStoreScraper>()
     .Select(scraper => scraper.StoreSlug);
 var storeSlugSet = storeSlugs.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-startupLogger.LogDebug(
+startupLogger.LogInformation(
     "Scraper worker iniciado. Scrapers registrados: {StoreSlugs}",
     string.Join(", ", storeSlugSet.Order(StringComparer.OrdinalIgnoreCase)));
 

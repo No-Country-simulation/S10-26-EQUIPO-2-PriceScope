@@ -97,7 +97,7 @@ public sealed class JumboStoreScraper(
                     await page.Locator("div.vtex-price-format-gallery").InnerTextAsync());
 
                 var regularPrice = await TryParsePriceAsync(
-                    page.Locator("div.vtex-price-format-gallery").Nth(1));
+                    page.Locator("div.vtex-precio-tachado"));
 
                 var unitPrice = await TryParseUnitPriceAsync(page);
                 var isOutOfStock = await IsOutOfStockAsync(page);

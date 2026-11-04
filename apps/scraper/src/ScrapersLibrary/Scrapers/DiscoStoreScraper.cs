@@ -127,6 +127,9 @@ public sealed class DiscoStoreScraper(
                     product.Available = true;
                     product.DataState = ScrapedProductStatus.DATO_VALIDO;
                     product.Error = string.Empty;
+                    product.NetContentUnit = Unit.unidad;
+                    product.NetContent = 1;
+                    product.Pack = 1;
                 }
 
                 logger.LogDebug(

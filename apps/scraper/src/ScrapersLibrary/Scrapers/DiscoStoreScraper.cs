@@ -96,8 +96,8 @@ public sealed class DiscoStoreScraper(
                 var publicPrice = ParsePrice(
                     await page.Locator("div.vtex-price-format-gallery").InnerTextAsync());
 
-                var regularPrice = await TryParsePriceAsync(
-                    page.Locator("div.vtex-price-format-gallery").Nth(1));
+                decimal? regularPrice = await TryParsePriceAsync(
+                        page.Locator("div.vtex-precio-tachado"));
 
                 var unitPrice = await TryParseUnitPriceAsync(page);
                 var isOutOfStock = await IsOutOfStockAsync(page);

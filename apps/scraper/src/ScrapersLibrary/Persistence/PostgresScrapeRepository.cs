@@ -104,7 +104,7 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         command.Parameters.AddWithValue("aliasStoreId", product.AliasStoreId);
         command.Parameters.AddWithValue("runId", runId);
         command.Parameters.Add("regularPrice", NpgsqlDbType.Numeric)
-            .Value = product.RegularPrice;
+            .Value = product.RegularPrice is null ? DBNull.Value : product.RegularPrice; ;
         command.Parameters.Add("promoPrice", NpgsqlDbType.Numeric)
             .Value = product.PromoPrice is null ? DBNull.Value : product.PromoPrice;
         command.Parameters.Add("unitPrice", NpgsqlDbType.Numeric)

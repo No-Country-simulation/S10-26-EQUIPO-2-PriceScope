@@ -12,7 +12,16 @@ public class PostgresProductInfoProvider(NpgsqlDataSource dataSource) : IProduct
         FROM alias_tienda a
         JOIN tiendas t ON a.tienda_id = t.id
         JOIN productos_canonicos p ON a.producto_canonico_id = p.id
-        WHERE a.activo = TRUE AND t.slug = @storeSlug;
+        WHERE a.activo = TRUE
+          AND p.activo = TRUE
+          AND t.slug = @storeSlug
+          AND NOT EXISTS (
+              SELECT 1
+              FROM observaciones_precios op
+              WHERE op.producto_canonico_id = p.id
+                AND op.tienda_id = t.id
+                AND op.timestamp_utc BETWEEN NOW() - INTERVAL '12 hours' AND NOW()
+          );
         """;
 
         await using var command = dataSource.CreateCommand(sql);

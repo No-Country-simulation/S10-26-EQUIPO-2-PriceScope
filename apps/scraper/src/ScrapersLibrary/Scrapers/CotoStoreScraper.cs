@@ -12,6 +12,8 @@ public sealed class CotoStoreScraper(
     ILogger<CotoStoreScraper> logger
 ) : IStoreScraper
 {
+    private const int MaxRetriesPerProduct = 3;
+
     public string StoreSlug => "coto";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
@@ -80,97 +82,113 @@ public sealed class CotoStoreScraper(
             for (var index = continueFrom; index < products.Count; index++)
             {
                 var product = products[index];
-                ScrapedProduct result;
+                var result = product;
+                var maxAttempts = MaxRetriesPerProduct + 1;
 
-                try
+                for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
-                    logger.LogDebug(
-                        "Coto: procesando producto {Index}/{Total}: {Url}",
-                        index + 1,
-                        products.Count,
-                        product.Url);
+                    try
+                    {
+                        logger.LogDebug(
+                            "Coto: procesando producto {Index}/{Total}, intento {Attempt}/{MaxAttempts}: {Url}",
+                            index + 1,
+                            products.Count,
+                            attempt,
+                            maxAttempts,
+                            product.Url);
 
-                    cancellationToken.ThrowIfCancellationRequested();
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    await page.GotoAsync(
-                        product.Url,
-                        new PageGotoOptions
+                        await page.GotoAsync(
+                            product.Url,
+                            new PageGotoOptions
+                            {
+                                WaitUntil = WaitUntilState.DOMContentLoaded
+                            });
+
+                        logger.LogTrace("Pagina cargada {Url}", page.Url);
+
+                        var description = page.Locator("h1.title");
+                        await description.WaitForAsync(new LocatorWaitForOptions
                         {
-                            WaitUntil = WaitUntilState.DOMContentLoaded
+                            State = WaitForSelectorState.Visible
                         });
 
-                    logger.LogTrace("Pagina cargada {Url}", page.Url);
+                        var publicPrice = ParsePrice(
+                            await page.Locator("var.price").InnerTextAsync());
 
-                    var description = page.Locator("h1.title");
-                    await description.WaitForAsync(new LocatorWaitForOptions
-                    {
-                        State = WaitForSelectorState.Visible
-                    });
+                        var regularPrice = await TryParsePriceAsync(
+                            page.Locator("div.mt-2"));
 
-                    var publicPrice = ParsePrice(
-                        await page.Locator("var.price").InnerTextAsync());
+                        var unitPrice = await TryParseUnitPriceAsync(page);
+                        var isOutOfStock = await IsOutOfStockAsync(page);
 
-                    var regularPrice = await TryParsePriceAsync(
-                        page.Locator("div.mt-2"));
-
-                    var unitPrice = await TryParseUnitPriceAsync(page);
-                    var isOutOfStock = await IsOutOfStockAsync(page);
-
-                    if (isOutOfStock)
-                    {
-                        MarkAsUnavailable(product);
-                    }
-                    else
-                    {
-                        var effectivePrice = publicPrice ?? regularPrice;
-
-                        if (effectivePrice is not null)
+                        if (isOutOfStock)
                         {
-                            product.CapturedAt = DateTime.UtcNow;
-                            product.CurrencyCode = "ARS";
-                            product.RegularPrice = regularPrice ?? effectivePrice;
-                            product.PromoPrice = regularPrice is > 0 &&
-                                effectivePrice < regularPrice
-                                    ? effectivePrice
-                                    : null;
-                            product.UnitPrice = unitPrice ?? effectivePrice;
-                            product.Available = true;
-                            product.DataState = ScrapedProductStatus.DATO_VALIDO;
-                            product.Error = string.Empty;
+                            MarkAsUnavailable(product);
                         }
                         else
                         {
-                            throw new InvalidDataException(
-                                "No se encontró un precio válido para el producto.");
-                        }
-                    }
+                            var effectivePrice = publicPrice ?? regularPrice;
 
-                    logger.LogDebug(
-                        "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
-                        index + 1,
-                        products.Count,
-                        product.DataState,
-                        product.Url);
-                    result = product;
-                }
-                catch (PlaywrightException exception)
-                {
-                    MarkAsCaptureError(product, exception.Message);
-                    logger.LogWarning(
-                        exception,
-                        "Error de Playwright procesando producto de Coto: {Url}",
-                        product.Url);
-                    result = product;
-                }
-                catch (Exception exception) when (
-                    exception is not OperationCanceledException)
-                {
-                    MarkAsCaptureError(product, exception.Message);
-                    logger.LogError(
-                        exception,
-                        "Error procesando producto de Coto: {Url}",
-                        product.Url);
-                    result = product;
+                            if (effectivePrice is not null)
+                            {
+                                product.CapturedAt = DateTime.UtcNow;
+                                product.CurrencyCode = "ARS";
+                                product.RegularPrice = regularPrice ?? effectivePrice;
+                                product.PromoPrice = regularPrice is > 0 &&
+                                    effectivePrice < regularPrice
+                                        ? effectivePrice
+                                        : null;
+                                product.UnitPrice = unitPrice ?? effectivePrice;
+                                product.Available = true;
+                                product.DataState = ScrapedProductStatus.DATO_VALIDO;
+                                product.Error = string.Empty;
+                            }
+                            else
+                            {
+                                throw new InvalidDataException(
+                                    "No se encontró un precio válido para el producto.");
+                            }
+                        }
+
+                        logger.LogDebug(
+                            "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
+                            index + 1,
+                            products.Count,
+                            product.DataState,
+                            product.Url);
+                        break;
+                    }
+                    catch (PlaywrightException exception)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            MarkAsCaptureError(product, exception.Message);
+                        }
+
+                        logger.LogWarning(
+                            exception,
+                            "Error de Playwright procesando producto de Coto (intento {Attempt}/{MaxAttempts}): {Url}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
+                    catch (Exception exception) when (
+                        exception is not OperationCanceledException)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            MarkAsCaptureError(product, exception.Message);
+                        }
+
+                        logger.LogError(
+                            exception,
+                            "Error procesando producto de Coto (intento {Attempt}/{MaxAttempts}): {Url}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
                 }
 
                 yield return result;

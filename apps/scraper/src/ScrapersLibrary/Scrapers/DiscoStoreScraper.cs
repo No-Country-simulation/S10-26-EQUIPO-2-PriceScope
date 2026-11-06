@@ -12,6 +12,8 @@ public sealed class DiscoStoreScraper(
     ILogger<DiscoStoreScraper> logger
 ) : IStoreScraper
 {
+    private const int MaxRetriesPerProduct = 3;
+
     public string StoreSlug => "disco";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
@@ -39,7 +41,7 @@ public sealed class DiscoStoreScraper(
         logger.LogTrace("Disco: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
-            new BrowserTypeLaunchOptions { Headless = true });
+            new BrowserTypeLaunchOptions { Headless = false });
         logger.LogTrace("Disco: Chromium listo");
 
         var probePage = await browser.NewPageAsync();
@@ -66,98 +68,114 @@ public sealed class DiscoStoreScraper(
         for (var index = continueFrom; index < products.Count; index++)
         {
             var product = products[index];
-            ScrapedProduct result;
+            var result = product;
+            var maxAttempts = MaxRetriesPerProduct + 1;
 
-            try
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                logger.LogDebug(
-                    "Disco: procesando producto {Index}/{Total}: {Url}",
-                    index + 1,
-                    products.Count,
-                    product.Url);
+                try
+                {
+                    logger.LogDebug(
+                        "Disco: procesando producto {Index}/{Total}, intento {Attempt}/{MaxAttempts}: {Url}",
+                        index + 1,
+                        products.Count,
+                        attempt,
+                        maxAttempts,
+                        product.Url);
 
-                cancellationToken.ThrowIfCancellationRequested();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                await page.GotoAsync(
-                    product.Url,
-                    new PageGotoOptions
+                    await page.GotoAsync(
+                        product.Url,
+                        new PageGotoOptions
+                        {
+                            WaitUntil = WaitUntilState.DOMContentLoaded
+                        });
+
+                    logger.LogTrace("Pagina cargada {Url}", page.Url);
+
+                    var description = page.Locator("span.vtex-store-components-3-x-productBrand");
+                    await description.WaitForAsync(new LocatorWaitForOptions
                     {
-                        WaitUntil = WaitUntilState.DOMContentLoaded
+                        State = WaitForSelectorState.Visible
                     });
 
-                logger.LogTrace("Pagina cargada {Url}", page.Url);
+                    var publicPrice = ParsePrice(
+                        await page.Locator("div.vtex-price-format-gallery").InnerTextAsync());
 
-                var description = page.Locator("span.vtex-store-components-3-x-productBrand");
-                await description.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Visible
-                });
+                    decimal? regularPrice = await TryParsePriceAsync(
+                            page.Locator("div.vtex-precio-tachado"));
 
-                var publicPrice = ParsePrice(
-                    await page.Locator("div.vtex-price-format-gallery").InnerTextAsync());
+                    var unitPrice = await TryParseUnitPriceAsync(page);
+                    var isOutOfStock = await IsOutOfStockAsync(page);
 
-                decimal? regularPrice = await TryParsePriceAsync(
-                        page.Locator("div.vtex-precio-tachado"));
-
-                var unitPrice = await TryParseUnitPriceAsync(page);
-                var isOutOfStock = await IsOutOfStockAsync(page);
-
-                if (isOutOfStock)
-                {
-                    MarkAsUnavailable(product);
-                }
-                else
-                {
-                    var effectivePrice = publicPrice ?? regularPrice;
-
-                    if (effectivePrice is null)
+                    if (isOutOfStock)
                     {
-                        throw new InvalidDataException(
-                            "No se encontró un precio válido para el producto.");
+                        MarkAsUnavailable(product);
+                    }
+                    else
+                    {
+                        var effectivePrice = publicPrice ?? regularPrice;
+
+                        if (effectivePrice is null)
+                        {
+                            throw new InvalidDataException(
+                                "No se encontró un precio válido para el producto.");
+                        }
+
+                        product.CapturedAt = DateTime.UtcNow;
+                        product.CurrencyCode = "ARS";
+                        product.RegularPrice = regularPrice ?? effectivePrice;
+                        product.PromoPrice = regularPrice is > 0 &&
+                            effectivePrice < regularPrice
+                                ? effectivePrice
+                                : null;
+                        product.UnitPrice = unitPrice ?? effectivePrice;
+                        product.Available = true;
+                        product.DataState = ScrapedProductStatus.DATO_VALIDO;
+                        product.Error = string.Empty;
+                        product.NetContentUnit = Unit.unidad;
+                        product.NetContent = 1;
+                        product.Pack = 1;
                     }
 
-                    product.CapturedAt = DateTime.UtcNow;
-                    product.CurrencyCode = "ARS";
-                    product.RegularPrice = regularPrice ?? effectivePrice;
-                    product.PromoPrice = regularPrice is > 0 &&
-                        effectivePrice < regularPrice
-                            ? effectivePrice
-                            : null;
-                    product.UnitPrice = unitPrice ?? effectivePrice;
-                    product.Available = true;
-                    product.DataState = ScrapedProductStatus.DATO_VALIDO;
-                    product.Error = string.Empty;
-                    product.NetContentUnit = Unit.unidad;
-                    product.NetContent = 1;
-                    product.Pack = 1;
+                    logger.LogDebug(
+                        "Disco: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
+                        index + 1,
+                        products.Count,
+                        product.DataState,
+                        product.Url);
+                    break;
                 }
+                catch (PlaywrightException exception)
+                {
+                    if (attempt == maxAttempts)
+                    {
+                        MarkAsCaptureError(product, exception.Message);
+                    }
 
-                logger.LogDebug(
-                    "Disco: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
-                    index + 1,
-                    products.Count,
-                    product.DataState,
-                    product.Url);
-                result = product;
-            }
-            catch (PlaywrightException exception)
-            {
-                MarkAsCaptureError(product, exception.Message);
-                logger.LogWarning(
-                    exception,
-                    "Error de Playwright procesando producto de Disco: {Url}",
-                    product.Url);
-                result = product;
-            }
-            catch (Exception exception) when (
-                exception is not OperationCanceledException)
-            {
-                MarkAsCaptureError(product, exception.Message);
-                logger.LogError(
-                    exception,
-                    "Error procesando producto de Disco: {Url}",
-                    product.Url);
-                result = product;
+                    logger.LogWarning(
+                        exception,
+                        "Error de Playwright procesando producto de Disco (intento {Attempt}/{MaxAttempts}): {Url}",
+                        attempt,
+                        maxAttempts,
+                        product.Url);
+                }
+                catch (Exception exception) when (
+                    exception is not OperationCanceledException)
+                {
+                    if (attempt == maxAttempts)
+                    {
+                        MarkAsCaptureError(product, exception.Message);
+                    }
+
+                    logger.LogError(
+                        exception,
+                        "Error procesando producto de Disco (intento {Attempt}/{MaxAttempts}): {Url}",
+                        attempt,
+                        maxAttempts,
+                        product.Url);
+                }
             }
 
             yield return result;

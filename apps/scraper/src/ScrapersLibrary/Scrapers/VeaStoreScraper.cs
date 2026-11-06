@@ -12,6 +12,7 @@ public sealed class VeaStoreScraper(
     ILogger<VeaStoreScraper> logger) : IStoreScraper
 {
     private static readonly CultureInfo ArgentineCulture = CultureInfo.GetCultureInfo("es-AR");
+    private const int MaxRetriesPerProduct = 3;
 
     public string StoreSlug => "vea";
 
@@ -74,40 +75,64 @@ public sealed class VeaStoreScraper(
 
             for (var index = continueFrom; index < products.Count; index++)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 var product = products[index];
+                var maxAttempts = MaxRetriesPerProduct + 1;
 
-                try
+                for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
-                    logger.LogDebug(
-                        "Scraping Vea product (item {CurrentItem} of {TotalItems}). {ProductUrl} ",
-                        index + 1,
-                        products.Count,
-                        product.Url);
+                    try
+                    {
+                        logger.LogDebug(
+                            "Scraping Vea product (item {CurrentItem} of {TotalItems}, attempt {Attempt}/{MaxAttempts}). {ProductUrl}",
+                            index + 1,
+                            products.Count,
+                            attempt,
+                            maxAttempts,
+                            product.Url);
 
-                    await ProcessProduct(page, product);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await ProcessProduct(page, product);
 
-                    logger.LogDebug(
-                        "Scraped Vea product (item {CurrentItem} of {TotalItems}). State: {DataState}. {ProductUrl}",
-                        index + 1,
-                        products.Count,
-                        product.DataState,
-                        product.Url);
-                }
-                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                {
-                    throw;
-                }
-                catch (Exception exception)
-                {
-                    logger.LogWarning(exception, "Could not scrape Vea product {ProductUrl}", product.Url);
-                    product.CapturedAt = DateTime.UtcNow;
-                    product.RegularPrice = null;
-                    product.PromoPrice = null;
-                    product.UnitPrice = null;
-                    product.Available = false;
-                    product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
-                    product.Error = exception.Message;
+                        logger.LogDebug(
+                            "Scraped Vea product (item {CurrentItem} of {TotalItems}). State: {DataState}. {ProductUrl}",
+                            index + 1,
+                            products.Count,
+                            product.DataState,
+                            product.Url);
+                        break;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (PlaywrightException exception)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            MarkAsCaptureError(product, exception.Message);
+                        }
+
+                        logger.LogWarning(
+                            exception,
+                            "Playwright error scraping Vea product (attempt {Attempt}/{MaxAttempts}): {ProductUrl}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
+                    catch (Exception exception)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            MarkAsCaptureError(product, exception.Message);
+                        }
+
+                        logger.LogError(
+                            exception,
+                            "Error scraping Vea product (attempt {Attempt}/{MaxAttempts}): {ProductUrl}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
                 }
 
                 yield return product;
@@ -242,5 +267,16 @@ public sealed class VeaStoreScraper(
         product.Available = false;
         product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
         product.Error = "HTTP_403_ACCESS_BLOCKED";
+    }
+
+    private static void MarkAsCaptureError(ScrapedProduct product, string error)
+    {
+        product.CapturedAt = DateTime.UtcNow;
+        product.RegularPrice = null;
+        product.PromoPrice = null;
+        product.UnitPrice = null;
+        product.Available = false;
+        product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
+        product.Error = error;
     }
 }

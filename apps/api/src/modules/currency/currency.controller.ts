@@ -11,4 +11,30 @@ export class CurrencyController {
   async crearCotizacion(@Body() createCotizacionDto: CreateCotizacionDto) {
     return this.currencyService.registrarCotizacion(createCotizacionDto);
   }
+
+  @Post('convertir')
+  async convertirDivisa(
+    @Body()
+    body: {
+      monedaBase: string;
+      monedaCotizada: string;
+      tipo: string;
+      condicion: string;
+      fuente: string;
+      monto: number;
+      fechaConsulta?: string; // Opcional para simular fechas en las pruebas
+    },
+  ) {
+    const fecha = body.fechaConsulta ? new Date(body.fechaConsulta) : new Date();
+    
+    return await this.currencyService.convertirConFallback(
+      body.monedaBase,
+      body.monedaCotizada,
+      body.tipo,
+      body.condicion,
+      body.fuente,
+      body.monto,
+      fecha,
+    );
+  }
 }

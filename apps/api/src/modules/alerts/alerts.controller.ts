@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 
-@Controller('api/v1/alerts')
+@Controller('alerts')
 export class AlertsController {
     constructor(private readonly alertsService: AlertsService) { }
 

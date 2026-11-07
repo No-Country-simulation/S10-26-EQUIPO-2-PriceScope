@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configura el prefijo global si aún no lo tienes
+  // Configura el prefijo global de la API
   app.setGlobalPrefix('api/v1');
 
   // Habilita la validación global de DTOs
@@ -13,9 +13,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
+      forbidNonWhitelisted: true,
     }),
   );
 
-  await app.listen(3000);
+  // Usa el puerto de la variable de entorno o 3001 por defecto (según el README)
+  const port = process.env.PORT || 3001;
+  await app.listen(port);
+  console.log(`🚀 Aplicación corriendo en el puerto: ${port}`);
 }
-void bootstrap();
+bootstrap();

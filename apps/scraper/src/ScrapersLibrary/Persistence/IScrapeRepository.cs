@@ -9,7 +9,12 @@ public interface IScrapeRepository
     Task<ScrapeRunMetrics?> GetRecentRunAsync(string storeSlug, CancellationToken cancellationToken);
     Task<bool> IsStoreActive(string storeSlug, CancellationToken cancellationToken);
     Task<ScrapeRunMetrics> MarkCancelledAsync(Guid runId, Exception exception, CancellationToken cancellationToken);
-    Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken);
+    Task<ScrapeRunMetrics> MarkFailedAsync(
+        Guid runId,
+        Exception exception,
+        bool retryPending,
+        CancellationToken cancellationToken,
+        bool circuitBreakerOpen = false);
     Task<ScrapeRunMetrics> MarkSucceededAsync(Guid runId, CancellationToken cancellationToken);
     Task SaveProductAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken);
     Task SaveCaptureErrorAsync(Guid runId, ScrapedProduct product, CancellationToken cancellationToken);

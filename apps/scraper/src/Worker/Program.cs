@@ -77,6 +77,17 @@ builder.Services
         "The Hangfire dashboard password is required.")
     .ValidateOnStart();
 
+builder.Services
+    .AddOptions<RetryOptions>()
+    .BindConfiguration(RetryOptions.SectionName)
+    .Validate(
+        options => options.MaxFailsInARow > 0,
+        "The maximum consecutive product failures must be greater than zero.")
+    .Validate(
+        options => options.MaxAttemptsByProduct > 0,
+        "The maximum attempts per product must be greater than zero.")
+    .ValidateOnStart();
+
 builder.Services.AddHangfireServer((sp, opts) =>
 {
     int workerCount = builder.Configuration.GetValue<int>("Hangfire:WorkerCount");

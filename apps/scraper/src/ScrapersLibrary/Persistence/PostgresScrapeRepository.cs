@@ -176,16 +176,26 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         Guid runId,
         Exception exception,
         bool retryPending,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool circuitBreakerOpen = false)
     {
         const string sql = """
             UPDATE scrape_runs
-            SET status = @status::enum_estado_corrida, finished_at = now(), last_error = @error
+            SET status = @status::enum_estado_corrida,
+                finished_at = now(),
+                last_error = @error,
+                circuit_breaker_open = @circuitBreakerOpen
             WHERE run_id = @runId;
             """;
         await RefreshMetricsAsync(runId, cancellationToken);
         var status = retryPending ? ScrapeRunStatus.PENDIENTE : ScrapeRunStatus.FALLIDA;
-        await UpdateRunAsync(sql, runId, exception.ToString(), cancellationToken, status);
+        await UpdateRunAsync(
+            sql,
+            runId,
+            exception.ToString(),
+            cancellationToken,
+            status,
+            circuitBreakerOpen);
         return await GetMetricsAsync(runId, cancellationToken);
     }
 
@@ -194,7 +204,8 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         Guid runId,
         string? error,
         CancellationToken cancellationToken,
-        ScrapeRunStatus? status = null)
+        ScrapeRunStatus? status = null,
+        bool? circuitBreakerOpen = null)
     {
         await using var command = dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("runId", runId);
@@ -205,6 +216,10 @@ public sealed class PostgresScrapeRepository(NpgsqlDataSource dataSource) : IScr
         if (sql.Contains("@error", StringComparison.Ordinal))
         {
             command.Parameters.AddWithValue("error", (object?)error ?? DBNull.Value);
+        }
+        if (circuitBreakerOpen is { } isCircuitBreakerOpen)
+        {
+            command.Parameters.AddWithValue("circuitBreakerOpen", isCircuitBreakerOpen);
         }
         await command.ExecuteNonQueryAsync(cancellationToken);
     }

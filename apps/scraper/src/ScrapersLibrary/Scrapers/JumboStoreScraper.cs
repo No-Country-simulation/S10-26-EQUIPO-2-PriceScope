@@ -17,7 +17,6 @@ public sealed class JumboStoreScraper(
     public string StoreSlug => "jumbo";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
-        int continueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var products = await infoProvider.GetInfoAsync(
@@ -25,16 +24,13 @@ public sealed class JumboStoreScraper(
             cancellationToken);
 
         logger.LogInformation(
-            "Jumbo: se recibieron {Count} productos para procesar; comenzando desde {ContinueFrom}.",
-            products.Count,
-            continueFrom);
+            "Jumbo: se recibieron {Count} productos para procesar.",
+            products.Count);
 
-        if (products.Count == 0 || continueFrom >= products.Count)
+        if (products.Count == 0)
         {
             logger.LogWarning(
-                "Jumbo: no hay productos pendientes. Total: {Count}, inicio: {ContinueFrom}.",
-                products.Count,
-                continueFrom);
+                "Jumbo: no hay productos para procesar.");
             yield break;
         }
 
@@ -65,7 +61,7 @@ public sealed class JumboStoreScraper(
         page.SetDefaultNavigationTimeout(30_000);
         page.SetDefaultTimeout(30_000);
 
-        for (var index = continueFrom; index < products.Count; index++)
+        for (var index = 0; index < products.Count; index++)
         {
             var product = products[index];
             var result = product;

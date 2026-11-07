@@ -23,7 +23,7 @@ public class JumboScraperTest
 
         List<ScrapedProduct> products = [];
 
-        await foreach (var product in scraper.ScrapeAsync(0, CancellationToken.None))
+        await foreach (var product in scraper.ScrapeAsync(CancellationToken.None))
         {
             products.Add(product);
         }

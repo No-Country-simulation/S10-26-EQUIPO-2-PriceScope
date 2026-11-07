@@ -19,21 +19,14 @@ public sealed class VeaStoreScraper(
     public string StoreSlug => "vea";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
-        int continueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         IReadOnlyList<ScrapedProduct> products =
             await infoProvider.GetInfoAsync(StoreSlug, cancellationToken);
 
-        if (continueFrom < 0 || continueFrom > products.Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(continueFrom));
-        }
-
         logger.LogInformation(
-            "Starting Vea scraper with {ProductCount} products from index {StartIndex}",
-            products.Count,
-            continueFrom);
+            "Starting Vea scraper with {ProductCount} products",
+            products.Count);
 
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
@@ -75,7 +68,7 @@ public sealed class VeaStoreScraper(
 
             var page = await context.NewPageAsync();
 
-            for (var index = continueFrom; index < products.Count; index++)
+            for (var index = 0; index < products.Count; index++)
             {
                 var product = products[index];
                 var maxAttempts = _maxRetriesPerProduct + 1;

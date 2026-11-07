@@ -37,7 +37,6 @@ public sealed class StoreScrapeJob(
         try
         {
             var run = await repository.GetRecentRunAsync(storeSlug, cancellationToken);
-            int continueFrom = run?.ProductsProcessed ?? 0;
 
             if (run is null)
             {
@@ -58,7 +57,7 @@ public sealed class StoreScrapeJob(
 
             int failsInARow = 0;
 
-            await foreach (var product in scraper.ScrapeAsync(continueFrom, cancellationToken)
+            await foreach (var product in scraper.ScrapeAsync(cancellationToken)
                 .WithCancellation(cancellationToken))
             {
                 // TODO: Decide what to do here. If save products one by one or in batches.

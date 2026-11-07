@@ -4,5 +4,5 @@ public interface IStoreScraper
 {
     string StoreSlug { get; }
 
-    IAsyncEnumerable<ScrapedProduct> ScrapeAsync(int continueFrom, CancellationToken cancellationToken);
+    IAsyncEnumerable<ScrapedProduct> ScrapeAsync(CancellationToken cancellationToken);
 }

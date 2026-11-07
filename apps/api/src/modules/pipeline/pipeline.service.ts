@@ -1,43 +1,129 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 
+export interface PipelineTiendaStatus {
+  tienda_id: string;
+  nombre: string;
+  ultima_corrida_utc: string;
+  estado_corrida: 'EXITOSA' | 'ADVERTENCIA' | 'FALLIDA';
+  circuit_breaker_open: boolean;
+  fallback_activo: boolean;
+  publicaciones_procesadas: number;
+  publicaciones_fallidas: number;
+  cobertura_pct: number;
+}
+
+export interface PipelineStatusResponse {
+  estado_global: 'OPERATIVO' | 'DEGRADADO' | 'CRITICO';
+  frescura_general_utc: string;
+  alerta_atraso_24h: boolean;
+  tiendas: PipelineTiendaStatus[];
+}
+
 @Injectable()
 export class PipelineService {
-    constructor(private readonly db: DatabaseService) { }
+  constructor(private readonly db: DatabaseService) {}
 
-    async getStatus() {
-        // Consultamos la última ejecución o estado de las tiendas en la base de datos
-        // Ajusta la consulta según los nombres de tus tablas de ejecuciones/scrapers
-        const query = `
+  async getStatus(): Promise<PipelineStatusResponse> {
+    const query = `
+      WITH ultimas_corridas AS (
+        SELECT DISTINCT ON (store_slug)
+          store_slug,
+          status,
+          circuit_breaker_open,
+          fallback_activo,
+          products_processed,
+          products_succeeded,
+          products_with_problems,
+          COALESCE(finished_at, started_at, created_at) AS ultima_corrida_utc
+        FROM scrape_runs
+        ORDER BY store_slug, COALESCE(finished_at, started_at, created_at) DESC
+      ),
+      ultimas_observaciones AS (
+        SELECT 
+          tienda_id,
+          MAX(timestamp_utc) as ultima_obs_utc,
+          COUNT(*) as total_obs
+        FROM observaciones_precios
+        GROUP BY tienda_id
+      )
       SELECT 
-        COUNT(DISTINCT tienda_id) as total_tiendas,
-        MAX(timestamp_utc) as ultima_extraccion
-      FROM observaciones_precios
+        t.id AS tienda_uuid,
+        t.slug AS tienda_id,
+        t.nombre AS nombre,
+        COALESCE(uc.ultima_corrida_utc, uo.ultima_obs_utc) AS ultima_corrida_utc,
+        CASE 
+          WHEN uc.status = 'EXITOSA' THEN 'EXITOSA'
+          WHEN uc.status = 'ADVERTENCIA' THEN 'ADVERTENCIA'
+          WHEN uc.status IN ('FALLIDA', 'ABORTADA') THEN 'FALLIDA'
+          WHEN uc.status IS NULL AND uo.ultima_obs_utc IS NOT NULL THEN 'EXITOSA'
+          ELSE 'FALLIDA'
+        END AS estado_corrida,
+        COALESCE(uc.circuit_breaker_open, false) AS circuit_breaker_open,
+        COALESCE(uc.fallback_activo, false) AS fallback_activo,
+        COALESCE(uc.products_processed, uo.total_obs, 0)::int AS publicaciones_procesadas,
+        COALESCE(uc.products_with_problems, 0)::int AS publicaciones_fallidas
+      FROM tiendas t
+      LEFT JOIN ultimas_corridas uc ON t.slug = uc.store_slug
+      LEFT JOIN ultimas_observaciones uo ON t.id = uo.tienda_id
+      WHERE t.activo = TRUE
+      ORDER BY t.nombre ASC;
     `;
 
-        const result = await this.db.query(query);
-        const row = result.rows[0];
-        const ultimaExtraccion = row?.ultima_extraccion ? new Date(row.ultima_extraccion) : new Date();
+    const result = await this.db.query(query);
+    const ahora = Date.now();
+    let maxDiferenciaHoras = 0;
+    let tieneAtraso24h = false;
+    let fechaMasReciente: Date | null = null;
 
-        // Calcular diferencia en horas para el semáforo
-        const horasDiferencia = (new Date().getTime() - ultimaExtraccion.getTime()) / (1000 * 60 * 60);
+    const tiendas: PipelineTiendaStatus[] = result.rows.map((row: any) => {
+      const fechaCorrida = row.ultima_corrida_utc ? new Date(row.ultima_corrida_utc) : null;
+      let diffHoras = 999;
 
-        let semaforo = 'VERDE';
-        if (horasDiferencia > 24) {
-            semaforo = 'ROJO';
-        } else if (horasDiferencia > 12) {
-            semaforo = 'AMARILLO';
+      if (fechaCorrida && !isNaN(fechaCorrida.getTime())) {
+        diffHoras = (ahora - fechaCorrida.getTime()) / (1000 * 60 * 60);
+        if (!fechaMasReciente || fechaCorrida > fechaMasReciente) {
+          fechaMasReciente = fechaCorrida;
         }
+      }
 
-        return {
-            estado_general: semaforo,
-            ultima_actualizacion_utc: ultimaExtraccion.toISOString(),
-            etl_activo: true,
-            detalles: {
-                total_tiendas_monitoreadas: Number(row?.total_tiendas || 0),
-                horas_desde_ultima_sync: Number(horasDiferencia.toFixed(1)),
-            },
-            mensaje: `Pipeline operando bajo estatus ${semaforo}`
-        };
+      if (diffHoras > maxDiferenciaHoras) {
+        maxDiferenciaHoras = diffHoras;
+      }
+      if (diffHoras > 24) {
+        tieneAtraso24h = true;
+      }
+
+      const procesadas = Number(row.publicaciones_procesadas) || 0;
+      const fallidas = Number(row.publicaciones_fallidas) || 0;
+      const total = procesadas + fallidas;
+      const cobertura = total > 0 ? (procesadas / total) * 100 : (row.estado_corrida === 'EXITOSA' ? 100 : 0);
+
+      return {
+        tienda_id: row.tienda_id,
+        nombre: row.nombre,
+        ultima_corrida_utc: fechaCorrida ? fechaCorrida.toISOString() : new Date(0).toISOString(),
+        estado_corrida: (row.estado_corrida as 'EXITOSA' | 'ADVERTENCIA' | 'FALLIDA') || 'FALLIDA',
+        circuit_breaker_open: Boolean(row.circuit_breaker_open),
+        fallback_activo: Boolean(row.fallback_activo),
+        publicaciones_procesadas: procesadas,
+        publicaciones_fallidas: fallidas,
+        cobertura_pct: Number(cobertura.toFixed(1)),
+      };
+    });
+
+    let estado_global: 'OPERATIVO' | 'DEGRADADO' | 'CRITICO' = 'OPERATIVO';
+    if (!fechaMasReciente || tiendas.length === 0 || maxDiferenciaHoras > 24) {
+      estado_global = 'CRITICO';
+    } else if (maxDiferenciaHoras > 12 || tiendas.some((t) => t.estado_corrida !== 'EXITOSA')) {
+      estado_global = 'DEGRADADO';
     }
+
+    return {
+      estado_global,
+      frescura_general_utc: fechaMasReciente ? fechaMasReciente.toISOString() : new Date(0).toISOString(),
+      alerta_atraso_24h: tieneAtraso24h,
+      tiendas,
+    };
+  }
 }

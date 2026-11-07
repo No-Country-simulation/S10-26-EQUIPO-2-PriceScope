@@ -2,7 +2,7 @@ import { Controller, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common
 import { CurrencyService } from './currency.service';
 import { CreateCotizacionDto } from './dto/create-cotizacion.dto';
 
-@Controller('api/v1/currency')
+@Controller('currency')
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 

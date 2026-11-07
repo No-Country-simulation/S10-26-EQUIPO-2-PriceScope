@@ -5,5 +5,6 @@ import { PipelineService } from './pipeline.service';
 @Module({
     controllers: [PipelineController],
     providers: [PipelineService],
+    exports: [PipelineService],
 })
 export class PipelineModule { }

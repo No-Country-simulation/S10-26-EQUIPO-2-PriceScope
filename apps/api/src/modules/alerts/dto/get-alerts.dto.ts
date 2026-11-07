@@ -1,20 +1,36 @@
-import { IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
-import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
+import { IsOptional, IsString, IsDateString, IsInt, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class GetAlertsDto extends PaginationQueryDto {
-    @IsOptional()
-    @IsDateString()
-    fecha_desde?: string;
+export class GetAlertsDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
 
-    @IsOptional()
-    @IsDateString()
-    fecha_hasta?: string;
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number = 50;
 
-    @IsOptional()
-    @IsUUID()
-    tienda_id?: string;
+  @IsOptional()
+  @IsDateString()
+  fecha_desde?: string;
 
-    @IsOptional()
-    @IsUUID()
-    categoria_id?: string;
+  @IsOptional()
+  @IsDateString()
+  fecha_hasta?: string;
+
+  @IsOptional()
+  @IsString()
+  tienda_id?: string;
+
+  @IsOptional()
+  @IsString()
+  categoria_id?: string;
+
+  @IsOptional()
+  @IsString()
+  severidad?: string;
 }

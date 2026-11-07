@@ -63,7 +63,15 @@ export class PipelineService {
     const ahora = Date.now();
     let maxDiferenciaHoras = 0;
     let tieneAtraso24h = false;
-    let fechaMasReciente: Date | null = null;
+
+    const fechasValidas = rows
+      .map((r) => (r.ultima_corrida_utc ? new Date(r.ultima_corrida_utc) : null))
+      .filter((d): d is Date => d !== null && !isNaN(d.getTime()));
+
+    const fechaMasReciente =
+      fechasValidas.length > 0
+        ? new Date(Math.max(...fechasValidas.map((d) => d.getTime())))
+        : null;
 
     const tiendas: PipelineTiendaStatus[] = rows.map((row) => {
       const fechaCorrida = row.ultima_corrida_utc ? new Date(row.ultima_corrida_utc) : null;
@@ -71,9 +79,6 @@ export class PipelineService {
 
       if (fechaCorrida && !isNaN(fechaCorrida.getTime())) {
         diffHoras = (ahora - fechaCorrida.getTime()) / (1000 * 60 * 60);
-        if (!fechaMasReciente || fechaCorrida > fechaMasReciente) {
-          fechaMasReciente = fechaCorrida;
-        }
       }
 
       if (diffHoras > maxDiferenciaHoras) {

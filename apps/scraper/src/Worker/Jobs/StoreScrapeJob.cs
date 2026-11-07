@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Validators;
+using Worker.Options;
 
 namespace Worker.Jobs;
 
@@ -8,6 +10,7 @@ public sealed class StoreScrapeJob(
     IScrapeRepository repository,
     IScrapedProductValidator productValidator,
     IEnumerable<IStoreScraper> scrapers,
+    IOptions<HangfireRetryOptions> hangfireRetryOpts,
     ILogger<StoreScrapeJob> logger)
 {
     public async Task ExecuteAsync(
@@ -104,8 +107,7 @@ public sealed class StoreScrapeJob(
                 throw;
             }
 
-            // TODO: Replace this hard coded value with a setting
-            var retryPending = attempt <= 5;
+            var retryPending = attempt <= retryOpts.Value.DelaysInSeconds.Length + 1;
             var metrics = await repository.MarkFailedAsync(
                 runId,
                 exception,
@@ -125,7 +127,6 @@ public sealed class StoreScrapeJob(
                 metrics.ProductsSucceeded,
                 metrics.ProductsWithProblems);
 
-            // TODO: Look if the error should continue bubbleling up.
             throw;
         }
     }

@@ -75,6 +75,8 @@ public sealed class VeaStoreScraper(
 
                 for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
+                    TimeSpan? retryAfter = null;
+
                     try
                     {
                         logger.LogDebug(
@@ -99,6 +101,16 @@ public sealed class VeaStoreScraper(
                     catch (OperationCanceledException)
                     {
                         throw;
+                    }
+                    catch (RetryAfterException exception)
+                    {
+                        retryAfter = exception.Delay;
+                        MarkAsCaptureError(product, exception.Message);
+
+                        logger.LogWarning(
+                            "Received HTTP 429 for Vea product. Retry-After: {RetryAfter}. {ProductUrl}",
+                            retryAfter,
+                            product.Url);
                     }
                     catch (PlaywrightException exception)
                     {
@@ -127,13 +139,25 @@ public sealed class VeaStoreScraper(
                         if (product.DataState == ScrapedProductStatus.ERROR_CAPTURA &&
                             attempt < maxAttempts)
                         {
-                            var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
-                            var jitter = Random.Shared.Next(0, 1_501);
-                            logger.LogTrace("Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
-                                timeToWait + jitter,
-                                attempt + 1,
-                                product.Url);
-                            await Task.Delay(timeToWait + jitter, cancellationToken);
+                            if (retryAfter is { } retryDelay)
+                            {
+                                logger.LogTrace(
+                                    "Waiting {RetryAfter} before attempt {Attempt} on {ProductUrl}",
+                                    retryDelay,
+                                    attempt + 1,
+                                    product.Url);
+                                await DelayAsync(retryDelay, cancellationToken);
+                            }
+                            else
+                            {
+                                var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
+                                var jitter = Random.Shared.Next(0, 1_501);
+                                logger.LogTrace("Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
+                                    timeToWait + jitter,
+                                    attempt + 1,
+                                    product.Url);
+                                await Task.Delay(timeToWait + jitter, cancellationToken);
+                            }
                         }
                     }
                 }
@@ -162,6 +186,11 @@ public sealed class VeaStoreScraper(
             MarkAsUnpublished(product);
             product.CapturedAt = DateTime.UtcNow;
             return;
+        }
+        else if (response?.Status == 429)
+        {
+            var retryAfter = await GetRetryAfterDelayAsync(response);
+            throw new RetryAfterException(retryAfter);
         }
         else if (response?.Status == 403)
         {
@@ -281,5 +310,53 @@ public sealed class VeaStoreScraper(
         product.Available = false;
         product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
         product.Error = error;
+    }
+
+    private static async Task<TimeSpan?> GetRetryAfterDelayAsync(IResponse response)
+    {
+        var headers = await response.AllHeadersAsync();
+        if (!headers.TryGetValue("retry-after", out var value))
+        {
+            return null;
+        }
+
+        if (long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var seconds) &&
+            seconds >= 0 &&
+            seconds <= TimeSpan.MaxValue.Ticks / TimeSpan.TicksPerSecond)
+        {
+            return TimeSpan.FromTicks(seconds * TimeSpan.TicksPerSecond);
+        }
+
+        if (DateTimeOffset.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out var retryAt))
+        {
+            var now = DateTimeOffset.UtcNow;
+            return retryAt > now
+                ? retryAt - now
+                : TimeSpan.Zero;
+        }
+
+        return null;
+    }
+
+    private static async Task DelayAsync(TimeSpan delay, CancellationToken cancellationToken)
+    {
+        var maximumDelay = TimeSpan.FromMilliseconds(uint.MaxValue - 1d);
+        while (delay > maximumDelay)
+        {
+            await Task.Delay(maximumDelay, cancellationToken);
+            delay -= maximumDelay;
+        }
+
+        await Task.Delay(delay, cancellationToken);
+    }
+
+    private sealed class RetryAfterException(TimeSpan? delay)
+        : Exception("HTTP_429_TOO_MANY_REQUESTS")
+    {
+        public TimeSpan? Delay { get; } = delay;
     }
 }

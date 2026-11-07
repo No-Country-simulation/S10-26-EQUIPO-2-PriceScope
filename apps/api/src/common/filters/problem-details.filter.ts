@@ -7,6 +7,15 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+interface HttpExceptionResponsePayload {
+  title?: string;
+  detail?: string;
+  message?: string | string[];
+  type?: string;
+  statusCode?: number;
+  error?: string;
+}
+
 @Catch()
 export class ProblemDetailsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
@@ -24,7 +33,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       const res = exception.getResponse();
 
       if (typeof res === 'object' && res !== null) {
-        const obj = res as Record<string, any>;
+        const obj = res as HttpExceptionResponsePayload;
         title = obj.title || exception.name || 'Error en la petición';
         detail = Array.isArray(obj.message)
           ? obj.message.join('; ')

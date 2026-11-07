@@ -1,24 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
+import {
+  PipelineStatusResponse,
+  PipelineStoreDbRow,
+  PipelineTiendaStatus,
+} from './types/pipeline.types';
 
-export interface PipelineTiendaStatus {
-  tienda_id: string;
-  nombre: string;
-  ultima_corrida_utc: string;
-  estado_corrida: 'EXITOSA' | 'ADVERTENCIA' | 'FALLIDA';
-  circuit_breaker_open: boolean;
-  fallback_activo: boolean;
-  publicaciones_procesadas: number;
-  publicaciones_fallidas: number;
-  cobertura_pct: number;
-}
-
-export interface PipelineStatusResponse {
-  estado_global: 'OPERATIVO' | 'DEGRADADO' | 'CRITICO';
-  frescura_general_utc: string;
-  alerta_atraso_24h: boolean;
-  tiendas: PipelineTiendaStatus[];
-}
+export * from './types/pipeline.types';
 
 @Injectable()
 export class PipelineService {
@@ -71,12 +59,13 @@ export class PipelineService {
     `;
 
     const result = await this.db.query(query);
+    const rows = result.rows as PipelineStoreDbRow[];
     const ahora = Date.now();
     let maxDiferenciaHoras = 0;
     let tieneAtraso24h = false;
     let fechaMasReciente: Date | null = null;
 
-    const tiendas: PipelineTiendaStatus[] = result.rows.map((row: any) => {
+    const tiendas: PipelineTiendaStatus[] = rows.map((row) => {
       const fechaCorrida = row.ultima_corrida_utc ? new Date(row.ultima_corrida_utc) : null;
       let diffHoras = 999;
 
@@ -97,7 +86,8 @@ export class PipelineService {
       const procesadas = Number(row.publicaciones_procesadas) || 0;
       const fallidas = Number(row.publicaciones_fallidas) || 0;
       const total = procesadas + fallidas;
-      const cobertura = total > 0 ? (procesadas / total) * 100 : (row.estado_corrida === 'EXITOSA' ? 100 : 0);
+      const cobertura =
+        total > 0 ? (procesadas / total) * 100 : row.estado_corrida === 'EXITOSA' ? 100 : 0;
 
       return {
         tienda_id: row.tienda_id,
@@ -121,7 +111,9 @@ export class PipelineService {
 
     return {
       estado_global,
-      frescura_general_utc: fechaMasReciente ? fechaMasReciente.toISOString() : new Date(0).toISOString(),
+      frescura_general_utc: fechaMasReciente
+        ? fechaMasReciente.toISOString()
+        : new Date(0).toISOString(),
       alerta_atraso_24h: tieneAtraso24h,
       tiendas,
     };

@@ -1,17 +1,20 @@
 import { describe, it, expect, jest } from '@jest/globals';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { PipelineStatusResponse } from '../pipeline/types/pipeline.types';
 
 describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
-  const mockPipelineStatus = {
-    estado_global: 'OPERATIVO' as const,
+  const mockPipelineStatus: PipelineStatusResponse = {
+    estado_global: 'OPERATIVO',
     frescura_general_utc: '2026-11-07T12:00:00Z',
     alerta_atraso_24h: false,
     tiendas: [],
   };
 
   const mockPipelineService = {
-    getStatus: jest.fn<() => Promise<any>>().mockResolvedValue(mockPipelineStatus),
+    getStatus: jest
+      .fn<() => Promise<PipelineStatusResponse>>()
+      .mockResolvedValue(mockPipelineStatus),
   };
 
   it('lanza 422 si fecha_desde es posterior a fecha_hasta (RN-09)', async () => {

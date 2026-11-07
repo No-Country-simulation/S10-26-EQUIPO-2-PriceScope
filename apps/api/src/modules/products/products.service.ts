@@ -1,61 +1,18 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { GetTraceabilityDto } from './dto/get-traceability.dto';
+import {
+  CanonicalProductDbRow,
+  ContentHistoryDbRow,
+  EstadoDato,
+  HitoReduflacionItem,
+  ObservationDbRow,
+  ObservacionTrazabilidadItem,
+  TraceabilityResponse,
+  UnidadMedida,
+} from './types/products.types';
 
-export type UnidadMedida = 'kg' | 'L' | 'unidad';
-export type EstadoDato = 'DATO_VALIDO' | 'AGOTADO' | 'ERROR_CAPTURA' | 'SIN_DATO';
-
-export interface ProductoCanonicoDetalle {
-  id: string;
-  slug: string;
-  nombre_normalizado: string;
-  marca: string;
-  modelo: string | null;
-  categoria: string;
-  contenido_neto_valor: number;
-  contenido_neto_unidad: UnidadMedida;
-  pack: string;
-}
-
-export interface ObservacionTrazabilidadItem {
-  timestamp_utc: string;
-  tienda_id: string;
-  tienda_nombre: string;
-  url_origen: string;
-  sku_tienda: string | null;
-  alias_producto: string;
-  precio_regular: number | null;
-  precio_promocional: number | null;
-  precio_por_unidad: number | null;
-  unidad_medida: UnidadMedida;
-  precio_usd: number | null;
-  estado_dato: EstadoDato;
-  cotizacion_aplicada: number | null;
-  cotizacion_aproximada: boolean;
-  fuente_cotizacion: string | null;
-  motivo_faltante?: string | null;
-  variacion_diaria_pct?: number | null;
-}
-
-export interface HitoReduflacionItem {
-  id: string;
-  timestamp_utc: string;
-  tipo: 'REDUFLACION';
-  titulo: string;
-  descripcion: string;
-  impacto: string;
-  contenido_anterior_valor: number;
-  contenido_nuevo_valor: number;
-  unidad_medida: UnidadMedida;
-  variacion_gramaje_pct: number;
-  salto_precio_unitario_pct: number;
-}
-
-export interface TraceabilityResponse {
-  producto: ProductoCanonicoDetalle;
-  hitos_reduflacion?: HitoReduflacionItem[];
-  historico_observaciones: ObservacionTrazabilidadItem[];
-}
+export * from './types/products.types';
 
 @Injectable()
 export class ProductsService {
@@ -65,13 +22,34 @@ export class ProductsService {
     idOrSlug: string,
     dto: GetTraceabilityDto,
   ): Promise<TraceabilityResponse> {
+    const prod = await this.fetchCanonicalProduct(idOrSlug);
+    const hitos = await this.fetchReduflacionHistory(prod.id);
+    const observaciones = await this.fetchObservations(prod.id, dto);
+
+    return {
+      producto: {
+        id: prod.id,
+        slug: prod.slug,
+        nombre_normalizado: prod.nombre_normalizado,
+        marca: prod.marca,
+        modelo: prod.modelo || null,
+        categoria: prod.categoria_nombre,
+        contenido_neto_valor: Number(prod.contenido_neto_valor),
+        contenido_neto_unidad: prod.contenido_neto_unidad as UnidadMedida,
+        pack: prod.pack || 'x1',
+      },
+      hitos_reduflacion: hitos.length > 0 ? hitos : undefined,
+      historico_observaciones: observaciones,
+    };
+  }
+
+  private async fetchCanonicalProduct(idOrSlug: string): Promise<CanonicalProductDbRow> {
     const isUUID =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
         idOrSlug,
       );
 
-    // 1. Consultar el producto canónico y su categoría
-    const productQuery = `
+    const query = `
       SELECT 
         pc.id,
         pc.slug,
@@ -88,8 +66,8 @@ export class ProductsService {
       LIMIT 1;
     `;
 
-    const productResult = await this.db.query(productQuery, [idOrSlug]);
-    if (productResult.rows.length === 0) {
+    const res = await this.db.query(query, [idOrSlug]);
+    if (res.rows.length === 0) {
       throw new NotFoundException({
         type: 'https://pricescope.internal/errors/product-not-found',
         title: 'Producto Canónico No Encontrado',
@@ -100,35 +78,28 @@ export class ProductsService {
       });
     }
 
-    const prod = productResult.rows[0];
-    const canonicalId = prod.id;
+    return res.rows[0] as CanonicalProductDbRow;
+  }
 
-    // 2. Consultar historial de contenido (reduflación)
-    const reduflacionQuery = `
-      SELECT 
-        id,
-        fecha_desde_utc,
-        contenido_neto_valor,
-        contenido_neto_unidad,
-        pack,
-        motivo_evento,
-        created_at
+  private async fetchReduflacionHistory(canonicalId: string): Promise<HitoReduflacionItem[]> {
+    const query = `
+      SELECT id, fecha_desde_utc, contenido_neto_valor, contenido_neto_unidad, pack, motivo_evento
       FROM historial_contenido
       WHERE producto_canonico_id = $1
       ORDER BY fecha_desde_utc ASC;
     `;
+    const res = await this.db.query(query, [canonicalId]);
+    const rows = res.rows as ContentHistoryDbRow[];
+    const hitos: HitoReduflacionItem[] = [];
 
-    const reduflacionResult = await this.db.query(reduflacionQuery, [canonicalId]);
-    const hitos_reduflacion: HitoReduflacionItem[] = [];
-
-    for (let i = 1; i < reduflacionResult.rows.length; i++) {
-      const prev = reduflacionResult.rows[i - 1];
-      const curr = reduflacionResult.rows[i];
+    for (let i = 1; i < rows.length; i++) {
+      const prev = rows[i - 1];
+      const curr = rows[i];
       const valAnt = Number(prev.contenido_neto_valor);
       const valNuevo = Number(curr.contenido_neto_valor);
       const varPct = valAnt > 0 ? Number((((valNuevo - valAnt) / valAnt) * 100).toFixed(1)) : 0;
 
-      hitos_reduflacion.push({
+      hitos.push({
         id: String(curr.id),
         timestamp_utc: new Date(curr.fecha_desde_utc).toISOString(),
         tipo: 'REDUFLACION',
@@ -143,33 +114,35 @@ export class ProductsService {
       });
     }
 
-    // 3. Consultar observaciones de precios con filtros opcionales
-    const conditions: string[] = ['op.producto_canonico_id = $1'];
-    const params: any[] = [canonicalId];
-    let paramIndex = 2;
+    return hitos;
+  }
+
+  private async fetchObservations(
+    canonicalId: string,
+    dto: GetTraceabilityDto,
+  ): Promise<ObservacionTrazabilidadItem[]> {
+    const conditions = ['op.producto_canonico_id = $1'];
+    const params: (string | number)[] = [canonicalId];
+    let pIdx = 2;
 
     if (dto.fecha_desde) {
-      conditions.push(`op.timestamp_utc >= $${paramIndex++}`);
+      conditions.push(`op.timestamp_utc >= $${pIdx++}`);
       params.push(dto.fecha_desde);
     }
     if (dto.fecha_hasta) {
-      conditions.push(`op.timestamp_utc <= $${paramIndex++}`);
+      conditions.push(`op.timestamp_utc <= $${pIdx++}`);
       params.push(dto.fecha_hasta);
     }
     if (dto.tienda_id) {
-      const isTiendaUUID =
+      const isUUID =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
           dto.tienda_id,
         );
-      if (isTiendaUUID) {
-        conditions.push(`t.id = $${paramIndex++}`);
-      } else {
-        conditions.push(`t.slug = $${paramIndex++}`);
-      }
+      conditions.push(isUUID ? `t.id = $${pIdx++}` : `t.slug = $${pIdx++}`);
       params.push(dto.tienda_id);
     }
 
-    const obsQuery = `
+    const query = `
       SELECT 
         op.timestamp_utc,
         t.slug AS tienda_id,
@@ -194,74 +167,54 @@ export class ProductsService {
       ORDER BY op.timestamp_utc DESC;
     `;
 
-    const obsResult = await this.db.query(obsQuery, params);
+    const res = await this.db.query(query, params);
+    const rows = res.rows as ObservationDbRow[];
 
-    const historico_observaciones: ObservacionTrazabilidadItem[] = obsResult.rows.map(
-      (row: any, idx: number, arr: any[]) => {
-        // Validación anti-cero (RN-04): nunca devolver 0 en precios de faltantes
-        let regular = row.precio_regular !== null ? Number(row.precio_regular) : null;
-        let promocional = row.precio_promocional !== null ? Number(row.precio_promocional) : null;
-        let porUnidad = row.precio_por_unidad !== null ? Number(row.precio_por_unidad) : null;
+    return rows.map((row, idx, arr) => {
+      let regular = row.precio_regular !== null ? Number(row.precio_regular) : null;
+      let promocional = row.precio_promocional !== null ? Number(row.precio_promocional) : null;
+      let porUnidad = row.precio_por_unidad !== null ? Number(row.precio_por_unidad) : null;
 
-        if (regular === 0) regular = null;
-        if (promocional === 0) promocional = null;
-        if (porUnidad === 0) porUnidad = null;
+      // Anti-cero (RN-04)
+      if (regular === 0) regular = null;
+      if (promocional === 0) promocional = null;
+      if (porUnidad === 0) porUnidad = null;
 
-        const cotizacion =
-          row.cotizacion_aplicada !== null ? Number(row.cotizacion_aplicada) : null;
-        const precioUsd =
-          regular !== null && cotizacion !== null && cotizacion > 0
-            ? Number((regular / cotizacion).toFixed(2))
-            : null;
+      const cotizacion =
+        row.cotizacion_aplicada !== null ? Number(row.cotizacion_aplicada) : null;
+      const precioUsd =
+        regular !== null && cotizacion !== null && cotizacion > 0
+          ? Number((regular / cotizacion).toFixed(2))
+          : null;
 
-        // Calcular variación con la observación anterior de la misma tienda (si existe)
-        let variacion_diaria_pct: number | null = null;
-        const obsAnterior = arr.slice(idx + 1).find((o) => o.tienda_id === row.tienda_id);
-        if (obsAnterior && obsAnterior.precio_regular && regular) {
-          const precioAnt = Number(obsAnterior.precio_regular);
-          if (precioAnt > 0) {
-            variacion_diaria_pct = Number(
-              (((regular - precioAnt) / precioAnt) * 100).toFixed(2),
-            );
-          }
+      let variacion_diaria_pct: number | null = null;
+      const obsAnt = arr.slice(idx + 1).find((o) => o.tienda_id === row.tienda_id);
+      if (obsAnt && obsAnt.precio_regular && regular) {
+        const precioAnt = Number(obsAnt.precio_regular);
+        if (precioAnt > 0) {
+          variacion_diaria_pct = Number((((regular - precioAnt) / precioAnt) * 100).toFixed(2));
         }
+      }
 
-        return {
-          timestamp_utc: new Date(row.timestamp_utc).toISOString(),
-          tienda_id: row.tienda_id,
-          tienda_nombre: row.tienda_nombre,
-          url_origen: row.url_origen,
-          sku_tienda: row.sku_tienda || null,
-          alias_producto: row.alias_producto,
-          precio_regular: regular,
-          precio_promocional: promocional,
-          precio_por_unidad: porUnidad,
-          unidad_medida: (row.unidad_medida as UnidadMedida) || 'unidad',
-          precio_usd: precioUsd,
-          estado_dato: (row.estado_dato as EstadoDato) || 'DATO_VALIDO',
-          cotizacion_aplicada: cotizacion,
-          cotizacion_aproximada: Boolean(row.cotizacion_aproximada),
-          fuente_cotizacion: row.fuente_cotizacion || null,
-          motivo_faltante: row.motivo_faltante || null,
-          variacion_diaria_pct,
-        };
-      },
-    );
-
-    return {
-      producto: {
-        id: prod.id,
-        slug: prod.slug,
-        nombre_normalizado: prod.nombre_normalizado,
-        marca: prod.marca,
-        modelo: prod.modelo || null,
-        categoria: prod.categoria_nombre,
-        contenido_neto_valor: Number(prod.contenido_neto_valor),
-        contenido_neto_unidad: prod.contenido_neto_unidad as UnidadMedida,
-        pack: prod.pack || 'x1',
-      },
-      hitos_reduflacion: hitos_reduflacion.length > 0 ? hitos_reduflacion : undefined,
-      historico_observaciones,
-    };
+      return {
+        timestamp_utc: new Date(row.timestamp_utc).toISOString(),
+        tienda_id: row.tienda_id,
+        tienda_nombre: row.tienda_nombre,
+        url_origen: row.url_origen,
+        sku_tienda: row.sku_tienda || null,
+        alias_producto: row.alias_producto,
+        precio_regular: regular,
+        precio_promocional: promocional,
+        precio_por_unidad: porUnidad,
+        unidad_medida: (row.unidad_medida as UnidadMedida) || 'unidad',
+        precio_usd: precioUsd,
+        estado_dato: (row.estado_dato as EstadoDato) || 'DATO_VALIDO',
+        cotizacion_aplicada: cotizacion,
+        cotizacion_aproximada: Boolean(row.cotizacion_aproximada),
+        fuente_cotizacion: row.fuente_cotizacion || null,
+        motivo_faltante: row.motivo_faltante || null,
+        variacion_diaria_pct,
+      };
+    });
   }
 }

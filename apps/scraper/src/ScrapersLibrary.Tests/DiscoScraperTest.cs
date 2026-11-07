@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Tests.Mocks;
 
@@ -19,6 +20,7 @@ public class DiscoScraperTest
 
         var scraper = new DiscoStoreScraper(
             new MockDiscoProductInfoProvider(),
+            Options.Create(new RetryOptions { MaxRetriesByProduct = 3 }),
             loggerFactory.CreateLogger<DiscoStoreScraper>());
 
         List<ScrapedProduct> products = [];

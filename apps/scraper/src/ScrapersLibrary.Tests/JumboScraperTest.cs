@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Tests.Mocks;
 
@@ -19,6 +20,7 @@ public class JumboScraperTest
 
         var scraper = new JumboStoreScraper(
             new MockJumboProductInfoProvider(),
+            Options.Create(new RetryOptions { MaxRetriesByProduct = 3 }),
             loggerFactory.CreateLogger<JumboStoreScraper>());
 
         List<ScrapedProduct> products = [];

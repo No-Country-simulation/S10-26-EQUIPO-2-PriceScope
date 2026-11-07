@@ -3,16 +3,18 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Seed;
 
 namespace ScrapersLibrary.Scrapers;
 
 public sealed class CotoStoreScraper(
     IProductInfoProvider infoProvider,
+    IOptions<RetryOptions> retryOptions,
     ILogger<CotoStoreScraper> logger
 ) : IStoreScraper
 {
-    private const int MaxRetriesPerProduct = 3;
+    private readonly int _maxRetriesPerProduct = retryOptions.Value.MaxRetriesByProduct;
 
     public string StoreSlug => "coto";
 
@@ -78,8 +80,7 @@ public sealed class CotoStoreScraper(
             for (var index = 0; index < products.Count; index++)
             {
                 var product = products[index];
-                var result = product;
-                var maxAttempts = MaxRetriesPerProduct + 1;
+                var maxAttempts = _maxRetriesPerProduct + 1;
 
                 for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
@@ -156,12 +157,13 @@ public sealed class CotoStoreScraper(
                             product.Url);
                         break;
                     }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
                     catch (PlaywrightException exception)
                     {
-                        if (attempt == maxAttempts)
-                        {
-                            MarkAsCaptureError(product, exception.Message);
-                        }
+                        MarkAsCaptureError(product, exception.Message);
 
                         logger.LogWarning(
                             exception,
@@ -170,13 +172,9 @@ public sealed class CotoStoreScraper(
                             maxAttempts,
                             product.Url);
                     }
-                    catch (Exception exception) when (
-                        exception is not OperationCanceledException)
+                    catch (Exception exception)
                     {
-                        if (attempt == maxAttempts)
-                        {
-                            MarkAsCaptureError(product, exception.Message);
-                        }
+                        MarkAsCaptureError(product, exception.Message);
 
                         logger.LogError(
                             exception,
@@ -185,9 +183,24 @@ public sealed class CotoStoreScraper(
                             maxAttempts,
                             product.Url);
                     }
+                    finally
+                    {
+                        if (product.DataState == ScrapedProductStatus.ERROR_CAPTURA &&
+                            attempt < maxAttempts)
+                        {
+                            var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
+                            var jitter = Random.Shared.Next(0, 1_501);
+                            logger.LogTrace(
+                                "Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
+                                timeToWait + jitter,
+                                attempt + 1,
+                                product.Url);
+                            await Task.Delay(timeToWait + jitter, cancellationToken);
+                        }
+                    }
                 }
 
-                yield return result;
+                yield return product;
             }
         }
         finally

@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -18,6 +19,8 @@ interface HttpExceptionResponsePayload {
 
 @Catch()
 export class ProblemDetailsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(ProblemDetailsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -45,7 +48,12 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         type = `https://pricescope.internal/errors/http-${status}`;
       }
     } else if (exception instanceof Error) {
-      detail = exception.message;
+      // Registra el error interno con traza completa en el log del servidor
+      this.logger.error(`Error no controlado [${request.method} ${request.url}]: ${exception.message}`, exception.stack);
+      // Blindaje de seguridad: no exponer detalles de errores internos (500) al cliente
+      detail = 'Ocurrió un error interno en el servidor al procesar la solicitud.';
+    } else {
+      this.logger.error(`Error desconocido [${request.method} ${request.url}]: ${String(exception)}`);
     }
 
     const problemDetails = {

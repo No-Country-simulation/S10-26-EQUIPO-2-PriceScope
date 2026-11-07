@@ -57,7 +57,7 @@ export class CurrencyService {
       };
     } catch (error) {
       this.logger.error('Error al insertar cotización en TimescaleDB', error);
-      throw new BadRequestException(`Error de base de datos: ${(error as Error).message}`);
+      throw new BadRequestException('No se pudo registrar la cotización en la base de datos.');
     }
   }
 
@@ -97,7 +97,7 @@ export class CurrencyService {
       return result.rows[0] || null;
     } catch (error) {
       this.logger.error('Error detallado en fn_obtener_cotizacion_cierre:', error);
-      throw new BadRequestException(`Error al consultar cotización con fallback: ${(error as Error).message}`);
+      throw new BadRequestException('Error al consultar cotización con fallback en la base de datos.');
     }
   }
 

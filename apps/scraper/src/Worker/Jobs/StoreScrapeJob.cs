@@ -73,7 +73,7 @@ public sealed class StoreScrapeJob(
                     failsInARow++;
                 }
 
-                if (failsInARow > retryOpts.Value.MaxFailsInARow)
+                if (failsInARow >= retryOpts.Value.MaxFailsInARow)
                 {
                     throw new CircuitOpenException($"External problem with the store. {failsInARow} products failed in a row.");
                 }

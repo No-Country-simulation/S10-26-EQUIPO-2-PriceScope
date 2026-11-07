@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using ScrapersLibrary;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Validators;

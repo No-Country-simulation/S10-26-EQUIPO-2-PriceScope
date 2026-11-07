@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Playwright;
 using ScrapersLibrary.Seed;
 using System.Globalization;
@@ -9,10 +10,11 @@ namespace ScrapersLibrary.Scrapers;
 
 public sealed class VeaStoreScraper(
     IProductInfoProvider infoProvider,
+    IOptions<RetryOptions> retryOptions,
     ILogger<VeaStoreScraper> logger) : IStoreScraper
 {
     private static readonly CultureInfo ArgentineCulture = CultureInfo.GetCultureInfo("es-AR");
-    private const int MaxRetriesPerProduct = 3;
+    private readonly int _maxRetriesPerProduct = retryOptions.Value.MaxRetriesByProduct;
 
     public string StoreSlug => "vea";
 
@@ -76,7 +78,7 @@ public sealed class VeaStoreScraper(
             for (var index = continueFrom; index < products.Count; index++)
             {
                 var product = products[index];
-                var maxAttempts = MaxRetriesPerProduct + 1;
+                var maxAttempts = _maxRetriesPerProduct + 1;
 
                 for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
@@ -107,10 +109,7 @@ public sealed class VeaStoreScraper(
                     }
                     catch (PlaywrightException exception)
                     {
-                        if (attempt == maxAttempts)
-                        {
-                            MarkAsCaptureError(product, exception.Message);
-                        }
+                        MarkAsCaptureError(product, exception.Message);
 
                         logger.LogWarning(
                             exception,
@@ -121,10 +120,7 @@ public sealed class VeaStoreScraper(
                     }
                     catch (Exception exception)
                     {
-                        if (attempt == maxAttempts)
-                        {
-                            MarkAsCaptureError(product, exception.Message);
-                        }
+                        MarkAsCaptureError(product, exception.Message);
 
                         logger.LogError(
                             exception,
@@ -132,6 +128,20 @@ public sealed class VeaStoreScraper(
                             attempt,
                             maxAttempts,
                             product.Url);
+                    }
+                    finally
+                    {
+                        if (product.DataState == ScrapedProductStatus.ERROR_CAPTURA &&
+                            attempt < maxAttempts)
+                        {
+                            var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
+                            var jitter = Random.Shared.Next(0, 1_501);
+                            logger.LogTrace("Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
+                                timeToWait + jitter,
+                                attempt + 1,
+                                product.Url);
+                            await Task.Delay(timeToWait + jitter, cancellationToken);
+                        }
                     }
                 }
 

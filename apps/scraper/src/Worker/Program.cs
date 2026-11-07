@@ -3,6 +3,7 @@ using Hangfire.PostgreSql;
 using Hangfire.Storage;
 using Microsoft.Extensions.Options;
 using Npgsql;
+using ScrapersLibrary;
 using ScrapersLibrary.Persistence;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Seed;
@@ -84,7 +85,7 @@ builder.Services
         options => options.MaxFailsInARow > 0,
         "The maximum consecutive product failures must be greater than zero.")
     .Validate(
-        options => options.MaxAttemptsByProduct > 0,
+        options => options.MaxRetriesByProduct > 0,
         "The maximum attempts per product must be greater than zero.")
     .ValidateOnStart();
 

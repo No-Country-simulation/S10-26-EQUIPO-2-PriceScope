@@ -1,42 +1,32 @@
 -- ============================================================================
--- PriceScope — Script Oficial de Inicialización de Base de Datos
--- PostgreSQL 16 con extensión TimescaleDB 2.x (Compatible Neon + Docker)
+-- 00. CONFIGURACIÓN INICIAL Y EXTENSIONES
 -- ============================================================================
-
--- 00. EXTENSIONES REQUERIDAS
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+CREATE EXTENSION IF NOT EXISTS "timescaledb";
 
 -- ============================================================================
--- 01. CREACIÓN DE ENUMS (Idempotentes)
+-- 01. CREACIÓN DE ENUMS (DDL Directo sin bloques DO)
 -- ============================================================================
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_tienda AS ENUM ('supermercado', 'electro');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_tienda CASCADE;
+CREATE TYPE enum_tipo_tienda AS ENUM ('supermercado', 'electro');
 
-DO $$ BEGIN
-    CREATE TYPE enum_unidad_medida AS ENUM ('kg', 'L', 'unidad');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_unidad_medida CASCADE;
+CREATE TYPE enum_unidad_medida AS ENUM ('kg', 'L', 'unidad');
 
-DO $$ BEGIN
-    CREATE TYPE enum_estado_dato AS ENUM ('DATO_VALIDO', 'AGOTADO', 'ERROR_CAPTURA', 'SIN_DATO');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_estado_dato CASCADE;
+CREATE TYPE enum_estado_dato AS ENUM ('DATO_VALIDO', 'AGOTADO', 'ERROR_CAPTURA', 'SIN_DATO');
 
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_cambio AS ENUM ('oficial', 'parallel', 'mep', 'ccl');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_cambio CASCADE;
+CREATE TYPE enum_tipo_cambio AS ENUM ('oficial', 'parallel', 'mep', 'ccl');
 
-DO $$ BEGIN
-    CREATE TYPE enum_condicion_cambio AS ENUM ('venta', 'compra');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_condicion_cambio CASCADE;
+CREATE TYPE enum_condicion_cambio AS ENUM ('venta', 'compra');
 
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_hito AS ENUM ('AUTOMATICO', 'MANUAL');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_hito CASCADE;
+CREATE TYPE enum_tipo_hito AS ENUM ('AUTOMATICO', 'MANUAL');
 
-DO $$ BEGIN
-    CREATE TYPE enum_estado_corrida AS ENUM ('PENDIENTE', 'EN_PROCESO', 'EXITOSA', 'ADVERTENCIA', 'FALLIDA', 'ABORTADA');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_estado_corrida CASCADE;
+CREATE TYPE enum_estado_corrida AS ENUM ('PENDIENTE', 'EN_PROCESO', 'EXITOSA', 'ADVERTENCIA', 'FALLIDA', 'ABORTADA');
 
 -- ============================================================================
 -- 02. TABLAS MAESTRAS Y OPERACIONALES (CON UUIDs Y SLUGS DETERMINÍSTICOS)
@@ -259,7 +249,9 @@ REFRESH MATERIALIZED VIEW agg_precios_semanales;
 -- ============================================================================
 CREATE OR REPLACE FUNCTION fn_obtener_cotizacion_cierre(
     p_fecha_captura TIMESTAMPTZ,
-    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'
+    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'::enum_tipo_cambio,
+    p_condicion enum_condicion_cambio DEFAULT 'venta'::enum_condicion_cambio,
+    p_fuente VARCHAR DEFAULT NULL
 )
 RETURNS TABLE (
     cotizacion_aplicada NUMERIC(12,4),
@@ -285,7 +277,8 @@ BEGIN
         'OK'::VARCHAR(20) AS estado_sincronizacion
     FROM cotizaciones_divisas c
     WHERE c.tipo = p_tipo_cambio
-      AND c.condicion = 'venta'
+      AND c.condicion = p_condicion
+      AND (p_fuente IS NULL OR c.fuente = p_fuente)
       AND c.timestamp_utc <= v_cierre_local_utc
       AND c.timestamp_utc >= v_limite_ttl_utc
     ORDER BY c.timestamp_utc DESC
@@ -295,226 +288,5 @@ BEGIN
         RETURN QUERY SELECT NULL::NUMERIC(12,4), FALSE, NULL::VARCHAR(50), 'SIN_DATO'::VARCHAR(20);
     END IF;
 END;
+
 $$ LANGUAGE plpgsql STABLE;
-
--- ============================================================================
--- 10. POBLACIÓN DETERMINÍSTICA BASE (HU-00 Seed Data Idempotente)
--- ============================================================================
-INSERT INTO categorias (slug, nombre, descripcion) VALUES
-('canasta-basica', 'Canasta Básica', 'Alimentos y artículos de primera necesidad (consumo masivo)'),
-('bienes-durables', 'Bienes Durables', 'Electrodomésticos y tecnología para el hogar')
-ON CONFLICT (slug) DO UPDATE SET 
-    nombre = EXCLUDED.nombre,
-    descripcion = EXCLUDED.descripcion;
-
-INSERT INTO tiendas (slug, nombre, url_base, tipo) VALUES
-('carrefour', 'Carrefour Argentina', 'https://www.carrefour.com.ar', 'supermercado'),
-('jumbo', 'Jumbo Argentina', 'https://www.jumbo.com.ar', 'supermercado'),
-('fravega', 'Frávega Argentina', 'https://www.fravega.com', 'electro'),
-('musimundo', 'Musimundo Argentina', 'https://www.musimundo.com', 'electro')
-ON CONFLICT (slug) DO UPDATE SET 
-    nombre = EXCLUDED.nombre,
-    url_base = EXCLUDED.url_base,
-    tipo = EXCLUDED.tipo;
-
-INSERT INTO productos_canonicos (slug, categoria_id, marca, modelo, nombre_normalizado, contenido_neto_valor, contenido_neto_unidad, pack)
-VALUES 
-(
-    'prod-cafe-molido-la-morenita-500g', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'La Morenita', 
-    'Clásico', 
-    'Café tostado molido clásico La Morenita 500g', 
-    0.5, 
-    'kg', 
-    'x1'
-),
-(
-    'prod-aceite-girasol-natura-1-5l', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'Natura', 
-    'Puro Girasol', 
-    'Aceite de girasol Natura 1.5 L', 
-    1.5, 
-    'L', 
-    'x1'
-),
-(
-    'prod-leche-entera-la-serenisima-1l', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'La Serenísima', 
-    'Clásica UAT', 
-    'Leche entera UAT La Serenísima clásica 1 L', 
-    1.0, 
-    'L', 
-    'x1'
-),
-(
-    'prod-arroz-largo-fino-lucchetti-1kg', 
-    (SELECT id FROM categorias WHERE slug = 'canasta-basica'), 
-    'Lucchetti', 
-    'Largo Fino', 
-    'Arroz largo fino Lucchetti 1 kg', 
-    1.0, 
-    'kg', 
-    'x1'
-),
-(
-    'prod-smarttv-samsung-55-du7000-4k', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Samsung', 
-    'DU7000', 
-    'Smart TV Samsung 55 pulgadas 4K UHD Crystal DU7000', 
-    1.0, 
-    'unidad', 
-    'x1'
-),
-(
-    'prod-heladera-gafa-hgn358b-310l', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Gafa', 
-    'HGN358B', 
-    'Heladera con freezer Gafa HGN358B blanca 310 L', 
-    1.0, 
-    'unidad', 
-    'x1'
-),
-(
-    'prod-lavarropas-drean-next-8-12-8kg', 
-    (SELECT id FROM categorias WHERE slug = 'bienes-durables'), 
-    'Drean', 
-    'Next 8.12 Eco', 
-    'Lavarropas automático Drean Next 8.12 Eco 8 kg 1200 RPM', 
-    1.0, 
-    'unidad', 
-    'x1'
-)
-ON CONFLICT (slug) DO UPDATE SET 
-    nombre_normalizado = EXCLUDED.nombre_normalizado,
-    contenido_neto_valor = EXCLUDED.contenido_neto_valor,
-    updated_at = NOW();
-
-INSERT INTO alias_tienda (producto_canonico_id, tienda_id, alias_producto, sku_tienda, url_origen, metodo_matching)
-VALUES 
--- Café
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Café molido La Morenita clásico 500 g',
-    'CAR-684279',
-    'https://www.carrefour.com.ar/cafe-molido-la-morenita-clasico-500-g/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-cafe-molido-la-morenita-500g'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Café molido La Morenita clásico 500 gr',
-    'JUM-128450',
-    'https://www.jumbo.com.ar/cafe-molido-la-morenita-clasico-500-gr/p',
-    'MANUAL_SEED'
-),
--- Aceite
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Aceite de girasol Natura 1.5 L',
-    'CAR-693155',
-    'https://www.carrefour.com.ar/aceite-de-girasol-natura-15-l/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-aceite-girasol-natura-1-5l'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Aceite de girasol Natura 1.5 L botella',
-    'JUM-349821',
-    'https://www.jumbo.com.ar/aceite-de-girasol-natura-1-5-l/p',
-    'MANUAL_SEED'
-),
--- Leche
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Leche entera La Serenísima clásica 1 L',
-    'CAR-674681',
-    'https://www.carrefour.com.ar/leche-entera-la-serenisima-clasica-1-l/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-leche-entera-la-serenisima-1l'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Leche entera clásica La Serenísima 1 L brik',
-    'JUM-542190',
-    'https://www.jumbo.com.ar/leche-entera-la-serenisima-clasica-1-l/p',
-    'MANUAL_SEED'
-),
--- Arroz
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
-    (SELECT id FROM tiendas WHERE slug = 'carrefour'),
-    'Arroz largo fino Lucchetti 1 kg',
-    'CAR-693245',
-    'https://www.carrefour.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-arroz-largo-fino-lucchetti-1kg'),
-    (SELECT id FROM tiendas WHERE slug = 'jumbo'),
-    'Arroz largo fino Lucchetti bolsa 1 kg',
-    'JUM-872341',
-    'https://www.jumbo.com.ar/arroz-largo-fino-lucchetti-1-kg/p',
-    'MANUAL_SEED'
-),
--- Smart TV
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Smart TV 55" 4K UHD Samsung Crystal DU7000 UN55DU7000GCZB',
-    'FRA-DU7000-55',
-    'https://www.fravega.com/p/smart-tv-55-4k-uhd-samsung-du7000-un55du7000gczb/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-smarttv-samsung-55-du7000-4k'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Smart TV Samsung 55" 4K UHD UN55DU7000',
-    'MUS-55DU7000',
-    'https://www.musimundo.com/televisores/smart-tv/smart-tv-55-4k-uhd-samsung-un55du7000/p',
-    'MANUAL_SEED'
-),
--- Heladera
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Heladera con Freezer Gafa HGN358B Blanca 310 L',
-    'FRA-HGN358B',
-    'https://www.fravega.com/p/heladera-con-freezer-gafa-hgn358b-blanca-310-l/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-heladera-gafa-hgn358b-310l'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Heladera Gafa HGN358B Blanca 310 L',
-    'MUS-HGN358B',
-    'https://www.musimundo.com/heladeras-y-freezers/heladeras/heladera-gafa-hgn358b-blanca-310-l/p',
-    'MANUAL_SEED'
-),
--- Lavarropas
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'fravega'),
-    'Lavarropas Automático Drean Next 8.12 Eco 8 kg 1200 RPM',
-    'FRA-NEXT812',
-    'https://www.fravega.com/p/lavarropas-automatico-drean-next-8-12-eco-8-kg-1200-rpm/',
-    'MANUAL_SEED'
-),
-(
-    (SELECT id FROM productos_canonicos WHERE slug = 'prod-lavarropas-drean-next-8-12-8kg'),
-    (SELECT id FROM tiendas WHERE slug = 'musimundo'),
-    'Lavarropas Drean Next 8.12 Eco 8 kg',
-    'MUS-NEXT812',
-    'https://www.musimundo.com/lavado/lavarropas/lavarropas-drean-next-8-12-eco-8kg/p',
-    'MANUAL_SEED'
-)
-ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
-    alias_producto = EXCLUDED.alias_producto,
-    sku_tienda = EXCLUDED.sku_tienda;

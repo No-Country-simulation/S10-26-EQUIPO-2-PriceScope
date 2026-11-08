@@ -194,12 +194,15 @@ public sealed class VeaStoreScraper(
         }
         else if (response?.Status == 403)
         {
-            MarkAsBlocked(product);
-            product.CapturedAt = DateTime.UtcNow;
+            throw new Exception("HTTP_403_ACCESS_BLOCKED");
+        }
+        else if (response?.Status >= 500)
+        {
+            throw new Exception("HTTP_500_INTERNAL_SERVER_ERROR");
         }
         else if (response?.Status is < 200 or >= 300)
         {
-            throw new Exception($"Unknown Error. HTTP_{response.Status}");
+            throw new Exception($"HTTP_{response.Status}");
         }
 
         // wait for elements to appear
@@ -289,16 +292,6 @@ public sealed class VeaStoreScraper(
         product.Available = false;
         product.DataState = ScrapedProductStatus.AGOTADO;
         product.Error = "HTTP_404_DESPUBLICADO";
-    }
-
-    private static void MarkAsBlocked(ScrapedProduct product)
-    {
-        product.RegularPrice = null;
-        product.PromoPrice = null;
-        product.UnitPrice = null;
-        product.Available = false;
-        product.DataState = ScrapedProductStatus.ERROR_CAPTURA;
-        product.Error = "HTTP_403_ACCESS_BLOCKED";
     }
 
     private static void MarkAsCaptureError(ScrapedProduct product, string error)

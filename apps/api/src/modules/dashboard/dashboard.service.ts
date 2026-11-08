@@ -1,6 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { PipelineService } from '../pipeline/pipeline.service';
+import { CierreCambiarioService } from '../currency/cierre-cambiario.service';
 import { GetDashboardDto } from './dto/get-dashboard.dto';
 import {
   CategoriaDbRow,
@@ -20,7 +21,8 @@ export class DashboardService {
   constructor(
     private readonly db: DatabaseService,
     private readonly pipelineService: PipelineService,
-  ) {}
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async getDashboardData(dto: GetDashboardDto): Promise<DashboardResponse> {
     const { fechaDesde, fechaHasta, diffDays } = this.resolveAndValidateDates(dto);
@@ -198,14 +200,12 @@ export class DashboardService {
   }
 
   private async fetchCurrencyRates(desde: Date, hasta: Date): Promise<CotizacionDbRow[]> {
-    const query = `
-      SELECT venta::numeric AS cotizacion, timestamp_utc
-      FROM cotizaciones_divisas
-      WHERE tipo = 'parallel' AND condicion = 'venta'
-        AND timestamp_utc >= $1 AND timestamp_utc <= $2
-      ORDER BY timestamp_utc ASC;
-    `;
-    const res = await this.db.query(query, [desde.toISOString(), hasta.toISOString()]);
-    return res.rows as CotizacionDbRow[];
+    const { inicial, final } = await this.cierreCambiario.obtenerVariacionPeriodo(desde, hasta);
+    if (inicial.cotizacionAplicada === null || final.cotizacionAplicada === null) return [];
+
+    return [
+      { cotizacion: inicial.cotizacionAplicada, timestamp_utc: desde },
+      { cotizacion: final.cotizacionAplicada, timestamp_utc: hasta },
+    ];
   }
 }

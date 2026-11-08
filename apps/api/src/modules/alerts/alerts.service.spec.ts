@@ -4,7 +4,7 @@ import { AlertsService } from './alerts.service';
 
 describe('AlertsService (HU-37, HU-39, HU-46)', () => {
   it('lanza 422 Unprocessable Entity cuando limit supera 50 según RN-06', async () => {
-    const service = new AlertsService({ query: jest.fn() } as never);
+    const service = new AlertsService({ query: jest.fn() } as never, {} as never);
 
     await expect(service.findAll({ limit: 100 })).rejects.toThrow(
       UnprocessableEntityException,
@@ -12,7 +12,18 @@ describe('AlertsService (HU-37, HU-39, HU-46)', () => {
   });
 
   it('retorna la lista paginada de alertas inflacionarias con diferencial de puntos', async () => {
-    const mockCotiz = [{ cotizacion: '1000' }, { cotizacion: '1200' }]; // +20% devaluación
+    const cierreOk = (valor: number) => ({
+      cotizacionAplicada: valor,
+      esAproximada: false,
+      fuente: 'DolarAPI',
+      estado: 'OK',
+    });
+    const mockCierre = {
+      obtenerVariacionPeriodo: jest
+        .fn<(desde: Date, hasta: Date) => Promise<unknown>>()
+        .mockResolvedValue({ inicial: cierreOk(1000), final: cierreOk(1200), variacionPct: 20 }),
+    };
+
     const mockAlertData = [
       {
         producto_canonico_id: 'prod-1',
@@ -31,16 +42,13 @@ describe('AlertsService (HU-37, HU-39, HU-46)', () => {
     const query = jest
       .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
       .mockImplementation(async (sql: string) => {
-        if (sql.includes('FROM cotizaciones_divisas')) {
-          return { rows: mockCotiz };
-        }
         if (sql.includes('COUNT(*) AS total')) {
           return { rows: [{ total: '1' }] };
         }
         return { rows: mockAlertData };
       });
 
-    const service = new AlertsService({ query } as never);
+    const service = new AlertsService({ query } as never, mockCierre as never);
     const result = await service.findAll({ page: 1, limit: 50 });
 
     expect(result.paginacion.pagina_actual).toBe(1);

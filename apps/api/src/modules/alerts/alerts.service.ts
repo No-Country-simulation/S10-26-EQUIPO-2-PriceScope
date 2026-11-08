@@ -1,18 +1,17 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
+import { CierreCambiarioService } from '../currency/cierre-cambiario.service';
 import { GetAlertsDto } from './dto/get-alerts.dto';
-import {
-  AlertaDbRow,
-  AlertaItem,
-  AlertsResponse,
-  CotizacionSimpleRow,
-} from './types/alerts.types';
+import { AlertaDbRow, AlertaItem, AlertsResponse } from './types/alerts.types';
 
 export * from './types/alerts.types';
 
 @Injectable()
 export class AlertsService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async findAll(queryDto: GetAlertsDto): Promise<AlertsResponse> {
     const page = Number(queryDto.page) || 1;
@@ -95,21 +94,13 @@ export class AlertsService {
   }
 
   private async fetchPeriodDevaluation(desde: Date, hasta: Date) {
-    const query = `
-      SELECT venta::numeric AS cotizacion
-      FROM cotizaciones_divisas
-      WHERE tipo = 'parallel' AND condicion = 'venta'
-        AND timestamp_utc >= $1 AND timestamp_utc <= $2
-      ORDER BY timestamp_utc ASC;
-    `;
-    const res = await this.db.query(query, [desde.toISOString(), hasta.toISOString()]);
-    const rows = res.rows as CotizacionSimpleRow[];
+    const { inicial, final } = await this.cierreCambiario.obtenerVariacionPeriodo(desde, hasta);
 
     let cotInicial = 1000;
     let cotFinal = 1200;
-    if (rows.length > 0) {
-      cotInicial = Number(rows[0].cotizacion);
-      cotFinal = Number(rows[rows.length - 1].cotizacion);
+    if (inicial.cotizacionAplicada !== null && final.cotizacionAplicada !== null) {
+      cotInicial = inicial.cotizacionAplicada;
+      cotFinal = final.cotizacionAplicada;
     }
 
     const variacionCotizacionPct =

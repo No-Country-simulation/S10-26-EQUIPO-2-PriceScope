@@ -39,7 +39,7 @@ public sealed class DiscoStoreScraper(
         logger.LogTrace("Disco: lanzando Chromium...");
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(
-            new BrowserTypeLaunchOptions { Headless = false });
+            new BrowserTypeLaunchOptions { Headless = true });
         logger.LogTrace("Disco: Chromium listo");
 
         var probePage = await browser.NewPageAsync();

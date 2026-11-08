@@ -96,7 +96,7 @@ export class AlertsService {
 
   private async fetchPeriodDevaluation(desde: Date, hasta: Date) {
     const query = `
-      SELECT venta::numeric AS cotizacion
+      SELECT valor::numeric AS cotizacion
       FROM cotizaciones_divisas
       WHERE tipo = 'parallel' AND condicion = 'venta'
         AND timestamp_utc >= $1 AND timestamp_utc <= $2

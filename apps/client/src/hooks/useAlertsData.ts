@@ -3,13 +3,14 @@ import { SidebarContext } from "@/components/layout/SidebarContext";
 import {
   exportAlertsCsv,
   exportAlertsJson,
-  getRecentMilestones,
+  mapAlertsToMilestones,
   mapAlertToTableRow,
   type AlertMilestoneItem,
   type AlertTableRowView,
   type SeverityLevel,
 } from "@/lib/alerts";
-import { getAlertsData, getAlertsMilestones } from "@/services/alerts.service";
+import { getAlertsData } from "@/services/alerts.service";
+import { getDashboardData } from "@/services/dashboard.service";
 import type { AlertaItem, AlertsResponse } from "@/types/api";
 
 export interface UseAlertsDataReturn {
@@ -19,6 +20,8 @@ export interface UseAlertsDataReturn {
   severityFilter: SeverityLevel;
   categoryFilter: string;
   storeFilter: string;
+  storeOptions: Array<{ value: string; label: string }>;
+  categoryOptions: Array<{ value: string; label: string }>;
   currentPage: number;
   showAllMilestones: boolean;
   milestones: AlertMilestoneItem[];
@@ -50,40 +53,70 @@ export function useAlertsData(): UseAlertsDataReturn {
   const [severityFilter, setSeverityFilterState] = useState<SeverityLevel>("all");
   const [categoryFilter, setCategoryFilterState] = useState<string>("all");
   const [storeFilter, setStoreFilterState] = useState<string>("all");
+  const [storeOptions, setStoreOptions] = useState<Array<{ value: string; label: string }>>([
+    { value: "all", label: "Todas las Cadenas" },
+  ]);
+  const [categoryOptions, setCategoryOptions] = useState<Array<{ value: string; label: string }>>([
+    { value: "all", label: "Todas las Categorías" },
+  ]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showAllMilestones, setShowAllMilestones] = useState<boolean>(false);
+  const [globalCriticalCount, setGlobalCriticalCount] = useState<number>(7);
 
   const [data, setData] = useState<AlertsResponse | null>(null);
-  const [milestones, setMilestones] = useState<AlertMilestoneItem[]>([]);
   const [resolvedQueryKey, setResolvedQueryKey] = useState<string | null>(null);
 
   const currentQueryKey = `${currentPage}|${storeFilter}|${categoryFilter}|${severityFilter}`;
   const isLoading = resolvedQueryKey !== currentQueryKey;
 
   const sidebar = useContext(SidebarContext);
-  const setSidebarAlertCount = sidebar?.setAlertCount;
+
+  useEffect(() => {
+    let isCancelled = false;
+    getDashboardData().then((dashRes) => {
+      if (isCancelled) return;
+      if (dashRes.pipeline_status?.tiendas && dashRes.pipeline_status.tiendas.length > 0) {
+        setStoreOptions([
+          { value: "all", label: "Todas las Cadenas" },
+          ...dashRes.pipeline_status.tiendas.map((t) => ({
+            value: t.tienda_id,
+            label: t.nombre,
+          })),
+        ]);
+      }
+      if (dashRes.variacion_por_categoria && dashRes.variacion_por_categoria.length > 0) {
+        setCategoryOptions([
+          { value: "all", label: "Todas las Categorías" },
+          ...dashRes.variacion_por_categoria.map((c) => ({
+            value: c.categoria_id,
+            label: c.nombre,
+          })),
+        ]);
+      }
+    });
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
 
-    Promise.all([
-      getAlertsData({
-        page: currentPage,
-        limit: 50,
-        tienda_id: storeFilter,
-        categoria_id: categoryFilter,
-        severidad: severityFilter,
-      }),
-      getAlertsMilestones(),
-    ])
-      .then(([alertsRes, milestonesRes]) => {
+    getAlertsData({
+      page: currentPage,
+      limit: 50,
+      tienda_id: storeFilter,
+      categoria_id: categoryFilter,
+      severidad: severityFilter,
+    })
+      .then((alertsRes) => {
         if (!isCancelled) {
           setData(alertsRes);
-          setMilestones(milestonesRes);
           setResolvedQueryKey(currentQueryKey);
-          const criticals = alertsRes.alertas.filter((a) => a.diferencial_puntos > 10).length;
-          if (setSidebarAlertCount) {
-            setSidebarAlertCount(criticals);
+          if (storeFilter === "all" && categoryFilter === "all" && severityFilter === "all") {
+            const criticals = alertsRes.alertas.filter((a) => a.diferencial_puntos > 10).length;
+            setGlobalCriticalCount(criticals);
+            sidebar?.setAlertCount(criticals);
           }
         }
       })
@@ -97,21 +130,24 @@ export function useAlertsData(): UseAlertsDataReturn {
     return () => {
       isCancelled = true;
     };
-  }, [currentQueryKey, currentPage, storeFilter, categoryFilter, severityFilter, setSidebarAlertCount]);
+  }, [currentQueryKey, currentPage, storeFilter, categoryFilter, severityFilter, sidebar]);
 
   const setSeverityFilter = useCallback((severity: SeverityLevel) => {
     setSeverityFilterState(severity);
     setCurrentPage(1);
+    setShowAllMilestones(false);
   }, []);
 
   const setCategoryFilter = useCallback((category: string) => {
     setCategoryFilterState(category);
     setCurrentPage(1);
+    setShowAllMilestones(false);
   }, []);
 
   const setStoreFilter = useCallback((store: string) => {
     setStoreFilterState(store);
     setCurrentPage(1);
+    setShowAllMilestones(false);
   }, []);
 
   const handleResetFilters = useCallback(() => {
@@ -119,21 +155,53 @@ export function useAlertsData(): UseAlertsDataReturn {
     setCategoryFilterState("all");
     setStoreFilterState("all");
     setCurrentPage(1);
+    setShowAllMilestones(false);
   }, []);
 
-  const alerts = useMemo(() => data?.alertas ?? [], [data]);
+  const alerts = useMemo(() => {
+    let items = data?.alertas ?? [];
+    if (storeFilter && storeFilter !== "all") {
+      const targetStore = storeFilter.toLowerCase();
+      items = items.filter(
+        (a) =>
+          a.tienda_nombre.toLowerCase().includes(targetStore) ||
+          targetStore.includes(a.tienda_nombre.toLowerCase())
+      );
+    }
+    if (severityFilter && severityFilter !== "all") {
+      if (severityFilter === "danger") {
+        items = items.filter((a) => a.diferencial_puntos > 10.0);
+      } else if (severityFilter === "warning") {
+        items = items.filter(
+          (a) => a.diferencial_puntos >= 5.0 && a.diferencial_puntos <= 10.0
+        );
+      } else if (severityFilter === "info") {
+        items = items.filter((a) => a.diferencial_puntos < 5.0);
+      }
+    }
+    return items;
+  }, [data, severityFilter, storeFilter]);
 
-  const tableRows = useMemo(() => alerts.map(mapAlertToTableRow), [alerts]);
-
-  const criticalAlertsCount = useMemo(() => {
-    return alerts.filter((a) => a.diferencial_puntos > 10.0).length;
+  const milestones = useMemo(() => {
+    return mapAlertsToMilestones(alerts);
   }, [alerts]);
 
-  const totalPages = data?.paginacion.total_paginas ?? 1;
-  const totalAlerts = data?.paginacion.total_registros ?? 0;
+  const tableRows = useMemo(() => {
+    const allRows = alerts.map(mapAlertToTableRow);
+    const startIndex = (currentPage - 1) * 50;
+    return allRows.slice(startIndex, startIndex + 50);
+  }, [alerts, currentPage]);
+
+  const criticalAlertsCount = globalCriticalCount;
+
+  const totalAlerts = alerts.length;
+  const totalPages = Math.max(1, Math.ceil(totalAlerts / 50));
 
   const visibleMilestones = useMemo(() => {
-    return showAllMilestones ? milestones : getRecentMilestones(milestones, 3);
+    if (showAllMilestones) {
+      return milestones;
+    }
+    return milestones.slice(0, 3);
   }, [milestones, showAllMilestones]);
 
   const handleExportCsv = useCallback(() => {
@@ -154,6 +222,8 @@ export function useAlertsData(): UseAlertsDataReturn {
     severityFilter,
     categoryFilter,
     storeFilter,
+    storeOptions,
+    categoryOptions,
     currentPage,
     showAllMilestones,
     milestones,

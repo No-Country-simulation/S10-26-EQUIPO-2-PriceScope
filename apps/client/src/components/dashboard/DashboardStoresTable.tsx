@@ -61,7 +61,7 @@ export function DashboardStoresTable({
                     : "USD"}
               )
             </TableHead>
-            <TableHead className="min-w-32 px-6 py-3">Variación Mes</TableHead>
+            <TableHead className="min-w-32 px-6 py-3">Variación Período</TableHead>
             <TableHead className="min-w-32 px-6 py-3">Publicaciones</TableHead>
             <TableHead className="min-w-36 px-6 py-3">Calidad Scraping</TableHead>
             <TableHead className="min-w-32 px-6 py-3">Última Sincro</TableHead>

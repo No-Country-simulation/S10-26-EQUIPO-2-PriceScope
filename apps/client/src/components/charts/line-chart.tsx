@@ -15,6 +15,7 @@ import {
 import type { AxisDomain } from "recharts/types/util/types";
 import {
   AvailableChartColors,
+  chartColorHex,
   constructCategoryColors,
   getColorClassName,
   getYAxisDomain,
@@ -137,17 +138,18 @@ export function LineChart({
             cursor={{ stroke: "#cbd5e1", strokeWidth: 1, strokeDasharray: "4 4" }}
             content={({ active, payload, label }) => {
               const cleanPayload: TooltipPayloadItem[] = payload
-                ? payload
-                    .filter((item) => item.value !== null && item.value !== undefined)
-                    .map((item) => ({
-                      category: String(item.dataKey ?? ""),
-                      value: Number(item.value),
-                      index: String(
-                        (item.payload as Record<string, unknown>)?.[index] ?? label ?? ""
-                      ),
-                      color: categoryColors.get(String(item.dataKey ?? "")) ?? "blue",
-                      payload: (item.payload as Record<string, unknown>) ?? {},
-                    }))
+                ? payload.map((item) => ({
+                    category: String(item.dataKey ?? ""),
+                    value:
+                      item.value !== null && item.value !== undefined
+                        ? Number(item.value)
+                        : null,
+                    index: String(
+                      (item.payload as Record<string, unknown>)?.[index] ?? label ?? ""
+                    ),
+                    color: categoryColors.get(String(item.dataKey ?? "")) ?? "blue",
+                    payload: (item.payload as Record<string, unknown>) ?? {},
+                  }))
                 : [];
 
               if (!showTooltip || !active || cleanPayload.length === 0) {
@@ -210,7 +212,7 @@ export function LineChart({
                 name={category}
                 type="linear"
                 dataKey={category}
-                stroke=""
+                stroke={chartColorHex[color] ?? "#2563eb"}
                 strokeWidth={isDashed ? 2 : 2.5}
                 strokeDasharray={isDashed ? "5 4" : undefined}
                 strokeLinejoin="round"

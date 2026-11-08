@@ -50,7 +50,7 @@ export function buildChartReferenceAreas(
       anomalyType = "AGOTADO";
     } else if (pt.estado_dato === "ERROR_CAPTURA") {
       anomalyType = "ERROR_CAPTURA";
-    } else if (pt.estado_dato === "SIN_DATO") {
+    } else if (pt.estado_dato === "SIN_DATO" || pt.precio_regular === null) {
       anomalyType = "SIN_DATO";
     } else if (isReduflación) {
       anomalyType = "REDUFLACIÓN";
@@ -84,7 +84,7 @@ export function buildChartReferenceAreas(
         nextType = "AGOTADO";
       } else if (nextPt.estado_dato === "ERROR_CAPTURA") {
         nextType = "ERROR_CAPTURA";
-      } else if (nextPt.estado_dato === "SIN_DATO") {
+      } else if (nextPt.estado_dato === "SIN_DATO" || nextPt.precio_regular === null) {
         nextType = "SIN_DATO";
       } else if (nextIsReduflación) {
         nextType = "REDUFLACIÓN";

@@ -17,9 +17,7 @@ export interface LineChartReferenceAreaShapeProps {
 }
 
 /**
- * Dibuja el rectángulo sombreado con borde punteado (- - -) de una zona de anomalía en el gráfico.
- * Los textos identificadores se muestran exclusivamente en la leyenda inferior (Tracker) para evitar redundancia visual.
- * Aplica insets exactos al stroke para garantizar que los bordes punteados se representen con fidelidad total.
+ * Dibuja el rectángulo y etiqueta de una zona de referencia vertical en el gráfico.
  */
 export function LineChartReferenceAreaShape({
   shapeProps,
@@ -29,10 +27,7 @@ export function LineChartReferenceAreaShape({
   showYAxis,
   yAxisWidth,
 }: LineChartReferenceAreaShapeProps) {
-  const plotLeft =
-    typeof shapeProps.x === "number" && shapeProps.x > 0
-      ? shapeProps.x
-      : (showYAxis ? yAxisWidth : 0) + 12;
+  const plotLeft = (showYAxis ? yAxisWidth : 0) + 12;
   const plotWidth = shapeProps.width ?? 0;
   const yVal = shapeProps.y ?? 0;
   const heightVal = shapeProps.height ?? 0;
@@ -56,29 +51,39 @@ export function LineChartReferenceAreaShape({
   const actualX = plotLeft + safeStart * slotWidth;
   const actualWidth = (safeEnd - safeStart + 1) * slotWidth;
 
-  const strokeWidth = 1.5;
-  const halfStroke = strokeWidth / 2;
-  const drawX = actualX + halfStroke;
-  const drawY = yVal + halfStroke;
-  const drawWidth = Math.max(0, actualWidth - strokeWidth);
-  const drawHeight = Math.max(0, heightVal - strokeWidth);
-  const cornerRadius = Math.min(4, drawWidth / 2, drawHeight / 2);
-
   return (
     <g key={`ref-area-${area.id}`} className="pointer-events-none select-none">
+      {area.label && <title>{area.label}</title>}
       <rect
-        x={drawX}
-        y={drawY}
-        width={drawWidth}
-        height={drawHeight}
-        rx={cornerRadius}
-        ry={cornerRadius}
+        x={actualX}
+        y={yVal}
+        width={actualWidth}
+        height={heightVal}
+        rx={4}
+        ry={4}
         fill={area.fillColor ?? "#fef3c7"}
         fillOpacity={area.fillOpacity ?? 0.35}
         stroke={area.strokeColor ?? "#f59e0b"}
-        strokeWidth={strokeWidth}
+        strokeWidth={1.5}
         strokeDasharray="4 4"
       />
+      {area.label && actualWidth >= 16 ? (
+        <text
+          x={actualX + actualWidth / 2}
+          y={yVal + heightVal - 8}
+          textAnchor="middle"
+          fill={area.labelColor ?? area.strokeColor ?? "#d97706"}
+          fontSize={actualWidth < 36 ? 9 : 10.5}
+          fontWeight={700}
+          className="tracking-tight"
+        >
+          {actualWidth < 36
+            ? area.label.toLowerCase().includes("sin")
+              ? "S/D"
+              : area.label.slice(0, 4) + "."
+            : area.label}
+        </text>
+      ) : null}
     </g>
   );
 }

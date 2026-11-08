@@ -20,24 +20,6 @@ const SEVERITY_OPTIONS = [
   { value: "info", label: "Leve (< 5.0 pts)" },
 ];
 
-const CATEGORY_OPTIONS = [
-  { value: "all", label: "Todas las Categorías" },
-  { value: "almacen", label: "Almacén (Canasta Básica)" },
-  { value: "lacteos", label: "Lácteos y Frescos" },
-  { value: "limpieza", label: "Limpieza y Cuidado" },
-  { value: "electro", label: "Electrodomésticos" },
-];
-
-const STORE_OPTIONS = [
-  { value: "all", label: "Todas las Cadenas" },
-  { value: "carrefour", label: "Carrefour" },
-  { value: "jumbo", label: "Jumbo Cencosud" },
-  { value: "fravega", label: "Frávega" },
-  { value: "musimundo", label: "Musimundo" },
-  { value: "coto", label: "Coto Digital" },
-  { value: "dia", label: "Supermercados DIA" },
-];
-
 interface FilterSelectProps {
   label: string;
   value: string;
@@ -75,11 +57,12 @@ export interface AlertsFiltersProps {
   onStoreChange: (value: string) => void;
   onReset: () => void;
   disabled?: boolean;
+  storeOptions?: Array<{ value: string; label: string }>;
+  categoryOptions?: Array<{ value: string; label: string }>;
 }
 
 /**
- * Filter bar component providing dropdowns for severity, category, and store,
- * with identical reset button style and behavior as the dashboard.
+ * Componente de filtros de Alertas con selectores 100% dinámicos recibidos desde la API.
  */
 export function AlertsFilters({
   severityFilter,
@@ -90,6 +73,8 @@ export function AlertsFilters({
   onStoreChange,
   onReset,
   disabled = false,
+  storeOptions = [{ value: "all", label: "Todas las Cadenas" }],
+  categoryOptions = [{ value: "all", label: "Todas las Categorías" }],
 }: AlertsFiltersProps) {
   return (
     <Card className="p-5">
@@ -106,14 +91,14 @@ export function AlertsFilters({
             label="Categoría Canónica"
             value={categoryFilter}
             onChange={onCategoryChange}
-            options={CATEGORY_OPTIONS}
+            options={categoryOptions}
             disabled={disabled}
           />
           <FilterSelect
             label="Cadena Minorista"
             value={storeFilter}
             onChange={onStoreChange}
-            options={STORE_OPTIONS}
+            options={storeOptions}
             disabled={disabled}
           />
           <div className="w-full sm:w-auto">

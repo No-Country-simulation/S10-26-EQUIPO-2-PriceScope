@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { formatDateForApi, getPriceScopePresets, type DateRange } from "@/lib/dateRangeUtils";
 import {
+  calculateRangeDayCount,
+  formatDateForApi,
+  getPriceScopePresets,
+  type DateRange,
+} from "@/lib/dateRangeUtils";
+import {
+  alignDashboardCalendar,
   buildChartReferenceAreas,
   buildDailyQualityTrackerData,
   buildEvolutionChartData,
@@ -17,7 +23,7 @@ export function useDashboardData() {
     () => getPriceScopePresets()[2]?.dateRange
   );
   const [selectedStore, setSelectedStore] = useState<string>("all");
-  const [selectedCategory, setSelectedCategory] = useState<string>("canasta-basica");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedCurrency, setSelectedCurrency] = useState<Moneda>("ARS");
   const [chartMode, setChartMode] = useState<"strict" | "continuous">("strict");
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -73,30 +79,68 @@ export function useDashboardData() {
 
   const handleResetFilters = useCallback(() => {
     setSelectedStore("all");
-    setSelectedCategory("canasta-basica");
+    setSelectedCategory("all");
     setSelectedCurrency("ARS");
     setDateRange(getPriceScopePresets()[2]?.dateRange);
   }, []);
 
+  const rangeDays = useMemo(() => calculateRangeDayCount(dateRange) ?? 0, [dateRange]);
+  const isWeekly =
+    rangeDays > 90 || Boolean(data?.grafico_evolucion?.metadata?.downsampling_aplicado);
+
+  const { alignedSeries, alignedBanda } = useMemo(
+    () =>
+      data
+        ? alignDashboardCalendar(
+            data.grafico_evolucion.series,
+            data.grafico_evolucion.banda_calidad_diaria,
+            dateRange,
+            isWeekly
+          )
+        : { alignedSeries: [], alignedBanda: [] },
+    [data, dateRange, isWeekly]
+  );
+
   const chartData = useMemo(
-    () => (data ? buildEvolutionChartData(data.grafico_evolucion.series, selectedCurrency) : []),
-    [data, selectedCurrency]
+    () => (data ? buildEvolutionChartData(alignedSeries, selectedCurrency) : []),
+    [alignedSeries, data, selectedCurrency]
   );
 
   const trackerData = useMemo(
     () =>
       data
-        ? buildDailyQualityTrackerData(
-            data.grafico_evolucion.banda_calidad_diaria,
-            data.grafico_evolucion.series
-          )
+        ? buildDailyQualityTrackerData(alignedBanda, alignedSeries)
         : [],
+    [alignedBanda, alignedSeries, data]
+  );
+
+  const validSeries = useMemo(
+    () => (data ? data.grafico_evolucion.series.filter((s) => s.precio_regular !== null) : []),
     [data]
   );
+  const validObservationsCount = validSeries.length;
+  const hasNoData = Boolean(data && validObservationsCount === 0);
+  const isSingleDay = Boolean(data && validObservationsCount === 1);
+
+  const { periodVariationArs, periodVariationUsd } = useMemo(() => {
+    if (validSeries.length < 2) {
+      return { periodVariationArs: 0, periodVariationUsd: 0 };
+    }
+    const firstPrice = validSeries[0].precio_regular ?? 0;
+    const lastPrice = validSeries[validSeries.length - 1].precio_regular ?? 0;
+    const pct =
+      firstPrice > 0
+        ? Number((((lastPrice - firstPrice) / firstPrice) * 100).toFixed(1))
+        : 0;
+    const usdPct = data?.kpis?.variacion_usd?.porcentaje ?? pct;
+    return {
+      periodVariationArs: pct,
+      periodVariationUsd: usdPct,
+    };
+  }, [validSeries, data?.kpis?.variacion_usd?.porcentaje]);
 
   const storeAuditRows = useMemo(() => {
     if (!data) return [];
-    const validSeries = data.grafico_evolucion.series.filter((s) => s.precio_regular !== null);
     const latestPrice =
       validSeries.length > 0
         ? (validSeries[validSeries.length - 1].precio_regular ?? undefined)
@@ -108,8 +152,10 @@ export function useDashboardData() {
       data.kpis?.variacion_usd?.cotizacion_usada ?? 1200,
       {
         baseBasketArs: latestPrice,
-        variationArs: data.kpis?.variacion_pesos?.porcentaje,
-        variationUsd: data.kpis?.variacion_usd?.porcentaje,
+        variationArs: periodVariationArs,
+        variationUsd: periodVariationUsd,
+        hasNoData,
+        isSingleDay,
       }
     );
 
@@ -117,32 +163,57 @@ export function useDashboardData() {
       return allRows.filter((row) => row.id === selectedStore);
     }
     return allRows;
-  }, [data, selectedCurrency, selectedStore]);
+  }, [
+    data,
+    hasNoData,
+    isSingleDay,
+    periodVariationArs,
+    periodVariationUsd,
+    selectedCurrency,
+    selectedStore,
+    validSeries,
+  ]);
 
   const totalProducts = useMemo(() => {
     if (!data) return 0;
+    if (selectedStore !== "all" && data.pipeline_status?.tiendas) {
+      const storeInfo = data.pipeline_status.tiendas.find((t) => t.tienda_id === selectedStore);
+      if (storeInfo) return storeInfo.publicaciones_procesadas;
+    }
     if (data.variacion_por_categoria && data.variacion_por_categoria.length > 0) {
       return data.variacion_por_categoria.reduce((acc, cat) => acc + cat.cantidad_productos, 0);
     }
     return data.pipeline_status.tiendas.reduce((acc, t) => acc + t.publicaciones_procesadas, 0);
-  }, [data]);
+  }, [data, selectedStore]);
 
   const activeCategoryMetric = useMemo(() => {
-    if (!data) return null;
+    if (!data || !data.variacion_por_categoria || data.variacion_por_categoria.length === 0) {
+      return null;
+    }
+    if (selectedCategory !== "all") {
+      const match = data.variacion_por_categoria.find(
+        (cat) => cat.categoria_id === selectedCategory
+      );
+      if (match) return match;
+    }
+    const withData = data.variacion_por_categoria.find(
+      (cat) => cat.variacion_mediana_pct > 0
+    );
     return (
-      data.variacion_por_categoria.find((cat) => cat.categoria_id === selectedCategory) ??
+      withData ??
+      data.variacion_por_categoria.find((cat) =>
+        cat.nombre.toLowerCase().includes("básica")
+      ) ??
       data.variacion_por_categoria[0]
     );
   }, [data, selectedCategory]);
 
-  const isDownsampled = data?.grafico_evolucion.metadata.downsampling_aplicado ?? false;
-
   const referenceAreas = useMemo(
     () =>
-      data && !isDownsampled
-        ? buildChartReferenceAreas(data.grafico_evolucion.series, data.grafico_evolucion.hitos)
+      data
+        ? buildChartReferenceAreas(alignedSeries, data.grafico_evolucion.hitos)
         : [],
-    [data, isDownsampled]
+    [alignedSeries, data]
   );
 
   return {
@@ -167,6 +238,9 @@ export function useDashboardData() {
     storeOptions,
     categoryOptions,
     totalProducts,
+    hasNoData,
+    isSingleDay,
+    isWeekly,
   };
 }
 

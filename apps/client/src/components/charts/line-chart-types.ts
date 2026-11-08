@@ -17,7 +17,7 @@ export interface ChartReferenceArea {
 
 export interface TooltipPayloadItem {
   category: string;
-  value: number;
+  value: number | null;
   index: string;
   color: AvailableChartColorsKeys;
   payload: Record<string, unknown>;

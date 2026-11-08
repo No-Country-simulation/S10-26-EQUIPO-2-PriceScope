@@ -55,6 +55,16 @@ export const chartColors = {
 
 export type AvailableChartColorsKeys = keyof typeof chartColors;
 
+export const chartColorHex: Record<AvailableChartColorsKeys, string> = {
+  blue: "#2563eb",
+  emerald: "#059669",
+  violet: "#7c3aed",
+  amber: "#d97706",
+  slate: "#94a3b8",
+  cyan: "#06b6d4",
+  rose: "#e11d48",
+};
+
 export const AvailableChartColors: AvailableChartColorsKeys[] = Object.keys(
   chartColors
 ) as Array<AvailableChartColorsKeys>;

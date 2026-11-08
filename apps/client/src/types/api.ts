@@ -1,5 +1,5 @@
 export type EstadoDato = "DATO_VALIDO" | "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO";
-export type EstadoSemaforo = "VERDE" | "AMARILLO" | "ROJO";
+export type EstadoSemaforo = "VERDE" | "AMARILLO" | "ROJO" | "GRIS";
 export type Moneda = "ARS" | "USD" | "USD_BLUE" | "USD_OFICIAL";
 
 export interface PaginacionMeta {

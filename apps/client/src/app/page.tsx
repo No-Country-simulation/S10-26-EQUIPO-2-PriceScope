@@ -38,6 +38,9 @@ export default function DashboardPage() {
     storeOptions,
     categoryOptions,
     totalProducts,
+    hasNoData,
+    isSingleDay,
+    isWeekly,
   } = useDashboardData();
 
   const { setPilotStores, setLastUpdatedLabel } = useSidebar();
@@ -95,7 +98,10 @@ export default function DashboardPage() {
         kpis={data?.kpis ?? null}
         activeCategory={activeCategoryMetric}
         totalProducts={totalProducts}
-        hasData={chartData.length > 0}
+        isAllCategories={selectedCategory === "all"}
+        selectedCurrency={selectedCurrency}
+        hasNoData={hasNoData}
+        isSingleDay={isSingleDay}
       />
 
       <DashboardEvolutionSection
@@ -106,7 +112,7 @@ export default function DashboardPage() {
         selectedCurrency={selectedCurrency}
         chartMode={chartMode}
         onChartModeChange={setChartMode}
-        downsamplingActive={data?.grafico_evolucion.metadata.downsampling_aplicado ?? false}
+        downsamplingActive={isWeekly}
         referenceAreas={referenceAreas}
       />
 

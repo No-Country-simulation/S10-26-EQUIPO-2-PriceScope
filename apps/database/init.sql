@@ -289,4 +289,212 @@ BEGIN
     END IF;
 END;
 
+INSERT INTO tiendas (slug, nombre, url_base, tipo) VALUES
+('coto', 'Coto Argentina', 'https://www.coto.com.ar', 'supermercado'),
+('jumbo', 'Jumbo Argentina', 'https://www.jumbo.com.ar', 'supermercado'),
+('disco', 'Disco Argentina', 'https://www.disco.com.ar', 'electro'),
+('vea', 'Vea Argentina', 'https://www.vea.com.ar', 'electro')
+ON CONFLICT (slug) DO UPDATE SET 
+    nombre = EXCLUDED.nombre,
+    url_base = EXCLUDED.url_base,
+    tipo = EXCLUDED.tipo;
+
+INSERT INTO productos_canonicos (
+	slug,
+	categoria_id,
+	marca,
+	modelo,
+	nombre_normalizado,
+	contenido_neto_valor,
+	contenido_neto_unidad,
+	pack
+) VALUES 
+(
+	'prod-choclo-entero-ciudad-del-lago-300g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Ciudad del Lago',
+	'Entero',
+	'Choclo Entero Ciudad Del Lago 300 Gr',
+	'0.3',
+	'kg',
+	'x1'
+),
+(
+	'prod-atun-desmenuzado-al-natural-ciudad-del-lago-170g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Ciudad del Lago',
+	'Desmenuzado',
+	'Atún Desmenuzado Al Natural Ciudad Del Lago 170g',
+	'0.17',
+	'kg',
+	'x1'
+), 
+(
+	'prod-granos-choclos-amarillos-enteros-coto-300g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Coto',
+	'Entero',
+	'Granos de choclo amarillo enteros COTO 300g',
+	'0.3',
+	'kg',
+	'x1'
+),
+(
+	'prod-porotos-negros-coto-350g',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Coto',
+	'Negros',
+	'Porotos negros COTO 350g',
+	'0.35',
+	'kg',
+	'x1'
+),
+(
+	'prod-suprema-pollo-granel-fresca',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Suprema de pollo',
+	'Suprema De Pollo Granel Fresca',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-milanesa-cerdo-rebozada',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Milanesa de Cerdo',
+	'Milanesa De Cerdo Rebozada',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-pollo-fresco-con-menudos',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'Jumbo',
+	'Pollo Fresco',
+	'Pollo Fresco Con Menudos',
+	'1',
+	'kg',
+	'x1'
+),
+(
+	'prod-roast-beef-churrasco-novitillo',
+	(SELECT id FROM categorias WHERE slug = 'canasta-basica'),
+	'La Hacienda',
+	'Churrasco',
+	'Roast Beef Churrasco Novillito',
+	'1',
+	'kg',
+	'x1'
+),
+(
+    'prod-mouse-inalambrico-ergonomico-pilas-nex',
+    (SELECT id FROM categorias WHERE slug = 'bienes-durables'),
+    'Nex',
+    'Msinaerg',
+    'Mouse Inalámbrico Ergonómico A Pilas Nex',
+    '1',
+    'unidad',
+    'x1'
+)
+ON CONFLICT (slug) DO UPDATE SET
+	nombre_normalizado = EXCLUDED.nombre_normalizado,
+	contenido_neto_valor = EXCLUDED.contenido_neto_valor,
+	contenido_neto_unidad = EXCLUDED.contenido_neto_unidad,
+	pack = EXCLUDED.pack, -- Esto fue agregado para asegurar que los cambios en el pack se reflejen correctamente
+	updated_at = NOW();   -- verificá el nombre real de la columna
+
+INSERT INTO alias_tienda (
+	producto_canonico_id,
+	tienda_id,
+	alias_producto,
+	sku_tienda,
+	url_origen,
+	metodo_matching
+) VALUES
+(
+	-- Choclo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-choclo-entero-ciudad-del-lago-300g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Choclo Entero',
+	'2800004817349', -- EL SKU ES EL EAN del supermercado
+	'https://www.coto.com.ar/productos/choclo-entero-ciudad-del-lago-300-gr-/_/R-00481734-00481734-200',
+	'MANUAL_SEED'
+),
+(
+	-- Atún
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-atun-desmenuzado-al-natural-ciudad-del-lago-170g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Atún Desmenuzado',
+	'2800000707019',
+	'https://www.coto.com.ar/productos/atun-desmenuzado-al-natural-ciudad-del-lago-170g-/_/R-00070701-00070701-200',
+	'MANUAL_SEED'
+),
+(
+	-- Grano de choclo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-granos-choclos-amarillos-enteros-coto-300g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Granos de Choclo',
+	'2800006099293',
+	'https://www.coto.com.ar/productos/granos-de-choclo-amarillo-enteros-coto-300g-/_/R-00609929-00609929-200',
+	'MANUAL_SEED'
+),
+(
+	-- Porotos negros
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-porotos-negros-coto-350g'),
+	(SELECT id FROM tiendas WHERE slug = 'coto'),
+	'Porotos',
+	'2800005827613',
+	'https://www.coto.com.ar/productos/porotos-negros-coto-350g-/_/R-00582761-00582761-200',
+	'MANUAL_SEED'
+),
+(	-- Supremas de pollo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-suprema-pollo-granel-fresca'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Suprema de pollo',
+	'22460226001',
+	'https://www.jumbo.com.ar/suprema-de-pollo-granel-fresca/p',
+	'MANUAL_SEED'
+),
+(	-- Milanesa de cerdo
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-milanesa-cerdo-rebozada'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Milasena de Cerdo',
+	'22820301004',
+	'https://www.jumbo.com.ar/milanesa-de-cerdo-rebozada-2/p',
+	'MANUAL_SEED'
+),
+(
+	-- Pollo fresco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-pollo-fresco-con-menudos'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Pollo fresco',
+	'22440106001',
+	'https://www.jumbo.com.ar/pollo-fresco-con-menudos-3/p',
+	'MANUAL_SEED'
+),
+(
+	-- Churrasco
+	(SELECT id FROM productos_canonicos WHERE slug = 'prod-roast-beef-churrasco-novitillo'),
+	(SELECT id FROM tiendas WHERE slug = 'jumbo'),
+	'Churrasco',
+	'22140415001',
+	'https://www.jumbo.com.ar/roast-beef-churrasco-novillito/p',
+	'MANUAL_SEED'
+),
+(
+    -- Mouse ergonomico
+    (SELECT id FROM productos_canonicos WHERE slug = 'prod-mouse-inalambrico-ergonomico-pilas-nex'),
+    (SELECT id FROM tiendas WHERE slug = 'disco'),
+    'Mouse',
+    '61131876007',
+    'https://www.disco.com.ar/mouse-inalambrico-ergonomico-a-pilas-nex/p',
+    'MANUAL_SEED'
+)
+ ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
+    alias_producto = EXCLUDED.alias_producto,
+    sku_tienda = EXCLUDED.sku_tienda;
+
 $$ LANGUAGE plpgsql STABLE;

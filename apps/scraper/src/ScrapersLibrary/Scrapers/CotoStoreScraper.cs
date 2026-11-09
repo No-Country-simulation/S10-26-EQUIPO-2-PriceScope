@@ -3,19 +3,22 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Seed;
 
 namespace ScrapersLibrary.Scrapers;
 
 public sealed class CotoStoreScraper(
     IProductInfoProvider infoProvider,
+    IOptions<RetryOptions> retryOptions,
     ILogger<CotoStoreScraper> logger
 ) : IStoreScraper
 {
+    private readonly int _maxRetriesPerProduct = retryOptions.Value.MaxRetriesByProduct;
+
     public string StoreSlug => "coto";
 
     public async IAsyncEnumerable<ScrapedProduct> ScrapeAsync(
-        int continueFrom,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var products = await infoProvider.GetInfoAsync(
@@ -23,16 +26,13 @@ public sealed class CotoStoreScraper(
             cancellationToken);
 
         logger.LogInformation(
-            "Coto: se recibieron {Count} productos para procesar; comenzando desde {ContinueFrom}.",
-            products.Count,
-            continueFrom);
+            "Coto: se recibieron {Count} productos para procesar.",
+            products.Count);
 
-        if (products.Count == 0 || continueFrom >= products.Count)
+        if (products.Count == 0)
         {
             logger.LogWarning(
-                "Coto: no hay productos pendientes. Total: {Count}, inicio: {ContinueFrom}.",
-                products.Count,
-                continueFrom);
+                "Coto: no hay productos para procesar.");
             yield break;
         }
 
@@ -77,103 +77,181 @@ public sealed class CotoStoreScraper(
             page.SetDefaultNavigationTimeout(30_000);
             page.SetDefaultTimeout(30_000);
 
-            for (var index = continueFrom; index < products.Count; index++)
+            for (var index = 0; index < products.Count; index++)
             {
                 var product = products[index];
-                ScrapedProduct result;
+                var maxAttempts = _maxRetriesPerProduct + 1;
 
-                try
+                for (var attempt = 1; attempt <= maxAttempts; attempt++)
                 {
-                    logger.LogDebug(
-                        "Coto: procesando producto {Index}/{Total}: {Url}",
-                        index + 1,
-                        products.Count,
-                        product.Url);
+                    TimeSpan? retryAfter = null;
 
-                    cancellationToken.ThrowIfCancellationRequested();
+                    try
+                    {
+                        logger.LogDebug(
+                            "Coto: procesando producto {Index}/{Total}, intento {Attempt}/{MaxAttempts}: {Url}",
+                            index + 1,
+                            products.Count,
+                            attempt,
+                            maxAttempts,
+                            product.Url);
 
-                    await page.GotoAsync(
-                        product.Url,
-                        new PageGotoOptions
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        var response = await page.GotoAsync(
+                            product.Url,
+                            new PageGotoOptions
+                            {
+                                WaitUntil = WaitUntilState.DOMContentLoaded
+                            });
+
+                        if (response?.Status == 404)
                         {
-                            WaitUntil = WaitUntilState.DOMContentLoaded
+                            MarkAsUnpublished(product);
+                            break;
+                        }
+
+                        if (response?.Status == 429)
+                        {
+                            throw new RetryAfterException(
+                                await ScraperRetry.GetRetryAfterDelayAsync(response));
+                        }
+
+                        if (response?.Status == 403)
+                        {
+                            throw new Exception("HTTP_403_ACCESS_BLOCKED");
+                        }
+
+                        if (response?.Status >= 500)
+                        {
+                            throw new Exception("HTTP_500_INTERNAL_SERVER_ERROR");
+                        }
+
+                        if (response?.Status is < 200 or >= 300)
+                        {
+                            throw new Exception($"HTTP_{response.Status}");
+                        }
+
+                        logger.LogTrace("Pagina cargada {Url}", page.Url);
+
+                        var description = page.Locator("h1.title");
+                        await description.WaitForAsync(new LocatorWaitForOptions
+                        {
+                            State = WaitForSelectorState.Visible
                         });
 
-                    logger.LogTrace("Pagina cargada {Url}", page.Url);
+                        var publicPrice = ParsePrice(
+                            await page.Locator("var.price").InnerTextAsync());
 
-                    var description = page.Locator("h1.title");
-                    await description.WaitForAsync(new LocatorWaitForOptions
-                    {
-                        State = WaitForSelectorState.Visible
-                    });
+                        var regularPrice = await TryParsePriceAsync(
+                            page.Locator("div.mt-2"));
 
-                    var publicPrice = ParsePrice(
-                        await page.Locator("var.price").InnerTextAsync());
+                        var unitPrice = await TryParseUnitPriceAsync(page);
+                        var isOutOfStock = await IsOutOfStockAsync(page);
 
-                    var regularPrice = await TryParsePriceAsync(
-                        page.Locator("div.mt-2"));
-
-                    var unitPrice = await TryParseUnitPriceAsync(page);
-                    var isOutOfStock = await IsOutOfStockAsync(page);
-
-                    if (isOutOfStock)
-                    {
-                        MarkAsUnavailable(product);
-                    }
-                    else
-                    {
-                        var effectivePrice = publicPrice ?? regularPrice;
-
-                        if (effectivePrice is not null)
+                        if (isOutOfStock)
                         {
-                            product.CapturedAt = DateTime.UtcNow;
-                            product.CurrencyCode = "ARS";
-                            product.RegularPrice = regularPrice ?? effectivePrice;
-                            product.PromoPrice = regularPrice is > 0 &&
-                                effectivePrice < regularPrice
-                                    ? effectivePrice
-                                    : null;
-                            product.UnitPrice = unitPrice ?? effectivePrice;
-                            product.Available = true;
-                            product.DataState = ScrapedProductStatus.DATO_VALIDO;
-                            product.Error = string.Empty;
+                            MarkAsUnavailable(product);
                         }
                         else
                         {
-                            throw new InvalidDataException(
-                                "No se encontró un precio válido para el producto.");
+                            var effectivePrice = publicPrice ?? regularPrice;
+
+                            if (effectivePrice is not null)
+                            {
+                                product.CapturedAt = DateTime.UtcNow;
+                                product.CurrencyCode = "ARS";
+                                product.RegularPrice = regularPrice ?? effectivePrice;
+                                product.PromoPrice = regularPrice is > 0 &&
+                                    effectivePrice < regularPrice
+                                        ? effectivePrice
+                                        : null;
+                                product.UnitPrice = unitPrice ?? effectivePrice;
+                                product.Available = true;
+                                product.DataState = ScrapedProductStatus.DATO_VALIDO;
+                                product.Error = string.Empty;
+                            }
+                            else
+                            {
+                                throw new InvalidDataException(
+                                    "No se encontró un precio válido para el producto.");
+                            }
+                        }
+
+                        logger.LogDebug(
+                            "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
+                            index + 1,
+                            products.Count,
+                            product.DataState,
+                            product.Url);
+                        break;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (RetryAfterException exception)
+                    {
+                        retryAfter = exception.Delay;
+                        MarkAsCaptureError(product, exception.Message);
+
+                        logger.LogWarning(
+                            "Coto recibió HTTP 429. Retry-After: {RetryAfter}. {Url}",
+                            retryAfter,
+                            product.Url);
+                    }
+                    catch (PlaywrightException exception)
+                    {
+                        MarkAsCaptureError(product, exception.Message);
+
+                        logger.LogWarning(
+                            exception,
+                            "Error de Playwright procesando producto de Coto (intento {Attempt}/{MaxAttempts}): {Url}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
+                    catch (Exception exception)
+                    {
+                        MarkAsCaptureError(product, exception.Message);
+
+                        logger.LogError(
+                            exception,
+                            "Error procesando producto de Coto (intento {Attempt}/{MaxAttempts}): {Url}",
+                            attempt,
+                            maxAttempts,
+                            product.Url);
+                    }
+                    finally
+                    {
+                        if (product.DataState == ScrapedProductStatus.ERROR_CAPTURA &&
+                            attempt < maxAttempts)
+                        {
+                            if (retryAfter is { } retryDelay)
+                            {
+                                logger.LogTrace(
+                                    "Waiting {RetryAfter} before attempt {Attempt} on {ProductUrl}",
+                                    retryDelay,
+                                    attempt + 1,
+                                    product.Url);
+                                await ScraperRetry.DelayAsync(retryDelay, cancellationToken);
+                            }
+                            else
+                            {
+                                var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
+                                var jitter = Random.Shared.Next(0, 1_501);
+                                logger.LogTrace(
+                                    "Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
+                                    timeToWait + jitter,
+                                    attempt + 1,
+                                    product.Url);
+                                await Task.Delay(timeToWait + jitter, cancellationToken);
+                            }
                         }
                     }
-
-                    logger.LogDebug(
-                        "Coto: producto {Index}/{Total} procesado con estado {DataState}: {Url}",
-                        index + 1,
-                        products.Count,
-                        product.DataState,
-                        product.Url);
-                    result = product;
-                }
-                catch (PlaywrightException exception)
-                {
-                    MarkAsCaptureError(product, exception.Message);
-                    logger.LogWarning(
-                        exception,
-                        "Error de Playwright procesando producto de Coto: {Url}",
-                        product.Url);
-                    result = product;
-                }
-                catch (Exception exception) when (
-                    exception is not OperationCanceledException)
-                {
-                    MarkAsCaptureError(product, exception.Message);
-                    logger.LogError(
-                        exception,
-                        "Error procesando producto de Coto: {Url}",
-                        product.Url);
-                    result = product;
                 }
 
-                yield return result;
+                yield return product;
             }
         }
         finally
@@ -281,6 +359,12 @@ public sealed class CotoStoreScraper(
         product.Available = false;
         product.DataState = ScrapedProductStatus.AGOTADO;
         product.Error = string.Empty;
+    }
+
+    private static void MarkAsUnpublished(ScrapedProduct product)
+    {
+        MarkAsUnavailable(product);
+        product.Error = "HTTP_404_DESPUBLICADO";
     }
 
     private static void MarkAsCaptureError(

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScrapersLibrary.Scrapers;
 using ScrapersLibrary.Tests.Mocks;
 
@@ -19,11 +20,12 @@ public class VeaScraperTest
 
         var scraper = new VeaStoreScraper(
             new MockVeaProductInfoProvider(),
+            Options.Create(new RetryOptions { MaxRetriesByProduct = 3 }),
             loggerFactory.CreateLogger<VeaStoreScraper>());
 
         List<ScrapedProduct> products = [];
 
-        await foreach (var product in scraper.ScrapeAsync(0, CancellationToken.None))
+        await foreach (var product in scraper.ScrapeAsync(CancellationToken.None))
         {
             products.Add(product);
         }

@@ -34,7 +34,12 @@ public class MockScrapeRepository : IScrapeRepository
             runId, "CoolStore", ScrapeRunStatus.ABORTADA, 1, 100, 90, 10, exception.ToString()));
     }
 
-    public Task<ScrapeRunMetrics> MarkFailedAsync(Guid runId, Exception exception, bool retryPending, CancellationToken cancellationToken)
+    public Task<ScrapeRunMetrics> MarkFailedAsync(
+        Guid runId,
+        Exception exception,
+        bool retryPending,
+        CancellationToken cancellationToken,
+        bool circuitBreakerOpen = false)
     {
         return Task.FromResult(new ScrapeRunMetrics(
             runId, "CoolStore", retryPending ? ScrapeRunStatus.PENDIENTE : ScrapeRunStatus.FALLIDA, 1, 100, 90, 10, null));

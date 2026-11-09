@@ -1,42 +1,32 @@
 -- ============================================================================
--- PriceScope — Script Oficial de Inicialización de Base de Datos
--- PostgreSQL 16 con extensión TimescaleDB 2.x (Compatible Neon + Docker)
+-- 00. CONFIGURACIÓN INICIAL Y EXTENSIONES
 -- ============================================================================
-
--- 00. EXTENSIONES REQUERIDAS
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+CREATE EXTENSION IF NOT EXISTS "timescaledb";
 
 -- ============================================================================
--- 01. CREACIÓN DE ENUMS (Idempotentes)
+-- 01. CREACIÓN DE ENUMS (DDL Directo sin bloques DO)
 -- ============================================================================
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_tienda AS ENUM ('supermercado', 'electro');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_tienda CASCADE;
+CREATE TYPE enum_tipo_tienda AS ENUM ('supermercado', 'electro');
 
-DO $$ BEGIN
-    CREATE TYPE enum_unidad_medida AS ENUM ('kg', 'L', 'unidad');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_unidad_medida CASCADE;
+CREATE TYPE enum_unidad_medida AS ENUM ('kg', 'L', 'unidad');
 
-DO $$ BEGIN
-    CREATE TYPE enum_estado_dato AS ENUM ('DATO_VALIDO', 'AGOTADO', 'ERROR_CAPTURA', 'SIN_DATO');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_estado_dato CASCADE;
+CREATE TYPE enum_estado_dato AS ENUM ('DATO_VALIDO', 'AGOTADO', 'ERROR_CAPTURA', 'SIN_DATO');
 
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_cambio AS ENUM ('oficial', 'parallel', 'mep', 'ccl');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_cambio CASCADE;
+CREATE TYPE enum_tipo_cambio AS ENUM ('oficial', 'parallel', 'mep', 'ccl');
 
-DO $$ BEGIN
-    CREATE TYPE enum_condicion_cambio AS ENUM ('venta', 'compra');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_condicion_cambio CASCADE;
+CREATE TYPE enum_condicion_cambio AS ENUM ('venta', 'compra');
 
-DO $$ BEGIN
-    CREATE TYPE enum_tipo_hito AS ENUM ('AUTOMATICO', 'MANUAL');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_tipo_hito CASCADE;
+CREATE TYPE enum_tipo_hito AS ENUM ('AUTOMATICO', 'MANUAL');
 
-DO $$ BEGIN
-    CREATE TYPE enum_estado_corrida AS ENUM ('PENDIENTE', 'EN_PROCESO', 'EXITOSA', 'ADVERTENCIA', 'FALLIDA', 'ABORTADA');
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DROP TYPE IF EXISTS enum_estado_corrida CASCADE;
+CREATE TYPE enum_estado_corrida AS ENUM ('PENDIENTE', 'EN_PROCESO', 'EXITOSA', 'ADVERTENCIA', 'FALLIDA', 'ABORTADA');
 
 -- ============================================================================
 -- 02. TABLAS MAESTRAS Y OPERACIONALES (CON UUIDs Y SLUGS DETERMINÍSTICOS)
@@ -259,7 +249,9 @@ REFRESH MATERIALIZED VIEW agg_precios_semanales;
 -- ============================================================================
 CREATE OR REPLACE FUNCTION fn_obtener_cotizacion_cierre(
     p_fecha_captura TIMESTAMPTZ,
-    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'
+    p_tipo_cambio enum_tipo_cambio DEFAULT 'parallel'::enum_tipo_cambio,
+    p_condicion enum_condicion_cambio DEFAULT 'venta'::enum_condicion_cambio,
+    p_fuente VARCHAR DEFAULT NULL
 )
 RETURNS TABLE (
     cotizacion_aplicada NUMERIC(12,4),
@@ -285,7 +277,8 @@ BEGIN
         'OK'::VARCHAR(20) AS estado_sincronizacion
     FROM cotizaciones_divisas c
     WHERE c.tipo = p_tipo_cambio
-      AND c.condicion = 'venta'
+      AND c.condicion = p_condicion
+      AND (p_fuente IS NULL OR c.fuente = p_fuente)
       AND c.timestamp_utc <= v_cierre_local_utc
       AND c.timestamp_utc >= v_limite_ttl_utc
     ORDER BY c.timestamp_utc DESC
@@ -295,17 +288,6 @@ BEGIN
         RETURN QUERY SELECT NULL::NUMERIC(12,4), FALSE, NULL::VARCHAR(50), 'SIN_DATO'::VARCHAR(20);
     END IF;
 END;
-$$ LANGUAGE plpgsql STABLE;
-
--- ============================================================================
--- 10. POBLACIÓN DETERMINÍSTICA BASE (HU-00 Seed Data Idempotente)
--- ============================================================================
-INSERT INTO categorias (slug, nombre, descripcion) VALUES
-('canasta-basica', 'Canasta Básica', 'Alimentos y artículos de primera necesidad (consumo masivo)'),
-('bienes-durables', 'Bienes Durables', 'Electrodomésticos y tecnología para el hogar')
-ON CONFLICT (slug) DO UPDATE SET 
-    nombre = EXCLUDED.nombre,
-    descripcion = EXCLUDED.descripcion;
 
 INSERT INTO tiendas (slug, nombre, url_base, tipo) VALUES
 ('coto', 'Coto Argentina', 'https://www.coto.com.ar', 'supermercado'),
@@ -514,4 +496,5 @@ INSERT INTO alias_tienda (
  ON CONFLICT (tienda_id, url_origen) DO UPDATE SET 
     alias_producto = EXCLUDED.alias_producto,
     sku_tienda = EXCLUDED.sku_tienda;
-SELECT * from observaciones_precios
+
+$$ LANGUAGE plpgsql STABLE;

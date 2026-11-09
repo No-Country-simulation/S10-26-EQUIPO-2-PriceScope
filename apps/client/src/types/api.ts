@@ -47,6 +47,7 @@ export interface HitoGrafico {
 export interface BandaCalidad {
   fecha: string;
   estado: EstadoSemaforo;
+  porcentaje_completitud?: number;
 }
 
 export interface PipelineTiendaStatus {

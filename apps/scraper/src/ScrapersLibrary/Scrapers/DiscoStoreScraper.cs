@@ -70,6 +70,8 @@ public sealed class DiscoStoreScraper(
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
+                TimeSpan? retryAfter = null;
+
                 try
                 {
                     logger.LogDebug(
@@ -82,12 +84,18 @@ public sealed class DiscoStoreScraper(
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    await page.GotoAsync(
+                    var response = await page.GotoAsync(
                         product.Url,
                         new PageGotoOptions
                         {
                             WaitUntil = WaitUntilState.DOMContentLoaded
                         });
+
+                    if (response?.Status == 429)
+                    {
+                        throw new RetryAfterException(
+                            await ScraperRetry.GetRetryAfterDelayAsync(response));
+                    }
 
                     logger.LogTrace("Pagina cargada {Url}", page.Url);
 
@@ -148,6 +156,16 @@ public sealed class DiscoStoreScraper(
                 {
                     throw;
                 }
+                catch (RetryAfterException exception)
+                {
+                    retryAfter = exception.Delay;
+                    MarkAsCaptureError(product, exception.Message);
+
+                    logger.LogWarning(
+                        "Disco recibió HTTP 429. Retry-After: {RetryAfter}. {Url}",
+                        retryAfter,
+                        product.Url);
+                }
                 catch (PlaywrightException exception)
                 {
                     MarkAsCaptureError(product, exception.Message);
@@ -175,14 +193,26 @@ public sealed class DiscoStoreScraper(
                     if (product.DataState == ScrapedProductStatus.ERROR_CAPTURA &&
                         attempt < maxAttempts)
                     {
-                        var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
-                        var jitter = Random.Shared.Next(0, 1_501);
-                        logger.LogTrace(
-                            "Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
-                            timeToWait + jitter,
-                            attempt + 1,
-                            product.Url);
-                        await Task.Delay(timeToWait + jitter, cancellationToken);
+                        if (retryAfter is { } retryDelay)
+                        {
+                            logger.LogTrace(
+                                "Waiting {RetryAfter} before attempt {Attempt} on {ProductUrl}",
+                                retryDelay,
+                                attempt + 1,
+                                product.Url);
+                            await ScraperRetry.DelayAsync(retryDelay, cancellationToken);
+                        }
+                        else
+                        {
+                            var timeToWait = (int)Math.Min(30_000, 2_000 * Math.Pow(2, attempt - 1));
+                            var jitter = Random.Shared.Next(0, 1_501);
+                            logger.LogTrace(
+                                "Waiting {Time} ms before attempt {Attempt} on {ProductUrl}",
+                                timeToWait + jitter,
+                                attempt + 1,
+                                product.Url);
+                            await Task.Delay(timeToWait + jitter, cancellationToken);
+                        }
                     }
                 }
             }

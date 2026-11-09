@@ -146,7 +146,7 @@ public sealed class VeaStoreScraper(
                                     retryDelay,
                                     attempt + 1,
                                     product.Url);
-                                await DelayAsync(retryDelay, cancellationToken);
+                                await ScraperRetry.DelayAsync(retryDelay, cancellationToken);
                             }
                             else
                             {
@@ -189,7 +189,7 @@ public sealed class VeaStoreScraper(
         }
         else if (response?.Status == 429)
         {
-            var retryAfter = await GetRetryAfterDelayAsync(response);
+            var retryAfter = await ScraperRetry.GetRetryAfterDelayAsync(response);
             throw new RetryAfterException(retryAfter);
         }
         else if (response?.Status == 403)
@@ -305,51 +305,4 @@ public sealed class VeaStoreScraper(
         product.Error = error;
     }
 
-    private static async Task<TimeSpan?> GetRetryAfterDelayAsync(IResponse response)
-    {
-        var headers = await response.AllHeadersAsync();
-        if (!headers.TryGetValue("retry-after", out var value))
-        {
-            return null;
-        }
-
-        if (long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var seconds) &&
-            seconds >= 0 &&
-            seconds <= TimeSpan.MaxValue.Ticks / TimeSpan.TicksPerSecond)
-        {
-            return TimeSpan.FromTicks(seconds * TimeSpan.TicksPerSecond);
-        }
-
-        if (DateTimeOffset.TryParse(
-                value,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
-                out var retryAt))
-        {
-            var now = DateTimeOffset.UtcNow;
-            return retryAt > now
-                ? retryAt - now
-                : TimeSpan.Zero;
-        }
-
-        return null;
-    }
-
-    private static async Task DelayAsync(TimeSpan delay, CancellationToken cancellationToken)
-    {
-        var maximumDelay = TimeSpan.FromMilliseconds(uint.MaxValue - 1d);
-        while (delay > maximumDelay)
-        {
-            await Task.Delay(maximumDelay, cancellationToken);
-            delay -= maximumDelay;
-        }
-
-        await Task.Delay(delay, cancellationToken);
-    }
-
-    private sealed class RetryAfterException(TimeSpan? delay)
-        : Exception("HTTP_429_TOO_MANY_REQUESTS")
-    {
-        public TimeSpan? Delay { get; } = delay;
-    }
 }

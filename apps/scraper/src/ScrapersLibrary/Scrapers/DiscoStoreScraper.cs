@@ -91,10 +91,31 @@ public sealed class DiscoStoreScraper(
                             WaitUntil = WaitUntilState.DOMContentLoaded
                         });
 
+                    if (response?.Status == 404)
+                    {
+                        MarkAsUnpublished(product);
+                        break;
+                    }
+
                     if (response?.Status == 429)
                     {
                         throw new RetryAfterException(
                             await ScraperRetry.GetRetryAfterDelayAsync(response));
+                    }
+
+                    if (response?.Status == 403)
+                    {
+                        throw new Exception("HTTP_403_ACCESS_BLOCKED");
+                    }
+
+                    if (response?.Status >= 500)
+                    {
+                        throw new Exception("HTTP_500_INTERNAL_SERVER_ERROR");
+                    }
+
+                    if (response?.Status is < 200 or >= 300)
+                    {
+                        throw new Exception($"HTTP_{response.Status}");
                     }
 
                     logger.LogTrace("Pagina cargada {Url}", page.Url);
@@ -302,6 +323,12 @@ public sealed class DiscoStoreScraper(
         product.Available = false;
         product.DataState = ScrapedProductStatus.AGOTADO;
         product.Error = string.Empty;
+    }
+
+    private static void MarkAsUnpublished(ScrapedProduct product)
+    {
+        MarkAsUnavailable(product);
+        product.Error = "HTTP_404_DESPUBLICADO";
     }
 
     private static void MarkAsCaptureError(

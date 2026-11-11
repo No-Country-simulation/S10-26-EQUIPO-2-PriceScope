@@ -1,6 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { PipelineService } from '../pipeline/pipeline.service';
+import { CierreCambiarioService } from '../currency/cierre-cambiario.service';
 import { GetDashboardDto } from './dto/get-dashboard.dto';
 import {
   CategoriaDbRow,
@@ -20,7 +21,8 @@ export class DashboardService {
   constructor(
     private readonly db: DatabaseService,
     private readonly pipelineService: PipelineService,
-  ) {}
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async getDashboardData(dto: GetDashboardDto): Promise<DashboardResponse> {
     const { fechaDesde, fechaHasta, diffDays } = this.resolveAndValidateDates(dto);

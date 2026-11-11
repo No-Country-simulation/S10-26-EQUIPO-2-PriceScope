@@ -23,8 +23,12 @@ const SIN_DATO: CotizacionCierre = {
   estado: 'SIN_DATO',
 };
 
-const ZONA_MERCADO = 'America/Argentina/Buenos_Aires';
-
+export const ZONA_MERCADO = 'America/Argentina/Buenos_Aires';
+export type VariacionCotizacion = {
+  inicial: CotizacionCierre;
+  final: CotizacionCierre;
+  variacionPct: number | null;
+};
 @Injectable()
 export class CierreCambiarioService {
   constructor(private readonly db: DatabaseService) {}
@@ -75,6 +79,29 @@ export class CierreCambiarioService {
     }));
   }
 
+
+    /** Variación porcentual de la cotización entre el cierre del día `desde` y el del día `hasta`. */
+  async obtenerVariacionPeriodo(
+    desde: Date | string,
+    hasta: Date | string,
+    tipo: TipoCotizacion = TipoCotizacion.PARALLEL,
+  ): Promise<VariacionCotizacion> {
+    const [inicial, final] = await Promise.all([
+      this.obtenerCotizacionCierre(desde, tipo),
+      this.obtenerCotizacionCierre(hasta, tipo),
+    ]);
+
+    const ini = inicial.cotizacionAplicada;
+    const fin = final.cotizacionAplicada;
+    const variacionPct =
+      ini !== null && fin !== null && ini > 0
+        ? Number((((fin - ini) / ini) * 100).toFixed(1))
+        : null;
+
+    return { inicial, final, variacionPct };
+  }
+
+  
   /** Día calendario (AAAA-MM-DD) en hora de Argentina, no en UTC. */
   private diaLocal(fecha: Date | string): string {
     return new Intl.DateTimeFormat('en-CA', {

@@ -1,18 +1,17 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
+import { CierreCambiarioService } from '../currency/cierre-cambiario.service';
 import { GetAlertsDto } from './dto/get-alerts.dto';
-import {
-  AlertaDbRow,
-  AlertaItem,
-  AlertsResponse,
-  CotizacionSimpleRow,
-} from './types/alerts.types';
+import { AlertaDbRow, AlertaItem, AlertsResponse } from './types/alerts.types';
 
 export * from './types/alerts.types';
 
 @Injectable()
 export class AlertsService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async findAll(queryDto: GetAlertsDto): Promise<AlertsResponse> {
     const page = Number(queryDto.page) || 1;
@@ -39,10 +38,15 @@ export class AlertsService {
       ? new Date(queryDto.fecha_desde)
       : new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    const { cotFinal, variacionCotizacionPct } = await this.fetchPeriodDevaluation(
-      fechaDesde,
-      fechaHasta,
-    );
+    const devaluacion = await this.fetchPeriodDevaluation(fechaDesde, fechaHasta);
+    if (devaluacion === null) {
+      // Sin cotización de cierre no se puede comparar contra el dólar: no se inventan valores.
+      return {
+        paginacion: { pagina_actual: page, limite_por_pagina: limit, total_registros: 0, total_paginas: 1 },
+        alertas: [],
+      };
+    }
+    const { cotFinal, variacionCotizacionPct } = devaluacion;
 
     const { totalRegistros, totalPaginas, rows } = await this.queryAlertsData(
       queryDto,
@@ -94,6 +98,21 @@ export class AlertsService {
     };
   }
 
+  /** Primera y última captura válida dentro del período pedido (la ventana real de los precios). */
+  private async fetchVentanaObservaciones(desde: Date, hasta: Date) {
+    const res = await this.db.query<{ inicio: Date | null; fin: Date | null }>(
+      `SELECT MIN(timestamp_utc) AS inicio, MAX(timestamp_utc) AS fin
+       FROM observaciones_precios
+       WHERE estado_dato = 'DATO_VALIDO' AND timestamp_utc >= $1 AND timestamp_utc <= $2;`,
+      [desde.toISOString(), hasta.toISOString()],
+    );
+    const fila = res.rows[0];
+    return fila?.inicio && fila?.fin
+      ? { inicio: new Date(fila.inicio), fin: new Date(fila.fin) }
+      : null;
+  }
+
+  /** Variación del dólar (cierre) en la misma ventana en que se midieron los precios. */
   private async fetchPeriodDevaluation(desde: Date, hasta: Date) {
     const query = `
       SELECT valor::numeric AS cotizacion
@@ -112,10 +131,19 @@ export class AlertsService {
       cotFinal = Number(rows[rows.length - 1].cotizacion);
     }
 
-    const variacionCotizacionPct =
-      cotInicial > 0 ? Number((((cotFinal - cotInicial) / cotInicial) * 100).toFixed(1)) : 0;
+    const { inicial, final, variacionPct } = await this.cierreCambiario.obtenerVariacionPeriodo(
+      ventana.inicio,
+      ventana.fin,
+    );
+    if (
+      inicial.cotizacionAplicada === null ||
+      final.cotizacionAplicada === null ||
+      variacionPct === null
+    ) {
+      return null;
+    }
 
-    return { cotFinal, variacionCotizacionPct };
+    return { cotFinal: final.cotizacionAplicada, variacionCotizacionPct: variacionPct };
   }
 
   private async queryAlertsData(

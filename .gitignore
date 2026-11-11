@@ -33,3 +33,6 @@ test-results/
 *.tsbuildinfo
 next-env.d.ts
 graphify-out/
+
+# VSCode
+.vscode/

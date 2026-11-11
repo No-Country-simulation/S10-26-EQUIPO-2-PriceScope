@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
+import { CierreCambiarioService, CotizacionCierre } from '../currency/cierre-cambiario.service';
 import { GetTraceabilityDto } from './dto/get-traceability.dto';
 import {
   CanonicalProductDbRow,
@@ -16,7 +17,10 @@ export * from './types/products.types';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async getProductTraceability(
     idOrSlug: string,
@@ -170,6 +174,19 @@ export class ProductsService {
     const res = await this.db.query(query, params);
     const rows = res.rows as ObservationDbRow[];
 
+    // La tasa guardada por el cron manda. Las filas que aún no la tienen (p. ej. las de hoy)
+    // se resuelven con el servicio de cierre.
+    const sinTasa = rows.filter(
+      (r) => r.cotizacion_aplicada === null && r.estado_dato === 'DATO_VALIDO',
+    );
+    const cierres = new Map<ObservationDbRow, CotizacionCierre>();
+    if (sinTasa.length > 0) {
+      const emparejadas = await this.cierreCambiario.emparejarConCierre(
+        sinTasa.map((row) => ({ fechaCaptura: row.timestamp_utc, row })),
+      );
+      for (const e of emparejadas) cierres.set(e.row, e.cierre);
+    }
+
     return rows.map((row, idx, arr) => {
       let regular = row.precio_regular !== null ? Number(row.precio_regular) : null;
       let promocional = row.precio_promocional !== null ? Number(row.precio_promocional) : null;
@@ -180,8 +197,16 @@ export class ProductsService {
       if (promocional === 0) promocional = null;
       if (porUnidad === 0) porUnidad = null;
 
-      const cotizacion =
-        row.cotizacion_aplicada !== null ? Number(row.cotizacion_aplicada) : null;
+      const cierre = cierres.get(row);
+      const persistida = row.cotizacion_aplicada !== null;
+      const cotizacion = persistida
+        ? Number(row.cotizacion_aplicada)
+        : (cierre?.cotizacionAplicada ?? null);
+      const cotizacionAproximada = persistida
+        ? Boolean(row.cotizacion_aproximada)
+        : (cierre?.esAproximada ?? false);
+      const fuenteCotizacion = row.fuente_cotizacion || cierre?.fuente || null;
+
       const precioUsd =
         regular !== null && cotizacion !== null && cotizacion > 0
           ? Number((regular / cotizacion).toFixed(2))
@@ -210,8 +235,8 @@ export class ProductsService {
         precio_usd: precioUsd,
         estado_dato: (row.estado_dato as EstadoDato) || 'DATO_VALIDO',
         cotizacion_aplicada: cotizacion,
-        cotizacion_aproximada: Boolean(row.cotizacion_aproximada),
-        fuente_cotizacion: row.fuente_cotizacion || null,
+        cotizacion_aproximada: cotizacionAproximada,
+        fuente_cotizacion: fuenteCotizacion,
         motivo_faltante: row.motivo_faltante || null,
         variacion_diaria_pct,
       };

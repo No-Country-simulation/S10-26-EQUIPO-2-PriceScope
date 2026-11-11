@@ -1,8 +1,8 @@
-namespace Worker.Scrapers;
+namespace ScrapersLibrary.Scrapers;
 
 public interface IStoreScraper
 {
-    string StoreName { get; }
+    string StoreSlug { get; }
 
     IAsyncEnumerable<ScrapedProduct> ScrapeAsync(CancellationToken cancellationToken);
 }

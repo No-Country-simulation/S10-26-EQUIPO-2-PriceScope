@@ -213,14 +213,12 @@ export class DashboardService {
   }
 
   private async fetchCurrencyRates(desde: Date, hasta: Date): Promise<CotizacionDbRow[]> {
-    const query = `
-      SELECT valor::numeric AS cotizacion, timestamp_utc
-      FROM cotizaciones_divisas
-      WHERE tipo = 'parallel' AND condicion = 'venta'
-        AND timestamp_utc >= $1 AND timestamp_utc <= $2
-      ORDER BY timestamp_utc ASC;
-    `;
-    const res = await this.db.query(query, [desde.toISOString(), hasta.toISOString()]);
-    return res.rows as CotizacionDbRow[];
+    const { inicial, final } = await this.cierreCambiario.obtenerVariacionPeriodo(desde, hasta);
+    if (inicial.cotizacionAplicada === null || final.cotizacionAplicada === null) return [];
+
+    return [
+      { cotizacion: inicial.cotizacionAplicada, timestamp_utc: desde },
+      { cotizacion: final.cotizacionAplicada, timestamp_utc: hasta },
+    ];
   }
 }

@@ -114,22 +114,8 @@ export class AlertsService {
 
   /** Variación del dólar (cierre) en la misma ventana en que se midieron los precios. */
   private async fetchPeriodDevaluation(desde: Date, hasta: Date) {
-    const query = `
-      SELECT valor::numeric AS cotizacion
-      FROM cotizaciones_divisas
-      WHERE tipo = 'parallel' AND condicion = 'venta'
-        AND timestamp_utc >= $1 AND timestamp_utc <= $2
-      ORDER BY timestamp_utc ASC;
-    `;
-    const res = await this.db.query(query, [desde.toISOString(), hasta.toISOString()]);
-    const rows = res.rows as CotizacionSimpleRow[];
-
-    let cotInicial = 1000;
-    let cotFinal = 1200;
-    if (rows.length > 0) {
-      cotInicial = Number(rows[0].cotizacion);
-      cotFinal = Number(rows[rows.length - 1].cotizacion);
-    }
+    const ventana = await this.fetchVentanaObservaciones(desde, hasta);
+    if (ventana === null) return null;
 
     const { inicial, final, variacionPct } = await this.cierreCambiario.obtenerVariacionPeriodo(
       ventana.inicio,

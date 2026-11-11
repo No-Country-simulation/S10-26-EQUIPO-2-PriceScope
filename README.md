@@ -2,136 +2,143 @@
   <img src="docs/assets/imagotipo.png" alt="PriceScope Logo" width="450"/>
 </p>
 
-<h1 align="center"><strong>PriceScope — Monitor de Inflación Real Multimoneda</strong></h1>
+<h1 align="center"><strong>PriceScope - Monitor de Inflacion Real Multimoneda</strong></h1>
 
 <p align="center">
-  <strong>Plataforma B2B de Analítica Económica e Inteligencia de Mercado</strong><br>
-  <em>Simulación Laboral Abierta — NoCountry (Cohorte 2026 / Equipo S10-26-EQUIPO-2)</em>
+  <strong>Plataforma B2B de Analitica Economica e Inteligencia de Mercado</strong><br>
+  <em>Simulacion Laboral Abierta - NoCountry (Cohorte 2026 / Equipo S10-26-EQUIPO-2)</em>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-14+-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
-  <img src="https://img.shields.io/badge/NestJS-10+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
-  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" alt="shadcn/ui" />
-  <img src="https://img.shields.io/badge/Tremor-Dashboard_UI-3B82F6?style=for-the-badge" alt="Tremor" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/TimescaleDB-PostgreSQL_15-FDB515?style=for-the-badge&logo=postgresql&logoColor=black" alt="TimescaleDB" />
+  <img src="https://img.shields.io/badge/Next.js-16.4-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/NestJS-12-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
+  <img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" />
+  <img src="https://img.shields.io/badge/TimescaleDB-PostgreSQL_16-FDB515?style=for-the-badge&logo=postgresql&logoColor=black" alt="TimescaleDB" />
   <img src="https://img.shields.io/badge/Playwright_.NET-Headless-2EAD33?style=for-the-badge&logo=playwright&logoColor=white" alt="Playwright" />
   <img src="https://img.shields.io/badge/Hangfire-Background_Jobs-007ACC?style=for-the-badge" alt="Hangfire" />
 </p>
 
 ---
 
-## 📌 Tabla de Contenidos
-* [📖 Acerca del Proyecto](#-acerca-del-proyecto)
+## Tabla de Contenidos
+* [Acerca del Proyecto](#acerca-del-proyecto)
   * [El Problema](#el-problema)
-  * [La Solución (PriceScope)](#la-solución-pricescope)
-* [💻 Tech Stack](#-tech-stack)
-* [🏛️ Arquitectura del Monorepo](#️-arquitectura-del-monorepo)
-* [✨ Funcionalidades del MVP (Fase 1) y Plus (Fase 1.5)](#-funcionalidades-del-mvp-fase-1-y-plus-fase-15)
-* [📐 Reglas Matemáticas y de Negocio](#-reglas-matemáticas-y-de-negocio)
-* [🚀 Instalación y Puesta en Marcha Local](#-instalación-y-puesta-en-marcha-local)
-* [📚 Documentación Técnica Oficial](#-documentación-técnica-oficial)
-* [👥 Equipo de Desarrollo (NoCountry)](#-equipo-de-desarrollo-nocountry)
+  * [La Solucion (PriceScope)](#la-solucion-pricescope)
+* [Tech Stack](#tech-stack)
+* [Arquitectura del Monorepo](#arquitectura-del-monorepo)
+* [Funcionalidades del MVP (Fase 1) y Plus (Fase 1.5)](#funcionalidades-del-mvp-fase-1-y-plus-fase-15)
+* [Reglas Matematicas y de Negocio](#reglas-matematicas-y-de-negocio)
+* [Instalacion y Puesta en Marcha Local](#instalacion-y-puesta-en-marcha-local)
+* [Documentacion Tecnica Oficial](#documentacion-tecnica-oficial)
+* [Equipo de Desarrollo (NoCountry)](#equipo-de-desarrollo-nocountry)
 
 ---
 
-## 📖 Acerca del Proyecto
+## Acerca del Proyecto
 
 ### Contexto y Sector de Negocio
-**Sector:** FinTech / Inteligencia de Mercado (`B2B Analytics`) — *Tablero con Inflación Real vs. Divisa*.
+**Sector:** FinTech / Inteligencia de Mercado (`B2B Analytics`) - *Tablero con Inflacion Real vs. Divisa*.
 
-PriceScope simula la operación de una **firma de analítica económica** que provee informes de variación de precios e inflación en tiempo real a cadenas minoristas, fondos de inversión y medios de comunicación en mercados de alta volatilidad cambiaria. Actualmente, la organización monitorea el comportamiento de la canasta básica y bienes durables para ayudar a las empresas a ajustar sus listas de precios y cubrirse estratégicamente frente a la devaluación.
+PriceScope simula la operacion de una **firma de analitica economica** que provee informes de variacion de precios e inflacion en tiempo real a cadenas minoristas, fondos de inversion y medios de comunicacion en mercados de alta volatilidad cambiaria. La organizacion monitorea el comportamiento de la canasta basica y bienes durables para ayudar a las empresas a ajustar sus listas de precios y cubrirse estrategicamente frente a la devaluacion.
 
 ### El Problema (Relevamiento Manual Ineficiente)
-Actualmente, el equipo de analistas de la firma realiza un **relevamiento manual de precios visitando hasta 15 portales de e-commerce** (supermercados, tiendas de electrodomésticos y tiendas de moda) dos veces por semana. Estos datos se vuelcan artesanalmente en hojas de cálculo y se convierten a mano al tipo de cambio del día (oficial y paralelo/blue) para estimar la inflación acumulada en moneda local y divisa extranjera.
+El equipo de analistas de la firma tradicionalmente realizaba un relevamiento manual visitando portales de e-commerce dos veces por semana, volcando datos artesanalmente en hojas de calculo y calculando la inflacion a mano.
 
-Con un catálogo objetivo de **más de 10.000 productos bajo observación**, este proceso manual genera:
-1. **Retrasos Críticos de Varios Días:** Imposibilidad de reaccionar oportunamente ante saltos cambiarios intradiarios.
-2. **Errores Humanos en el Tipeo de Montos:** Distorsión de los indicadores por fallas de digitación manual.
-3. **Pérdida de Trazabilidad ante Ofertas y Reduflación:** Dificultad para discernir si una baja de precio es una promoción transitoria (ej. *"CyberWeek"* o *"2x1"*) o si el fabricante redujo silenciosamente el gramaje del producto (*reduflación / shrinkflation*).
-4. **Dispersión y Nombres Heterogéneos:** Un mismo modelo de Smart TV o paquete de café figura con descripciones, códigos SKU y formatos completamente distintos en cada portal minorista.
+Con un catalogo objetivo de **mas de 10.000 productos bajo observacion**, el proceso manual genera:
+1. **Retrasos Criticos:** Imposibilidad de reaccionar oportunamente ante saltos cambiarios intradiarios.
+2. **Errores Humanos:** Distorsion de indicadores por fallas de digitacion manual.
+3. **Perdida de Trazabilidad ante Ofertas y Reduflacion:** Dificultad para discernir si una baja de precio es una promocion transitoria o reduccion de gramaje (*reduflacion / shrinkflation*).
+4. **Dispersion y Nombres Heterogeneos:** Un mismo producto figura con descripciones, SKUs y formatos incompatibles en cada portal minorista.
 
-### La Necesidad de la Empresa
-Automatizar la recolección periódica de precios en plataformas de e-commerce y registrar su evolución histórica en relación directa con las variaciones del tipo de cambio, permitiendo **medir la inflación real tanto en moneda local como en moneda dura**.
-
-### La Solución Desarrollada (PriceScope)
+### La Solucion Desarrollada (PriceScope)
 PriceScope implementa un **sistema de monitoreo continuo y desatendido** compuesto por:
-* **Pipeline de Extracción Automatizado:** Scrapers programados en **ASP.NET Core (.NET 10) con Hangfire y Playwright .NET** que recolectan diariamente precios de productos representativos en cadenas piloto (Carrefour, Jumbo, Frávega, Musimundo), normalizando identidades mediante un modelo canónico y detectando automáticamente eventos de promoción y reduflación.
-* **Motor de Ingesta Cambiaria con Sellado Temporal:** Ingesta horaria automatizada de cotizaciones oficiales y paralelas (DolarAPI / Bluelytics) sincronizadas al cierre formal del día (23:59:59 ART) con protocolo de tolerancia y fallback de 72 horas.
-* **Almacén de Series Temporales Optimizado:** Base de datos en **PostgreSQL 15 + TimescaleDB** con hypertables particionadas y agregaciones continuas, diseñada para procesar inflación acumulada, variación porcentual vs. cotización de la divisa y detección de picos por categoría mediante la **Mediana Estadística**.
-* **Dashboard Ejecutivo B2B:** Aplicación web moderna en **Next.js 14+ (TypeScript), Tremor y shadcn/ui** donde los clientes corporativos filtran de forma dinámica por rango temporal (hasta 365 días), tienda, categoría y moneda, visualizando gráficos de evolución interactivos con downsampling algorítmico fluido a **60 FPS**.
-* **Módulo de Alertas e Hitos:** Sistema visual que identifica aquellos productos cuyo aumento supera la tasa de devaluación cambiaria en una ventana de tiempo determinada y grafica hitos comerciales del mercado.
+* **Pipeline de Extraccion Automatizado:** Workers programados en **ASP.NET Core (.NET 10) con Hangfire y Playwright .NET** que recolectan periodicamente precios en cadenas piloto, normalizando identidades y detectando anomalias.
+* **Motor de Ingesta Cambiaria con Sellado Temporal:** Ingesta automatizada de cotizaciones oficiales y paralelas (DolarAPI / Bluelytics) sincronizadas al cierre formal del dia (23:59:59 ART) con protocolo de tolerancia y fallback de 72 horas.
+* **Almacen de Series Temporales Optimizado:** Base de datos en **PostgreSQL 16 + TimescaleDB** con hypertables particionadas y agregaciones continuas, compatible con Docker local y Neon Cloud Serverless.
+* **Dashboard Ejecutivo B2B:** Aplicacion web moderna en **Next.js 16 (React 19, TypeScript), Tailwind CSS v4, Radix UI y Recharts 3.10** con soporte Local-First (modo mock transparente) y navegacion fluida a 60 FPS.
+* **Modulo de Alertas e Historial de Trazabilidad:** Deteccion automatica de productos cuyo aumento supera la devaluacion cambiaria, auditoria inmutable (*append-only*) y exportacion de datos.
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
-| Capa / Dominio | Tecnologías y Librerías Principales |
+| Capa / Dominio | Tecnologias y Librerias Principales |
 | :--- | :--- |
-| **Frontend Web** | **Next.js 14+** (React, TypeScript), **Tremor** (LineChart, AreaChart, Analytics UI), **shadcn/ui** (Radix UI), **Tailwind CSS**, Lucide Icons |
-| **Backend REST & Cálculos** | **NestJS** (Node.js, TypeScript), **TimescaleDB / PostgreSQL 15**, Class-Validator, Decimal.js |
-| **Extracción & Scraping** | **ASP.NET Core (.NET 10)**, **Hangfire** (Orquestación con reintentos exponenciales), **Playwright .NET** (Chromium Headless) |
-| **Persistencia & Series Temporales** | **PostgreSQL 15 + TimescaleDB 2.x** (Hypertables particionadas, Continuous Aggregates) |
-| **DevOps & CI/CD** | **Docker Compose**, **GitHub Actions** (Pipelines independientes con Path Filtering) |
+| **Frontend Web** | **Next.js 16.4** (App Router, Turbopack), **React 19**, **Tailwind CSS v4**, **Recharts 3.10 + Tremor Raw**, **Radix UI**, **@remixicon/react**, **date-fns**, **Vitest**, **Playwright Test** |
+| **Backend REST & Servicios** | **NestJS 12**, **Node.js (TypeScript)**, **oxlint**, **Class-Validator**, **RxJS** |
+| **Extraccion & Scraping** | **.NET 10 (C#)**, **Hangfire 1.8 (PostgreSQL Storage)**, **Playwright .NET**, **Npgsql 10** |
+| **Persistencia & Series Temporales** | **PostgreSQL 16 + TimescaleDB 2.x** (Hypertables particionadas, compatible con Neon Cloud Serverless y Docker) |
+| **DevOps & CI/CD** | **Docker Compose**, **GitHub Actions** (Pipelines independientes para Client, API y Scraper) |
 
 ---
 
-## 🏛️ Arquitectura del Monorepo
+## Arquitectura del Monorepo
 
-El repositorio organiza sus servicios de forma desacoplada bajo el estándar de **Monorepo en `apps/`**:
+El repositorio organiza sus servicios de forma desacoplada bajo el estandar de **Monorepo en `apps/`**:
 
 ```text
-pricescope-monorepo/
+S10-26-EQUIPO-2-PriceScope/
 ├── .github/                      # CI/CD y Plantilla obligatoria de PRs
 │   ├── PULL_REQUEST_TEMPLATE.md
-│   └── workflows/                # Pipelines de validación continua (Client, API, Scraper)
+│   └── workflows/                # Workflows de GitHub Actions (Client, API, Scraper)
 ├── apps/
-│   ├── client/                   # Frontend Web en Next.js (Juan Camilo García)
-│   ├── api/                      # Backend REST y Agregaciones en NestJS (Luis Feliz, Yenny Castro)
-│   └── scraper/                  # Worker extractor en .NET 10 + Hangfire + Playwright (Alejandro, Anthony, Sebastian)
-├── docs/                         # Especificaciones de ingeniería, planeación y QA
-│   ├── 01-analisis/              # SRS, OpenAPI, DER TimescaleDB, Reglas Matemáticas, UX/UI
-│   ├── 02-planeacion/            # Plan Operativo Roadmap y Matriz de Riesgos
-│   ├── 03-qa/                    # Espacio de certificación y pruebas de estrés
-│   └── assets/                   # Logos, imagotipos y wireframes
-├── docker-compose.yml            # Base de datos compartida TimescaleDB para desarrollo local
-└── seed.json                     # Archivo semilla MVP con URLs piloto normalizadas (HU-00)
+│   ├── client/                   # Frontend Web en Next.js 16 + React 19 + Tailwind v4
+│   │   ├── docs/constitution.md  # Estandares de diseno y arquitectura frontend
+│   │   ├── specs/                # Especificaciones de features (002, 003, 004)
+│   │   └── src/                  # App Router, componentes, mocks, hooks y servicios
+│   ├── api/                      # Backend REST en NestJS 12
+│   │   └── src/                  # Modulos, controladores, servicios y configuracion
+│   ├── scraper/                  # Sistema de extraccion en .NET 10
+│   │   └── src/
+│   │       ├── ScrapersLibrary/  # Biblioteca de abstracciones y scrapers por tienda
+│   │       └── Worker/           # Worker ejecutable con Hangfire y PostgreSQL
+│   └── database/                 # Persistencia e infraestructura compartida
+│       ├── init.sql              # Script DDL oficial e idempotente (Tablas, Hypertables, Seed)
+│       └── README.md             # Guia de configuracion local y Neon Cloud
+├── docs/                         # Documentacion integral de analisis, planeacion y QA
+│   ├── 01-analisis/              # 8 documentos canonicos (SRS, OpenAPI, DER, Reglas, etc.)
+│   ├── 02-planeacion/            # Plan Operativo, Roadmap y Matriz de Riesgos
+│   ├── 03-qa/                    # Espacio de certificacion, actas y pruebas de calidad
+│   └── assets/                   # Logos, imagotipos y fotos del equipo
+├── docker-compose.yml            # Orquestacion de TimescaleDB (PostgreSQL 16)
+└── README.md                     # Documentacion general del repositorio
 ```
 
 ---
 
-## ✨ Funcionalidades del MVP (Fase 1) y Plus (Fase 1.5)
+## Funcionalidades del MVP (Fase 1) y Plus (Fase 1.5)
 
-### 🟢 Fase 1: MVP Esencial (Local-First)
-* **Tablero Ejecutivo B2B (`/dashboard`):** Gráfica de evolución temporal interactiva con alternancia instantánea entre pesos ($) y dólares (USD Blue), soportando **60 FPS** continuos.
-* **Filtros Temporales Personalizables:** Rango de fechas libre (`fecha_desde` y `fecha_hasta` hasta 365 días) con atajos rápidos de interfaz (`30D`, `90D`, `1A`).
-* **Downsampling Algorítmico Automático:** Agrupación semanal transparente (mediana) para rangos $> 90$ días, optimizando el consumo de memoria del navegador.
-* **Banda Semafórica de Calidad:** Franja diaria inferior que distingue estados forenses: Verde (`DATO_VALIDO`), Amarillo (`AGOTADO`) y Rojo (`ERROR_CAPTURA` / `SIN_DATO`).
-* **Módulo Paginado de Alertas (`/alerts`):** Detección automática de productos cuyo incremento supera la tasa de devaluación, paginado estrictamente a 50 registros (HU-46 / RFC 7807).
-* **Ficha de Trazabilidad Forense (`/products/{id}/traceability`):** Auditoría histórica inmutable (*append-only*), cotización exacta de cierre aplicada y detección de reduflación.
+### Fase 1: MVP Esencial (Local-First)
+* **Tablero Ejecutivo B2B (`/`):** Grafica de evolucion temporal interactiva con alternancia instantanea entre Pesos ($), Dolar Blue y Dolar Oficial.
+* **Filtros Temporales Dinamicos:** Rango libre (`fecha_desde` y `fecha_hasta` hasta 365 dias) con atajos rapidos (`30D`, `90D`, `1A`) y calendario popover.
+* **Downsampling Algoritmico:** Agrupacion semanal transparente por mediana para rangos mayores a 90 dias, optimizando rendimiento a 60 FPS.
+* **Banda Semaforica de Calidad:** Franja forense inferior que distingue estados de dato: Verde (`DATO_VALIDO`), Amarillo (`AGOTADO`) y Rojo (`ERROR_CAPTURA` / `SIN_DATO`).
+* **Modulo de Alertas (`/alerts`):** Deteccion automatica de productos cuyo aumento supera la devaluacion, con filtros por categoria, severidad, tienda, paginacion y exportacion CSV.
+* **Ficha de Trazabilidad (`/products/[id]/traceability`):** Auditoria historica inmutable (*append-only*), cotizacion exacta de cierre aplicada y deteccion de reduflacion.
+* **Modo Mock Transparente:** El frontend conmuta a mocks locales si el backend no esta conectado, permitiendo desarrollo y revision sin friccion.
 
-### 🟡 Fase 1.5: Buffer Condicional (Plus Post-MVP)
-* **Panel de Administración de Tiendas (`HU-01`):** Control de encendido/pausa de tiendas y monitoreo de salud de scrapers.
-* **Bandeja de Aprobación de Zona Gris (`HU-10`):** Interfaz para validar publicaciones con score de similitud dudoso ($0.41 \le S \le 0.84$).
+### Fase 1.5: Buffer Condicional (Post-MVP)
+* **Panel de Administracion de Tiendas (`HU-01`):** Control y telemetria de scrapers en tiempo real.
+* **Bandeja de Aprobacion de Zona Gris (`HU-10`):** Validacion manual para productos con similitud intermedia (0.41 <= S <= 0.84).
 * **Ingesta HTTP Segura (`HU-06`):** Endpoint desacoplado `POST /api/v1/ingest/observations` con token API.
 
 ---
 
-## 📐 Reglas Matemáticas y de Negocio
+## Reglas Matematicas y de Negocio
 
-* **RN-01 (Cierre del Día):** Las cotizaciones cambiarias se emparejan determinísticamente con el último valor antes de las **23:59:59 ART** (UTC-3).
-* **RN-02 (Prohibición del Promedio Simple):** Las variaciones agregadas por categoría se calculan exclusivamente mediante la **Mediana Estadística** para aislar distorsiones causadas por *outliers*.
-* **RN-03 (Tolerancia Cambiaria 72h):** Ante feriados bancarios o caídas de APIs financieras, se aplica cotización aproximada (LOCF) hasta 72 horas con icono de advertencia (⚠️). A las 72h+1s se aplica corte físico estricto (`SIN_DATO`).
-* **RN-04 (Anti-Cero):** Prohibición terminante de registrar o renderizar el valor numérico `0` ante falta de precio o stock.
-* **RN-09 (Límite Temporal 365 Días):** Consultas mayores a 365 días se rechazan con código HTTP `422 Unprocessable Entity` para proteger la memoria del sistema.
+* **RN-01 (Cierre del Dia):** Las cotizaciones cambiarias se emparejan con el ultimo valor registrado antes de las **23:59:59 ART** (UTC-3).
+* **RN-02 (Prohibicion del Promedio Simple):** Las variaciones agregadas por categoria se calculan exclusivamente mediante la **Mediana Estadistica** para aislar distorsiones de outliers.
+* **RN-03 (Tolerancia Cambiaria 72h):** Ante feriados bancarios o caidas de APIs financieras, se aplica cotizacion aproximada (LOCF) hasta 72 horas con advertencia. A las 72h+1s se aplica corte estricto (`SIN_DATO`).
+* **RN-04 (Anti-Cero):** Prohibicion terminante de registrar o renderizar el valor numerico `0` ante falta de precio o stock.
+* **RN-09 (Limite Temporal 365 Dias):** Consultas mayores a 365 dias se rechazan con codigo HTTP `422 Unprocessable Entity` para proteger la memoria del sistema.
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha Local
+## Instalacion y Puesta en Marcha Local
 
-El proyecto sigue una estrategia **Local-First** para que todo el equipo trabaje de manera uniforme mediante Docker Compose:
+El proyecto sigue una estrategia **Local-First** mediante Docker Compose:
 
 ### 1. Clonar el Repositorio
 ```bash
@@ -139,13 +146,13 @@ git clone https://github.com/No-Country-simulation/S10-26-EQUIPO-2-PriceScope.gi
 cd S10-26-EQUIPO-2-PriceScope
 ```
 
-### 2. Levantar la Base de Datos Local (TimescaleDB)
+### 2. Iniciar la Base de Datos Local (TimescaleDB / PostgreSQL 16)
 ```bash
-docker-compose up -d timescaledb
+docker compose up -d timescaledb
 ```
-*Base de datos disponible en `localhost:5432` con las tablas relacionales e hypertables inicializadas.*
+*Base de datos disponible en `localhost:5432` con tablas, hypertables y datos iniciales de `apps/database/init.sql`.*
 
-### 3. Ejecutar el Backend (NestJS)
+### 3. Iniciar el Backend (NestJS 12)
 ```bash
 cd apps/api
 npm install
@@ -153,17 +160,17 @@ npm run start:dev
 ```
 *API REST disponible en `http://localhost:3001`.*
 
-### 4. Ejecutar el Frontend (Next.js)
+### 4. Iniciar el Frontend (Next.js 16)
 ```bash
 cd apps/client
 npm install
 npm run dev
 ```
-*Aplicación web disponible en `http://localhost:3000`.*
+*Aplicacion web disponible en `http://localhost:3000` (conmuta a mocks locales si el backend no esta levantado).*
 
-### 5. Ejecutar los Scrapers (.NET 10 / Hangfire)
+### 5. Iniciar el Scraper Worker (.NET 10 / Hangfire)
 ```bash
-cd apps/scraper
+cd apps/scraper/src/Worker
 dotnet restore
 dotnet run
 ```
@@ -171,34 +178,40 @@ dotnet run
 
 ---
 
-## 📚 Documentación Técnica Oficial
+## Documentacion Tecnica Oficial
 
-Toda la ingeniería del sistema se encuentra formalizada y versionada en la carpeta [`docs/`](docs/):
+Toda la documentacion de ingenieria, arquitectura y calidad se encuentra versionada en [`docs/`](docs/):
 
-| Código | Documento Técnico | Enlace |
+| Codigo | Documento Tecnico | Enlace |
 | :--- | :--- | :--- |
-| **`SRS`** | Especificación de Requerimientos del Sistema (Backlog HUs y RNs) | [01-SRS-PriceScope.md](docs/01-analisis/01-SRS-PriceScope.md) |
+| **`SRS`** | Especificacion de Requerimientos de Software y Backlog HUs | [01-SRS-PriceScope.md](docs/01-analisis/01-SRS-PriceScope.md) |
 | **`API`** | Contratos OpenAPI 3.0, Endpoints y DTOs | [02-API-Contracts-OpenAPI.md](docs/01-analisis/02-API-Contracts-OpenAPI.md) |
 | **`DB`** | Modelo de Datos TimescaleDB, DDL y Hypertables | [03-Data-Model-TimescaleDB.md](docs/01-analisis/03-Data-Model-TimescaleDB.md) |
-| **`MATH`** | Reglas de Negocio, Mediana, Cierre UTC y Lógica Financiera | [04-Business-Rules-Math-Logic.md](docs/01-analisis/04-Business-Rules-Math-Logic.md) |
-| **`ARCH`** | Arquitectura de Software, Topología y Pipelines CI/CD | [05-Software-Architecture-Pipeline.md](docs/01-analisis/05-Software-Architecture-Pipeline.md) |
-| **`QA`** | Matriz de Casos de Prueba (18 TCs) y Sign-Off Gate | [06-QA-Test-Matrix.md](docs/01-analisis/06-QA-Test-Matrix.md) |
-| **`UIX`** | Especificación de Diseño UX/UI, Wireframes y Tokens Figma | [07-Frontend-UX-UI-Specs.md](docs/01-analisis/07-Frontend-UX-UI-Specs.md) |
-| **`ROADMAP`**| Plan Operativo de Desarrollo (Sprints 1 a 4) | [01-Plan-Operativo-Roadmap.md](docs/02-planeacion/01-Plan-Operativo-Roadmap.md) |
+| **`MATH`** | Reglas de Negocio, Mediana, Cierre UTC y Logica Financiera | [04-Business-Rules-Math-Logic.md](docs/01-analisis/04-Business-Rules-Math-Logic.md) |
+| **`ARCH`** | Arquitectura de Software, Monorepo y Pipelines | [05-Software-Architecture-Pipeline.md](docs/01-analisis/05-Software-Architecture-Pipeline.md) |
+| **`QA`** | Matriz de Casos de Prueba y Criterios de Aceptacion | [06-QA-Test-Matrix.md](docs/01-analisis/06-QA-Test-Matrix.md) |
+| **`UIX`** | Especificaciones de Diseno UX/UI y Frontend | [07-Frontend-UX-UI-Specs.md](docs/01-analisis/07-Frontend-UX-UI-Specs.md) |
+| **`USE`** | Especificacion de Casos de Uso (Flujos Formales) | [08-Casos-de-Uso-Use-Cases.md](docs/01-analisis/08-Casos-de-Uso-Use-Cases.md) |
+| **`ROADMAP`** | Plan Operativo de Desarrollo y Roadmap | [01-Plan-Operativo-Roadmap.md](docs/02-planeacion/01-Plan-Operativo-Roadmap.md) |
 | **`RISK`** | Matriz de Riesgos y Protocolos de Contingencia | [02-matriz-riesgos.md](docs/02-planeacion/02-matriz-riesgos.md) |
+| **`RACI`** | Matriz RACI y Modelo de Gobernanza de Celulas | [03-Matriz-RACI-Gobernanza.md](docs/02-planeacion/03-Matriz-RACI-Gobernanza.md) |
+| **`ENV`** | Estrategia de Ambientes y Despliegue Cloud | [04-Estrategia-Despliegue-Ambientes.md](docs/02-planeacion/04-Estrategia-Despliegue-Ambientes.md) |
+| **`DEMO`** | Guion de Demostracion y Pitch Comercial B2B | [05-Guion-Demo-Presentacion-B2B.md](docs/02-planeacion/05-Guion-Demo-Presentacion-B2B.md) |
+| **`E-QA`** | Espacio de Homologacion y Evidencias QA | [README.md (docs/03-qa)](docs/03-qa/README.md) |
+| **`DESIGN`** | Estandares y Lineamientos Frontend | [constitution.md](apps/client/docs/constitution.md) |
 
 ---
 
-## 👥 Equipo de Desarrollo (NoCountry)
+## Equipo de Desarrollo (NoCountry)
 
-### 🎨 Equipo de Frontend & Experiencia de Usuario (`E-F/UX/UI`)
+### Equipo de Frontend & Experiencia de Usuario (`E-F/UX/UI`)
 
 <table>
   <thead>
     <tr>
       <th align="center">
-        <img src="docs/assets/team/juan-camilo-garcia.png" width="100" height="100" style="border-radius: 50%; object-fit: cover;" alt="Juan Camilo García"><br>
-        <strong>Juan Camilo García</strong><br>
+        <img src="docs/assets/team/juan-camilo-garcia.png" width="100" height="100" style="border-radius: 50%; object-fit: cover;" alt="Juan Camilo Garcia"><br>
+        <strong>Juan Camilo Garcia</strong><br>
         <sub>Frontend Lead & UX/UI Designer</sub>
       </th>
     </tr>
@@ -217,7 +230,7 @@ Toda la ingeniería del sistema se encuentra formalizada y versionada en la carp
   </tbody>
 </table>
 
-### ⚙️ Equipo de Backend, Base de Datos y Divisas (`E-API`)
+### Equipo de Backend, Base de Datos y Divisas (`E-API`)
 
 <table>
   <thead>
@@ -256,14 +269,14 @@ Toda la ingeniería del sistema se encuentra formalizada y versionada en la carp
   </tbody>
 </table>
 
-### 🕷️ Equipo de Extracción y Web Scraping (`E-Scrapper`)
+### Equipo de Extraccion y Web Scraping (`E-Scrapper`)
 
 <table>
   <thead>
     <tr>
       <th align="center">
-        <img src="docs/assets/team/alejandro-hernandez.png" width="100" height="100" alt="Alejandro Hernández OReilly" style="border-radius: 50%; object-fit: cover;"><br>
-        <strong>Alejandro Hernández OReilly</strong><br>
+        <img src="docs/assets/team/alejandro-hernandez.png" width="100" height="100" alt="Alejandro Hernandez OReilly" style="border-radius: 50%; object-fit: cover;"><br>
+        <strong>Alejandro Hernandez OReilly</strong><br>
         <sub>Scraper Lead (.NET / Playwright)</sub>
       </th>
       <th align="center">
@@ -308,14 +321,14 @@ Toda la ingeniería del sistema se encuentra formalizada y versionada en la carp
   </tbody>
 </table>
 
-### 🧪 Equipo de Aseguramiento de Calidad y Homologación (`E-QA`)
+### Equipo de Aseguramiento de Calidad y Homologacion (`E-QA`)
 
 <table>
   <thead>
     <tr>
       <th align="center">
-        <img src="docs/assets/team/gonzalo-cecchin.png" width="100" height="100" alt="Gonzalo Cecchín" style="border-radius: 50%; object-fit: cover;"><br>
-        <strong>Gonzalo Cecchín</strong><br>
+        <img src="docs/assets/team/gonzalo-cecchin.png" width="100" height="100" alt="Gonzalo Cecchin" style="border-radius: 50%; object-fit: cover;"><br>
+        <strong>Gonzalo Cecchin</strong><br>
         <sub>Tech Lead / Product Owner Review</sub>
       </th>
       <th align="center">

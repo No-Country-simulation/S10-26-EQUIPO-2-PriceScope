@@ -19,6 +19,8 @@ export default function AlertsPage() {
     severityFilter,
     categoryFilter,
     storeFilter,
+    storeOptions,
+    categoryOptions,
     currentPage,
     showAllMilestones,
     setSeverityFilter,
@@ -45,6 +47,8 @@ export default function AlertsPage() {
         severityFilter={severityFilter}
         categoryFilter={categoryFilter}
         storeFilter={storeFilter}
+        storeOptions={storeOptions}
+        categoryOptions={categoryOptions}
         onSeverityChange={setSeverityFilter}
         onCategoryChange={setCategoryFilter}
         onStoreChange={setStoreFilter}

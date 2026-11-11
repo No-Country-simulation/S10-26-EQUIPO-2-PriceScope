@@ -238,13 +238,13 @@ describe("traceability.service.ts - Serialización de parámetros y conmutación
     const params = {
       tienda_id: "carrefour",
       fecha_desde: "2026-10-01",
-      fecha_hasta: "2026-10-15",
+      fecha_hasta: "2026-10-25",
     };
 
     const searchParams = buildTraceabilitySearchParams(params);
     expect(searchParams.get("tienda_id")).toBe("carrefour");
     expect(searchParams.get("fecha_desde")).toBe("2026-10-01");
-    expect(searchParams.get("fecha_hasta")).toBe("2026-10-15");
+    expect(searchParams.get("fecha_hasta")).toBe("2026-10-25");
 
     const omittedParams = buildTraceabilitySearchParams({ tienda_id: "all" });
     expect(omittedParams.get("tienda_id")).toBeNull();
@@ -261,8 +261,8 @@ describe("traceability.service.ts - Serialización de parámetros y conmutación
 
     // Filtrar por rango de fechas
     const filteredByDate = filterMockTraceability("prod-cafe-la-virginia-500g", {
-      fecha_desde: "2026-10-15",
-      fecha_hasta: "2026-10-16",
+      fecha_desde: "2026-10-25",
+      fecha_hasta: "2026-10-26",
     });
     expect(filteredByDate).not.toBeNull();
     expect(filteredByDate?.historico_observaciones.length).toBe(2);

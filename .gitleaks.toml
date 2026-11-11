@@ -1,0 +1,12 @@
+# Configuración oficial de Gitleaks para PriceScope
+title = "PriceScope Gitleaks Configuration"
+
+[allowlist]
+description = "Permitir tokens dummy de plantillas oficiales en documentación"
+paths = [
+  '''backend/README\.md''',
+  '''apps/api/README\.md''',
+]
+regexes = [
+  '''abc123def456''',
+]

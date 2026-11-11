@@ -87,7 +87,7 @@ export function DashboardFiltersCard({
             <Select name="store" value={selectedStore} onValueChange={onStoreChange}>
               <SelectTrigger
                 id="store-filter"
-                className="w-full min-w-0 sm:w-auto"
+                className="w-full min-w-0 sm:w-auto sm:min-w-48"
                 aria-label="Cadena / Tienda"
               >
                 <SelectValue placeholder="Seleccionar tienda" />
@@ -112,10 +112,10 @@ export function DashboardFiltersCard({
             <Select name="category" value={selectedCategory} onValueChange={onCategoryChange}>
               <SelectTrigger
                 id="category-filter"
-                className="w-full min-w-0 sm:w-auto"
+                className="w-full min-w-0 sm:w-auto sm:min-w-48"
                 aria-label="Categoría Canónica"
               >
-                <SelectValue placeholder="Seleccionar categoría" />
+                <SelectValue placeholder="Todas las Categorías" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas las Categorías</SelectItem>
@@ -139,7 +139,7 @@ export function DashboardFiltersCard({
             >
               <SelectTrigger
                 id="currency-filter"
-                className="w-full min-w-0 sm:w-auto"
+                className="w-full min-w-0 sm:w-auto sm:min-w-48"
                 aria-label="Moneda de Cálculo"
               >
                 <SelectValue placeholder="Seleccionar moneda" />

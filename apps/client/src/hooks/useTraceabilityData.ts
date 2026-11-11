@@ -29,6 +29,12 @@ export interface TraceabilityMetrics {
   latestObservationDate: string | null;
 }
 
+export interface TraceabilityDivergenceMetrics {
+  priceVariationPct: string;
+  divergenceDelta: string;
+  divergenceVariant: "error" | "warning" | "default";
+}
+
 export interface UseTraceabilityDataReturn {
   // State
   data: TraceabilityResponse | null;
@@ -56,6 +62,7 @@ export interface UseTraceabilityDataReturn {
   totalObservationsCount: number;
   availableStores: StoreOption[];
   metrics: TraceabilityMetrics;
+  divergenceMetrics: TraceabilityDivergenceMetrics;
   externalStoreUrl: string | null;
 }
 
@@ -76,10 +83,20 @@ export function useTraceabilityData(
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [resolvedQueryKey, setResolvedQueryKey] = useState<string | null>(null);
   const [refetchTrigger, setRefetchTrigger] = useState<number>(0);
+  const [storeOptions, setStoreOptions] = useState<StoreOption[]>([]);
 
   const hasValidProduct = Boolean(productId && productId.trim().length > 0);
   const currentQueryKey = `${productId}|${selectedStore}|${dateRange.from ?? ""}|${dateRange.to ?? ""}|${refetchTrigger}`;
   const isLoading = hasValidProduct && resolvedQueryKey !== currentQueryKey;
+
+  const [prevProductId, setPrevProductId] = useState<string>(productId);
+
+  if (prevProductId !== productId) {
+    setPrevProductId(productId);
+    setStoreOptions([]);
+    setSelectedStore("all");
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     let isCancelled = false;
@@ -98,6 +115,18 @@ export function useTraceabilityData(
           setData(response);
           setError(null);
           setResolvedQueryKey(currentQueryKey);
+
+          if (response.historico_observaciones && response.historico_observaciones.length > 0) {
+            setStoreOptions((prev) => {
+              const map = new Map(prev.map((s) => [s.id, s.name]));
+              for (const obs of response.historico_observaciones) {
+                if (obs.tienda_id && !map.has(obs.tienda_id)) {
+                  map.set(obs.tienda_id, obs.tienda_nombre);
+                }
+              }
+              return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+            });
+          }
         }
       })
       .catch((err) => {
@@ -152,16 +181,7 @@ export function useTraceabilityData(
     return observations.slice(startIndex, startIndex + limitPerPage);
   }, [observations, currentPage, limitPerPage]);
 
-  const availableStores = useMemo<StoreOption[]>(() => {
-    if (!hasValidProduct || !data?.historico_observaciones) return [];
-    const storeMap = new Map<string, string>();
-    for (const obs of data.historico_observaciones) {
-      if (obs.tienda_id && !storeMap.has(obs.tienda_id)) {
-        storeMap.set(obs.tienda_id, obs.tienda_nombre);
-      }
-    }
-    return Array.from(storeMap.entries()).map(([id, name]) => ({ id, name }));
-  }, [hasValidProduct, data]);
+  const availableStores = storeOptions;
 
   const externalStoreUrl = useMemo<string | null>(() => {
     if (observations.length === 0) return null;
@@ -186,6 +206,37 @@ export function useTraceabilityData(
       latestPriceArs: latest.precio_regular ?? latest.precio_promocional ?? null,
       latestPriceUsd: latest.precio_usd ?? null,
       latestObservationDate: latest.timestamp_utc ?? null,
+    };
+  }, [observations]);
+
+  const divergenceMetrics = useMemo<TraceabilityDivergenceMetrics>(() => {
+    if (observations.length === 0) {
+      return {
+        priceVariationPct: "0.0%",
+        divergenceDelta: "+0.0 pts",
+        divergenceVariant: "default",
+      };
+    }
+
+    const latest = observations[0];
+    const earliest = observations[observations.length - 1];
+
+    const pFinal = latest.precio_regular ?? latest.precio_promocional ?? 0;
+    const pInicial = earliest.precio_regular ?? earliest.precio_promocional ?? pFinal;
+    const priceVar = pInicial > 0 ? ((pFinal - pInicial) / pInicial) * 100 : 0;
+
+    const cFinal = latest.cotizacion_aplicada ?? 0;
+    const cInicial = earliest.cotizacion_aplicada ?? cFinal;
+    const cotizVar = cInicial > 0 ? ((cFinal - cInicial) / cInicial) * 100 : 0;
+
+    const delta = Number((priceVar - cotizVar).toFixed(1));
+    const variant: "error" | "warning" | "default" =
+      delta > 10 ? "error" : delta >= 5 ? "warning" : "default";
+
+    return {
+      priceVariationPct: `${priceVar > 0 ? "+" : ""}${priceVar.toFixed(1)}%`,
+      divergenceDelta: `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pts`,
+      divergenceVariant: variant,
     };
   }, [observations]);
 
@@ -236,6 +287,7 @@ export function useTraceabilityData(
     totalObservationsCount,
     availableStores,
     metrics,
+    divergenceMetrics,
     externalStoreUrl,
   };
 }

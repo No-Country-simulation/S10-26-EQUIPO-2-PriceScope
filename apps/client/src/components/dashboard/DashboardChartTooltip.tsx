@@ -34,7 +34,9 @@ export function DashboardChartTooltip({ active, payload, label }: TooltipProps) 
                 ? "success"
                 : rawRow.estadoDato === "AGOTADO"
                   ? "warning"
-                  : "error"
+                  : rawRow.estadoDato === "SIN_DATO"
+                    ? "neutral"
+                    : "error"
             }
             size="xs"
           >

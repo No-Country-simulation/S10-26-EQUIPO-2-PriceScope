@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # 1. Dependencias de JavaScript / TypeScript (npm)
+  - package-ecosystem: "npm"
+    directory: "/apps/client"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/apps/api"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # 2. Actualizaciones automáticas de los workflows de GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3

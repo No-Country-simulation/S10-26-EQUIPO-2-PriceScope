@@ -8,9 +8,9 @@
   },
   "tiendas_piloto": [
     {
-      "slug": "carrefour",
-      "nombre": "Carrefour Argentina",
-      "url_base": "https://www.carrefour.com.ar",
+      "slug": "coto",
+      "nombre": "Coto Argentina",
+      "url_base": "https://www.coto.com.ar",
       "tipo": "supermercado"
     },
     {
@@ -20,15 +20,15 @@
       "tipo": "supermercado"
     },
     {
-      "slug": "fravega",
-      "nombre": "Frávega Argentina",
-      "url_base": "https://www.fravega.com",
+      "slug": "disco",
+      "nombre": "Disco Argentina",
+      "url_base": "https://www.disco.com.ar",
       "tipo": "electro"
     },
     {
-      "slug": "musimundo",
-      "nombre": "Musimundo Argentina",
-      "url_base": "https://www.musimundo.com",
+      "slug": "vea",
+      "nombre": "Vea Argentina",
+      "url_base": "https://www.vea.com.ar",
       "tipo": "electro"
     }
   ],
@@ -46,11 +46,771 @@
   ],
   "productos_canonicos": [
     {
-      "slug": "prod-cafe-molido-la-morenita-500g",
+      "slug": "picada-especial-x-kg",
       "categoria_slug": "canasta-basica",
-      "marca": "La Morenita",
-      "modelo": "Clásico",
-      "nombre_normalizado": "Café tostado molido clásico La Morenita 500g",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Picada Especial X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Picada Especial X KG",
+          "sku_tienda": "2069607000002",
+          "url_origen": "https://www.coto.com.ar/productos/picada-especial-x-kg-/_/R-00069607-00069607-200"
+        }
+      ]
+    },
+    {
+      "slug": "asado-del-medio-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Asado Del Medio Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Asado Del Medio Estancias Coto X KG",
+          "sku_tienda": "2000000479798",
+          "url_origen": "https://www.coto.com.ar/productos/asado-del-medio-estancias-coto-x-kg-/_/R-00047979-00047979-200"
+        }
+      ]
+    },
+    {
+      "slug": "nalga-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Nalga Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Nalga Estancias Coto X KG",
+          "sku_tienda": "2000000479910",
+          "url_origen": "https://www.coto.com.ar/productos/nalga-estancias-coto-x-kg-/_/R-00047991-00047991-200"
+        }
+      ]
+    },
+    {
+      "slug": "cuadrada-novillito-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Cuadrada Novillito Estancias Coto X Kg",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Cuadrada Novillito Estancias Coto X Kg",
+          "sku_tienda": "2029905000005",
+          "url_origen": "https://www.coto.com.ar/productos/cuadrada-novillito-estancias-coto-x-kg-/_/R-00029905-00029905-200"
+        }
+      ]
+    },
+    {
+      "slug": "cuadril-selección-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Cuadril Selección X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Cuadril Selección X KG",
+          "sku_tienda": "2004231700003",
+          "url_origen": "https://www.coto.com.ar/productos/cuadril-seleccion-x-kg-/_/R-00042317-00042317-200"
+        }
+      ]
+    },
+    {
+      "slug": "picada-desgrasada-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Picada Desgrasada Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Picada Desgrasada Estancias Coto X KG",
+          "sku_tienda": "2000000481241",
+          "url_origen": "https://www.coto.com.ar/productos/picada-desgrasada-estancias-coto-x-kg-/_/R-00048124-00048124-200"
+        }
+      ]
+    },
+    {
+      "slug": "bondiola-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Bondiola De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Bondiola De Cerdo X KG",
+          "sku_tienda": "2000943000004",
+          "url_origen": "https://www.coto.com.ar/productos/bondiola-de-cerdo-x-kg-/_/R-00000943-00000943-200"
+        }
+      ]
+    },
+    {
+      "slug": "roast-beef-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Roast Beef Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Roast Beef Estancias Coto X KG",
+          "sku_tienda": "2000000479859",
+          "url_origen": "https://www.coto.com.ar/productos/roast-beef-estancias-coto-x-kg-/_/R-00047985-00047985-200"
+        }
+      ]
+    },
+    {
+      "slug": "bola-de-lomo-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Bola De Lomo Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Bola De Lomo Estancias Coto X KG",
+          "sku_tienda": "2000000479934",
+          "url_origen": "https://www.coto.com.ar/productos/bola-de-lomo-estancias-coto-x-kg-/_/R-00047993-00047993-200"
+        }
+      ]
+    },
+    {
+      "slug": "carré-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Carré De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Carré De Cerdo X KG",
+          "sku_tienda": "2017162000005",
+          "url_origen": "https://www.coto.com.ar/productos/carre-de-cerdo-x-kg-/_/R-00017162-00017162-200"
+        }
+      ]
+    },
+    {
+      "slug": "chuleta-de-paleta-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Chuleta De Paleta De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Chuleta De Paleta De Cerdo X KG",
+          "sku_tienda": "2017700000009",
+          "url_origen": "https://www.coto.com.ar/productos/chuleta-de-paleta-de-cerdo-x-kg-/_/R-00017700-00017700-200"
+        }
+      ]
+    },
+    {
+      "slug": "tapa-de-asado-especial-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Tapa De Asado Especial X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Tapa De Asado Especial X KG",
+          "sku_tienda": "2000000478616",
+          "url_origen": "https://www.coto.com.ar/productos/tapa-de-asado-especial-x-kg-/_/R-00047861-00047861-200"
+        }
+      ]
+    },
+    {
+      "slug": "pechito-con-manta-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Pechito Con Manta De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Pechito Con Manta De Cerdo X KG",
+          "sku_tienda": "2017410000009",
+          "url_origen": "https://www.coto.com.ar/productos/pechito-con-manta-de-cerdo-x-kg-/_/R-00017410-00017410-200"
+        }
+      ]
+    },
+    {
+      "slug": "vacío-del-centro-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Vacío Del Centro Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Vacío Del Centro Estancias Coto X KG",
+          "sku_tienda": "2000000479804",
+          "url_origen": "https://www.coto.com.ar/productos/vacio-del-centro-estancias-coto-x-kg-/_/R-00047980-00047980-200"
+        }
+      ]
+    },
+    {
+      "slug": "tapa-de-nalga-estancias-coto-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Estancias Coto",
+      "modelo": null,
+      "nombre_normalizado": "Tapa De Nalga Estancias Coto X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Tapa De Nalga Estancias Coto X KG",
+          "sku_tienda": "2000000481289",
+          "url_origen": "https://www.coto.com.ar/productos/tapa-de-nalga-estancias-coto-x-kg-/_/R-00048128-00048128-200"
+        }
+      ]
+    },
+    {
+      "slug": "chuleta-de-jamón-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Chuleta De Jamón De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Chuleta De Jamón De Cerdo X KG",
+          "sku_tienda": "2017414000005",
+          "url_origen": "https://www.coto.com.ar/productos/chuleta-de-jamon-de-cerdo-x-kg-/_/R-00017414-00017414-200"
+        }
+      ]
+    },
+    {
+      "slug": "osobuco-de-garron-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Osobuco De Garron X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Osobuco De Garron X KG",
+          "sku_tienda": "2004146300008",
+          "url_origen": "https://www.coto.com.ar/productos/osobuco-de-garron-x-kg-/_/R-00041463-00041463-200"
+        }
+      ]
+    },
+    {
+      "slug": "picada-de-cerdo-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "Coto",
+      "modelo": null,
+      "nombre_normalizado": "Picada De Cerdo X KG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Picada De Cerdo X KG",
+          "sku_tienda": "2017701000008",
+          "url_origen": "https://www.coto.com.ar/productos/picada-de-cerdo-x-kg-/_/R-00017701-00017701-200"
+        }
+      ]
+    },
+    {
+      "slug": "suprema-de-pollo-granel-fresca",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Suprema De Pollo Granel Fresca",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Suprema De Pollo Granel Fresca",
+          "sku_tienda": "22460226001",
+          "url_origen": "https://www.jumbo.com.ar/suprema-de-pollo-granel-fresca/p"
+        }
+      ]
+    },
+    {
+      "slug": "picada-especial",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Picada Especial",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Picada Especial",
+          "sku_tienda": "22140125001",
+          "url_origen": "https://www.jumbo.com.ar/picada-especial/p"
+        }
+      ]
+    },
+    {
+      "slug": "cuarto-trasero-de-pollo-granel-fresco",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Cuarto Trasero De Pollo Granel Fresco",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Cuarto Trasero De Pollo Granel Fresco",
+          "sku_tienda": "22460201001",
+          "url_origen": "https://www.jumbo.com.ar/cuarto-trasero-de-pollo-granel-fresco-4/p"
+        }
+      ]
+    },
+    {
+      "slug": "roast-beef-churrasco-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Roast Beef Churrasco Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Roast Beef Churrasco Novillito",
+          "sku_tienda": "22140415001",
+          "url_origen": "https://www.jumbo.com.ar/roast-beef-churrasco-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "carré-de-cerdo-deshuesado-congelado",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Carré De Cerdo Deshuesado Congelado",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Carré De Cerdo Deshuesado Congelado",
+          "sku_tienda": "22210211001",
+          "url_origen": "https://www.jumbo.com.ar/carre-de-cerdo-deshuesado-congelado/p"
+        }
+      ]
+    },
+    {
+      "slug": "colita-de-cuadril-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Colita De Cuadril Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Colita De Cuadril Novillito",
+          "sku_tienda": "22140490001",
+          "url_origen": "https://www.jumbo.com.ar/colita-de-cuadril-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "tapa-de-nalga-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Tapa De Nalga Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Tapa De Nalga Novillito",
+          "sku_tienda": "22140407001",
+          "url_origen": "https://www.jumbo.com.ar/tapa-de-nalga-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "bife-angosto-la-hacienda",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Bife Angosto La Hacienda",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Bife Angosto La Hacienda",
+          "sku_tienda": "22140122001",
+          "url_origen": "https://www.jumbo.com.ar/bife-angosto-la-hacienda/p"
+        }
+      ]
+    },
+    {
+      "slug": "milanesa-nalga-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Milanesa Nalga Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Milanesa Nalga Novillito",
+          "sku_tienda": "22140406001",
+          "url_origen": "https://www.jumbo.com.ar/milanesa-nalga-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "bondiola-de-cerdo-fresca-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Bondiola De Cerdo Fresca X Kg",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Bondiola De Cerdo Fresca X Kg",
+          "sku_tienda": "22210110002",
+          "url_origen": "https://www.jumbo.com.ar/bondiola-de-cerdo-fresca-x-kg-2-2/p"
+        }
+      ]
+    },
+    {
+      "slug": "bondiola-de-cerdo-congelada",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Bondiola De Cerdo Congelada",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Bondiola De Cerdo Congelada",
+          "sku_tienda": "22210212001",
+          "url_origen": "https://www.jumbo.com.ar/bondiola-de-cerdo-congelada/p"
+        }
+      ]
+    },
+    {
+      "slug": "pollo-fresco-con-menudos",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Pollo Fresco Con Menudos",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Pollo Fresco Con Menudos",
+          "sku_tienda": "22440106001",
+          "url_origen": "https://www.jumbo.com.ar/pollo-fresco-con-menudos-3/p"
+        }
+      ]
+    },
+    {
+      "slug": "pavita-sadia-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "SADIA",
+      "modelo": null,
+      "nombre_normalizado": "Pavita Sadia X Kg",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Pavita Sadia X Kg",
+          "sku_tienda": "22420107001",
+          "url_origen": "https://www.jumbo.com.ar/pavita-sadia-x-kg/p"
+        }
+      ]
+    },
+    {
+      "slug": "tapa-de-asado-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Tapa De Asado Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Tapa De Asado Novillito",
+          "sku_tienda": "22140413001",
+          "url_origen": "https://www.jumbo.com.ar/tapa-de-asado-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "milanesas-de-nalga-union-ganadera",
+      "categoria_slug": "canasta-basica",
+      "marca": "UNION GANADERA",
+      "modelo": null,
+      "nombre_normalizado": "Milanesas de Nalga Union Ganadera",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Milanesas de Nalga Union Ganadera",
+          "sku_tienda": "22820102003",
+          "url_origen": "https://www.jumbo.com.ar/milanesa-de-nalga-rebozada-2/p"
+        }
+      ]
+    },
+    {
+      "slug": "osobuco-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Osobuco Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Osobuco Novillito",
+          "sku_tienda": "22140481001",
+          "url_origen": "https://www.jumbo.com.ar/osobuco-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "peceto-feteado-para-milanesa",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Peceto Feteado Para Milanesa",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Peceto Feteado Para Milanesa",
+          "sku_tienda": "22140126001",
+          "url_origen": "https://www.jumbo.com.ar/peceto-feteado-para-milanesa/p"
+        }
+      ]
+    },
+    {
+      "slug": "milanesa-de-peceto-rebozada",
+      "categoria_slug": "canasta-basica",
+      "marca": "UNION GANADERA",
+      "modelo": null,
+      "nombre_normalizado": "Milanesa De Peceto Rebozada",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Milanesa De Peceto Rebozada",
+          "sku_tienda": "22820101005",
+          "url_origen": "https://www.jumbo.com.ar/milanesa-de-peceto-rebozada/p"
+        }
+      ]
+    },
+    {
+      "slug": "matambrito-de-cerdo-fresco-x-kg",
+      "categoria_slug": "canasta-basica",
+      "marca": "GRANJA PROPIA",
+      "modelo": null,
+      "nombre_normalizado": "Matambrito De Cerdo Fresco X Kg",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Matambrito De Cerdo Fresco X Kg",
+          "sku_tienda": "22210111002",
+          "url_origen": "https://www.jumbo.com.ar/matambrito-de-cerdo-fresco-x-kg-3/p"
+        }
+      ]
+    },
+    {
+      "slug": "paleta-churrasco-novillito",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA HACIENDA",
+      "modelo": null,
+      "nombre_normalizado": "Paleta Churrasco Novillito",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Paleta Churrasco Novillito",
+          "sku_tienda": "22140414001",
+          "url_origen": "https://www.jumbo.com.ar/paleta-churrasco-novillito/p"
+        }
+      ]
+    },
+    {
+      "slug": "fideos-municiones-500-grs-matarazzo",
+      "categoria_slug": "canasta-basica",
+      "marca": "MATARAZZO",
+      "modelo": null,
+      "nombre_normalizado": "Fideos Municiones 500 Grs Matarazzo",
       "contenido_neto": {
         "valor": 0.5,
         "unidad": "kg"
@@ -58,172 +818,1074 @@
       "pack": "x1",
       "tiendas": [
         {
-          "tienda_slug": "carrefour",
-          "alias_producto": "Café molido La Morenita clásico 500 g",
-          "sku_tienda": "CAR-684279",
-          "url_origen": "https://www.carrefour.com.ar/cafe-molido-la-morenita-clasico-500-g/p"
+          "tienda_slug": "coto",
+          "alias_producto": "Fideos Spaghetti MATARAZZO 500g",
+          "sku_tienda": "7790070336309",
+          "url_origen": "https://www.coto.com.ar/productos/fideos-spaghetti-matarazzo-500g-/_/R-00573911-00573911-200"
         },
         {
           "tienda_slug": "jumbo",
-          "alias_producto": "Café molido La Morenita clásico 500 gr",
-          "sku_tienda": "JUM-128450",
-          "url_origen": "https://www.jumbo.com.ar/cafe-molido-la-morenita-clasico-500-gr/p"
+          "alias_producto": "Fideos Municiones 500 Grs Matarazzo",
+          "sku_tienda": "11461901027",
+          "url_origen": "https://www.jumbo.com.ar/fideos-municiones-matarazzo-x500-gr-2/p"
         }
       ]
     },
     {
-      "slug": "prod-aceite-girasol-natura-1-5l",
+      "slug": "mayonesa-natura-pouch-475-gr",
       "categoria_slug": "canasta-basica",
-      "marca": "Natura",
-      "modelo": "Puro Girasol",
-      "nombre_normalizado": "Aceite de girasol Natura 1.5 L",
+      "marca": "NATURA",
+      "modelo": null,
+      "nombre_normalizado": "Mayonesa NATURA Pouch 475 Gr",
       "contenido_neto": {
-        "valor": 1.5,
-        "unidad": "L"
-      },
-      "pack": "x1",
-      "tiendas": [
-        {
-          "tienda_slug": "carrefour",
-          "alias_producto": "Aceite de girasol Natura 1.5 L",
-          "sku_tienda": "CAR-693155",
-          "url_origen": "https://www.carrefour.com.ar/aceite-de-girasol-natura-15-l/p"
-        },
-        {
-          "tienda_slug": "jumbo",
-          "alias_producto": "Aceite de girasol Natura 1.5 L botella",
-          "sku_tienda": "JUM-349821",
-          "url_origen": "https://www.jumbo.com.ar/aceite-de-girasol-natura-1-5-l/p"
-        }
-      ]
-    },
-    {
-      "slug": "prod-leche-entera-la-serenisima-1l",
-      "categoria_slug": "canasta-basica",
-      "marca": "La Serenísima",
-      "modelo": "Clásica UAT",
-      "nombre_normalizado": "Leche entera UAT La Serenísima clásica 1 L",
-      "contenido_neto": {
-        "valor": 1.0,
-        "unidad": "L"
-      },
-      "pack": "x1",
-      "tiendas": [
-        {
-          "tienda_slug": "carrefour",
-          "alias_producto": "Leche entera La Serenísima clásica 1 L",
-          "sku_tienda": "CAR-674681",
-          "url_origen": "https://www.carrefour.com.ar/leche-entera-la-serenisima-clasica-1-l/p"
-        },
-        {
-          "tienda_slug": "jumbo",
-          "alias_producto": "Leche entera clásica La Serenísima 1 L brik",
-          "sku_tienda": "JUM-542190",
-          "url_origen": "https://www.jumbo.com.ar/leche-entera-la-serenisima-clasica-1-l/p"
-        }
-      ]
-    },
-    {
-      "slug": "prod-arroz-largo-fino-lucchetti-1kg",
-      "categoria_slug": "canasta-basica",
-      "marca": "Lucchetti",
-      "modelo": "Largo Fino",
-      "nombre_normalizado": "Arroz largo fino Lucchetti 1 kg",
-      "contenido_neto": {
-        "valor": 1.0,
+        "valor": 0.475,
         "unidad": "kg"
       },
       "pack": "x1",
       "tiendas": [
         {
-          "tienda_slug": "carrefour",
-          "alias_producto": "Arroz largo fino Lucchetti 1 kg",
-          "sku_tienda": "CAR-693245",
-          "url_origen": "https://www.carrefour.com.ar/arroz-largo-fino-lucchetti-1-kg/p"
+          "tienda_slug": "coto",
+          "alias_producto": "Mayonesa NATURA Pouch 475 Gr",
+          "sku_tienda": "7791866001364",
+          "url_origen": "https://www.coto.com.ar/productos/mayonesa-natura-pouch-475-gr-/_/R-00075721-00075721-200"
         },
         {
           "tienda_slug": "jumbo",
-          "alias_producto": "Arroz largo fino Lucchetti bolsa 1 kg",
-          "sku_tienda": "JUM-872341",
-          "url_origen": "https://www.jumbo.com.ar/arroz-largo-fino-lucchetti-1-kg/p"
+          "alias_producto": "Mayonesa Clásica 475 Grs Natura",
+          "sku_tienda": "11510117007",
+          "url_origen": "https://www.jumbo.com.ar/aderezo-mayonesa-475-gr-natura/p"
         }
       ]
     },
     {
-      "slug": "prod-smarttv-samsung-55-du7000-4k",
-      "categoria_slug": "bienes-durables",
-      "marca": "Samsung",
-      "modelo": "DU7000",
-      "nombre_normalizado": "Smart TV Samsung 55 pulgadas 4K UHD Crystal DU7000",
+      "slug": "dulce-de-leche-la-serenisima-colonial-250g",
+      "categoria_slug": "canasta-basica",
+      "marca": "LA SERENISIMA",
+      "modelo": null,
+      "nombre_normalizado": "Dulce De Leche La Serenisima Colonial 250g",
       "contenido_neto": {
-        "valor": 1.0,
+        "valor": 0.25,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "DULCE DE LECHE LS ESTILO COLONIAL POTE 250GR",
+          "sku_tienda": "7790742625106",
+          "url_origen": "https://www.coto.com.ar/productos/dulce-de-leche-ls-estilo-colonial-pote-250gr/_/R-00510305-00510305-200"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Dulce De Leche La Serenisima Colonial 250g",
+          "sku_tienda": "21280104026",
+          "url_origen": "https://www.jumbo.com.ar/dulce-de-leche-la-serenisima-colonial-250g/p"
+        }
+      ]
+    },
+    {
+      "slug": "papas-air-fryer-700-gr-mc-cain",
+      "categoria_slug": "canasta-basica",
+      "marca": "MC CAIN",
+      "modelo": null,
+      "nombre_normalizado": "Papas Air Fryer 700 Gr Mc Cain",
+      "contenido_neto": {
+        "valor": 0.7,
+        "unidad": "kg"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "coto",
+          "alias_producto": "Papas Air Fryer + Finitas MCCAIN 700g",
+          "sku_tienda": "7797906055014",
+          "url_origen": "https://www.coto.com.ar/productos/papas-air-fryer-%2B-finitas-mccain-700g/_/R-00599976-00599976-200"
+        },
+        {
+          "tienda_slug": "jumbo",
+          "alias_producto": "Papas Air Fryer 700 Gr Mc Cain",
+          "sku_tienda": "21430525002",
+          "url_origen": "https://www.jumbo.com.ar/papas-air-fryer-700-gr-mc-cain/p"
+        }
+      ]
+    },
+    {
+      "slug": "heladera-no-frost-inverter-eficiencia-d-299-lts-silver-rt29k577js8-samsung",
+      "categoria_slug": "bienes-durables",
+      "marca": "SAMSUNG",
+      "modelo": null,
+      "nombre_normalizado": "Heladera No Frost Inverter Eficiencia D 299 Lts Silver RT29K577JS8 Samsung",
+      "contenido_neto": {
+        "valor": 1,
         "unidad": "unidad"
       },
       "pack": "x1",
       "tiendas": [
         {
-          "tienda_slug": "fravega",
-          "alias_producto": "Smart TV 55\" 4K UHD Samsung Crystal DU7000 UN55DU7000GCZB",
-          "sku_tienda": "FRA-DU7000-55",
-          "url_origen": "https://www.fravega.com/p/smart-tv-55-4k-uhd-samsung-du7000-un55du7000gczb/"
+          "tienda_slug": "vea",
+          "alias_producto": "Heladera No Frost Inverter Eficiencia D 299 Lts Silver RT29K577JS8 Samsung",
+          "sku_tienda": "61210133024",
+          "url_origen": "https://www.vea.com.ar/heladera-con-freezer-rt29k577js8-299-l-silver-samsung/p"
         },
         {
-          "tienda_slug": "musimundo",
-          "alias_producto": "Smart TV Samsung 55\" 4K UHD UN55DU7000",
-          "sku_tienda": "MUS-55DU7000",
-          "url_origen": "https://www.musimundo.com/televisores/smart-tv/smart-tv-55-4k-uhd-samsung-un55du7000/p"
+          "tienda_slug": "disco",
+          "alias_producto": "Heladera No Frost Inverter Eficiencia D 299 Lts Silver RT29K577JS8 Samsung",
+          "sku_tienda": "61210133024",
+          "url_origen": "https://www.disco.com.ar/heladera-con-freezer-rt29k577js8-299-l-silver-samsung/p"
         }
       ]
     },
     {
-      "slug": "prod-heladera-gafa-hgn358b-310l",
+      "slug": "pochoclera-acero-rojo-pcm6000r-nex",
       "categoria_slug": "bienes-durables",
-      "marca": "Gafa",
-      "modelo": "HGN358B",
-      "nombre_normalizado": "Heladera con freezer Gafa HGN358B blanca 310 L",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Pochoclera Acero Rojo PCM6000R Nex",
       "contenido_neto": {
-        "valor": 1.0,
+        "valor": 1,
         "unidad": "unidad"
       },
       "pack": "x1",
       "tiendas": [
         {
-          "tienda_slug": "fravega",
-          "alias_producto": "Heladera con Freezer Gafa HGN358B Blanca 310 L",
-          "sku_tienda": "FRA-HGN358B",
-          "url_origen": "https://www.fravega.com/p/heladera-con-freezer-gafa-hgn358b-blanca-310-l/"
+          "tienda_slug": "vea",
+          "alias_producto": "Pochoclera Acero Rojo PCM6000R Nex",
+          "sku_tienda": "61330507001",
+          "url_origen": "https://www.vea.com.ar/pochoclera-pcm6000r-nex/p"
         },
         {
-          "tienda_slug": "musimundo",
-          "alias_producto": "Heladera Gafa HGN358B Blanca 310 L",
-          "sku_tienda": "MUS-HGN358B",
-          "url_origen": "https://www.musimundo.com/heladeras-y-freezers/heladeras/heladera-gafa-hgn358b-blanca-310-l/p"
+          "tienda_slug": "disco",
+          "alias_producto": "Pochoclera Acero Rojo PCM6000R Nex",
+          "sku_tienda": "61330507001",
+          "url_origen": "https://www.disco.com.ar/pochoclera-pcm6000r-nex/p"
         }
       ]
     },
     {
-      "slug": "prod-lavarropas-drean-next-8-12-8kg",
+      "slug": "microondas-rotativo-700-w-negro-94matrb20ubn-20-lts-atma",
       "categoria_slug": "bienes-durables",
-      "marca": "Drean",
-      "modelo": "Next 8.12 Eco",
-      "nombre_normalizado": "Lavarropas automático Drean Next 8.12 Eco 8 kg 1200 RPM",
+      "marca": "ATMA",
+      "modelo": null,
+      "nombre_normalizado": "Microondas Rotativo 700 W Negro 94matrb20ubn 20 Lts Atma",
       "contenido_neto": {
-        "valor": 1.0,
+        "valor": 1,
         "unidad": "unidad"
       },
       "pack": "x1",
       "tiendas": [
         {
-          "tienda_slug": "fravega",
-          "alias_producto": "Lavarropas Automático Drean Next 8.12 Eco 8 kg 1200 RPM",
-          "sku_tienda": "FRA-NEXT812",
-          "url_origen": "https://www.fravega.com/p/lavarropas-automatico-drean-next-8-12-eco-8-kg-1200-rpm/"
+          "tienda_slug": "vea",
+          "alias_producto": "Microondas Rotativo 700 W Negro 94matrb20ubn 20 Lts Atma",
+          "sku_tienda": "61240718047",
+          "url_origen": "https://www.vea.com.ar/microondas-rotativo-700-w-negro-94matrb20ubn-20-lts-atma/p"
         },
         {
-          "tienda_slug": "musimundo",
-          "alias_producto": "Lavarropas Drean Next 8.12 Eco 8 kg",
-          "sku_tienda": "MUS-NEXT812",
-          "url_origen": "https://www.musimundo.com/lavado/lavarropas/lavarropas-drean-next-8-12-eco-8kg/p"
+          "tienda_slug": "disco",
+          "alias_producto": "Microondas Rotativo 700 W Negro 94matrb20ubn 20 Lts Atma",
+          "sku_tienda": "61240718047",
+          "url_origen": "https://www.disco.com.ar/microondas-rotativo-700-w-negro-94matrb20ubn-20-lts-atma/p"
+        }
+      ]
+    },
+    {
+      "slug": "lavarropas-tradicional-6-5-kg-800-rpm-carga-superior-blanco-drean-lsdr0680tb0",
+      "categoria_slug": "bienes-durables",
+      "marca": "DREAN",
+      "modelo": null,
+      "nombre_normalizado": "Lavarropas Tradicional 6,5 Kg 800 RPM Carga Superior Blanco Drean LSDR0680TB0",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Lavarropas Tradicional 6,5 Kg 800 RPM Carga Superior Blanco Drean LSDR0680TB0",
+          "sku_tienda": "61220905034",
+          "url_origen": "https://www.disco.com.ar/lavarropas-tradicional-6-5-kg-800-rpm-carga-superior-blanco-lsdr0680tb0-drean/p"
+        }
+      ]
+    },
+    {
+      "slug": "aire-acondicionado-inverter-frio-calor-4730-f-5500-w-phin55ha2an-philco",
+      "categoria_slug": "bienes-durables",
+      "marca": "PHILCO",
+      "modelo": null,
+      "nombre_normalizado": "Aire Acondicionado Inverter Frio/Calor 4730 F 5500 W PHIN55HA2AN Philco",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Aire Acondicionado Inverter Frio/Calor 4730 F 5500 W PHIN55HA2AN Philco",
+          "sku_tienda": "61260140027",
+          "url_origen": "https://www.vea.com.ar/aire-acondicionado-philco-5500-w-phin55ha2an/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Aire Acondicionado Inverter Frio/Calor 4730 F 5500 W PHIN55HA2AN Philco",
+          "sku_tienda": "61260140027",
+          "url_origen": "https://www.disco.com.ar/aire-acondicionado-philco-5500-w-phin55ha2an/p"
+        }
+      ]
+    },
+    {
+      "slug": "heladera-no-frost-inverter-eficiencia-c-321-lts-gris-rt32k5070s8-samsung",
+      "categoria_slug": "bienes-durables",
+      "marca": "SAMSUNG",
+      "modelo": null,
+      "nombre_normalizado": "Heladera No Frost Inverter Eficiencia C 321 Lts Gris RT32K5070S8 Samsung",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Heladera No Frost Inverter Eficiencia C 321 Lts Gris RT32K5070S8 Samsung",
+          "sku_tienda": "61210133021",
+          "url_origen": "https://www.disco.com.ar/heladera-no-frost-321-l-inverter-acero-inoxidable-samsung/p"
+        }
+      ]
+    },
+    {
+      "slug": "licuadora-2-lts-550-w-roja-lm2701ar-moulinex",
+      "categoria_slug": "bienes-durables",
+      "marca": "MOULINEX",
+      "modelo": null,
+      "nombre_normalizado": "Licuadora 2 Lts 550 W Roja LM2701AR Moulinex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Licuadora 2 Lts 550 W Roja LM2701AR Moulinex",
+          "sku_tienda": "61320522019",
+          "url_origen": "https://www.vea.com.ar/licuadora-optimix-roja-lm2701ar-moulinex/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Licuadora 2 Lts 550 W Roja LM2701AR Moulinex",
+          "sku_tienda": "61320522019",
+          "url_origen": "https://www.disco.com.ar/licuadora-optimix-roja-lm2701ar-moulinex/p"
+        }
+      ]
+    },
+    {
+      "slug": "termotanque-electrico-60-lts-te60-vesubio",
+      "categoria_slug": "bienes-durables",
+      "marca": "VESUBIO",
+      "modelo": null,
+      "nombre_normalizado": "Termotanque Electrico 60 Lts Te60 Vesubio",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Termotanque Electrico 60 Lts Te60 Vesubio",
+          "sku_tienda": "61230326002",
+          "url_origen": "https://www.vea.com.ar/termotanque-electrico-60-lts-te60-vesubio/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Termotanque Electrico 60 Lts Te60 Vesubio",
+          "sku_tienda": "61230326002",
+          "url_origen": "https://www.disco.com.ar/termotanque-electrico-60-lts-te60-vesubio/p"
+        }
+      ]
+    },
+    {
+      "slug": "batidora-planetaria-1000-w-blanco-smartlife",
+      "categoria_slug": "bienes-durables",
+      "marca": "SMARTLIFE",
+      "modelo": null,
+      "nombre_normalizado": "Batidora Planetaria 1000 W Blanco Smartlife",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Batidora Planetaria 1000 W Blanco Smartlife",
+          "sku_tienda": "61320340003",
+          "url_origen": "https://www.vea.com.ar/batidora-planetaria-smartlife-1000w/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Batidora Planetaria 1000 W Blanco Smartlife",
+          "sku_tienda": "61320340003",
+          "url_origen": "https://www.disco.com.ar/batidora-planetaria-smartlife-1000w/p"
+        }
+      ]
+    },
+    {
+      "slug": "smart-tv-65-qled-4k-65t6c-f-tcl",
+      "categoria_slug": "bienes-durables",
+      "marca": "TCL",
+      "modelo": null,
+      "nombre_normalizado": "Smart Tv 65\" Qled 4K 65T6C-F Tcl",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Smart Tv 65\" Qled 4K 65T6C-F Tcl",
+          "sku_tienda": "61112866039",
+          "url_origen": "https://www.vea.com.ar/smart-tv-65-qled-65t6c-uhd-google-tv-rv-tcl/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Smart Tv 65\" Qled 4K 65T6C-F Tcl",
+          "sku_tienda": "61112866039",
+          "url_origen": "https://www.disco.com.ar/smart-tv-65-qled-65t6c-uhd-google-tv-rv-tcl/p"
+        }
+      ]
+    },
+    {
+      "slug": "heladera-inverter-no-frost-brc330i1a-312-l-bgh",
+      "categoria_slug": "bienes-durables",
+      "marca": "BGH",
+      "modelo": null,
+      "nombre_normalizado": "Heladera Inverter No Frost Brc330i1a 312 L Bgh",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Heladera Inverter No Frost Brc330i1a 312 L Bgh",
+          "sku_tienda": "61210157005",
+          "url_origen": "https://www.vea.com.ar/heladera-inverter-no-frost-brc330i1a-312-l-bgh/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Heladera Inverter No Frost Brc330i1a 312 L Bgh",
+          "sku_tienda": "61210157005",
+          "url_origen": "https://www.disco.com.ar/heladera-inverter-no-frost-brc330i1a-312-l-bgh/p"
+        }
+      ]
+    },
+    {
+      "slug": "freezer-horizontal-inverter-c-405-lts-blanco-fghi400b-xl-gafa",
+      "categoria_slug": "bienes-durables",
+      "marca": "GAFA",
+      "modelo": null,
+      "nombre_normalizado": "Freezer Horizontal Inverter C 405 Lts Blanco FGHI400B-XL Gafa",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Freezer Horizontal Inverter C 405 Lts Blanco FGHI400B-XL Gafa",
+          "sku_tienda": "61210501028",
+          "url_origen": "https://www.disco.com.ar/freezer-gafa-fghi400b-xl-inverter-blanco-402-l/p"
+        }
+      ]
+    },
+    {
+      "slug": "caloventor-electrico-1800-w-05-03-02-01-delf",
+      "categoria_slug": "bienes-durables",
+      "marca": "DELF",
+      "modelo": null,
+      "nombre_normalizado": "Caloventor Eléctrico 1800 W 05.03.02.01 Delf",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Caloventor Eléctrico 1800 W 05.03.02.01 Delf",
+          "sku_tienda": "61260695001",
+          "url_origen": "https://www.disco.com.ar/caloventor-electrico-1800-w-delf/p"
+        }
+      ]
+    },
+    {
+      "slug": "tostadora-electrica-800w-gris-acero-inoxidable-tssttr500-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Tostadora Eléctrica 800W Gris Acero Inoxidable Tssttr500 Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Tostadora Eléctrica 800W Gris Acero Inoxidable Tssttr500 Oster",
+          "sku_tienda": "61330321008",
+          "url_origen": "https://www.vea.com.ar/tostadora-electrica-800w-gris-acero-inoxidable-tssttr500-oster/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Tostadora Eléctrica 800W Gris Acero Inoxidable Tssttr500 Oster",
+          "sku_tienda": "61330321008",
+          "url_origen": "https://www.disco.com.ar/tostadora-electrica-800w-gris-acero-inoxidable-tssttr500-oster/p"
+        }
+      ]
+    },
+    {
+      "slug": "parlante-portatil-bluetooth-5-3-charge-6-jbl",
+      "categoria_slug": "bienes-durables",
+      "marca": "JBL",
+      "modelo": null,
+      "nombre_normalizado": "Parlante Portátil Bluetooth 5.3 Charge 6 Jbl",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Parlante Portátil Bluetooth 5.3 Charge 6 Jbl",
+          "sku_tienda": "61111203029",
+          "url_origen": "https://www.vea.com.ar/parlante-portatil-charge-6-negro-jbl/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Parlante Portátil Bluetooth 5.3 Charge 6 Jbl",
+          "sku_tienda": "61111203029",
+          "url_origen": "https://www.disco.com.ar/parlante-portatil-charge-6-negro-jbl/p"
+        }
+      ]
+    },
+    {
+      "slug": "sandwichera-ckstsm400-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Sandwichera Ckstsm400 Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Sandwichera Ckstsm400 Oster",
+          "sku_tienda": "61330417005",
+          "url_origen": "https://www.vea.com.ar/sandwichera-ckstsm400-oster/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Sandwichera Ckstsm400 Oster",
+          "sku_tienda": "61330417005",
+          "url_origen": "https://www.disco.com.ar/sandwichera-ckstsm400-oster/p"
+        }
+      ]
+    },
+    {
+      "slug": "aire-acondicionado-split-frio-calor-4644-f-5400-w-taca-5400fcsd-el4-tcl",
+      "categoria_slug": "bienes-durables",
+      "marca": "TCL",
+      "modelo": null,
+      "nombre_normalizado": "Aire Acondicionado Split Frio/Calor 4644 F 5400 W TACA-5400FCSD/EL4 TCL",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Aire Acondicionado Split Frio/Calor 4644 F 5400 W TACA-5400FCSD/EL4 TCL",
+          "sku_tienda": "61260168004",
+          "url_origen": "https://www.vea.com.ar/aire-acondicionado-tcl-fc-taca-5400-elite-5400/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Aire Acondicionado Split Frio/Calor 4644 F 5400 W TACA-5400FCSD/EL4 TCL",
+          "sku_tienda": "61260168004",
+          "url_origen": "https://www.disco.com.ar/aire-acondicionado-tcl-fc-taca-5400-elite-5400/p"
+        }
+      ]
+    },
+    {
+      "slug": "cafetera-espresso-2-un-1240-w-gris-bvstem7201-054-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Cafetera Espresso 2 Un 1240 W Gris BVSTEM7201-054 Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Cafetera Espresso 2 Un 1240 W Gris BVSTEM7201-054 Oster",
+          "sku_tienda": "61340117038",
+          "url_origen": "https://www.vea.com.ar/cafetera-oster-espresso-perfect-brew-compact-1/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Cafetera Espresso 2 Un 1240 W Gris BVSTEM7201-054 Oster",
+          "sku_tienda": "61340117038",
+          "url_origen": "https://www.disco.com.ar/cafetera-oster-espresso-perfect-brew-compact-1/p"
+        }
+      ]
+    },
+    {
+      "slug": "horno-electrico-bgh-mecanico-duo-55l-c-convecc",
+      "categoria_slug": "bienes-durables",
+      "marca": "BGH",
+      "modelo": null,
+      "nombre_normalizado": "Horno Electrico Bgh Mecánico Duo 55l C/convecc",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Horno Electrico Bgh Mecánico Duo 55l C/convecc",
+          "sku_tienda": "61330810035",
+          "url_origen": "https://www.vea.com.ar/horno-electrico-bgh-mecanico-duo-55l-c-convecc-2/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Horno Electrico Bgh Mecánico Duo 55l C/convecc",
+          "sku_tienda": "61330810035",
+          "url_origen": "https://www.disco.com.ar/horno-electrico-bgh-mecanico-duo-55l-c-convecc-2/p"
+        }
+      ]
+    },
+    {
+      "slug": "tostadora-electrica-2-laminas-digital-0298-nex",
+      "categoria_slug": "bienes-durables",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Tostadora Eléctrica 2 Láminas Digital 0298 Nex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Tostadora Eléctrica 2 Láminas Digital 0298 Nex",
+          "sku_tienda": "61330350011",
+          "url_origen": "https://www.vea.com.ar/tostadora-2-laminas-panel-digital-0298-nex/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Tostadora Eléctrica 2 Láminas Digital 0298 Nex",
+          "sku_tienda": "61330350011",
+          "url_origen": "https://www.disco.com.ar/tostadora-2-laminas-panel-digital-0298-nex/p"
+        }
+      ]
+    },
+    {
+      "slug": "ventilador-pie-20-blanco-eco-axel",
+      "categoria_slug": "bienes-durables",
+      "marca": "AXEL",
+      "modelo": null,
+      "nombre_normalizado": "Ventilador Pie 20\" Blanco Eco Axel",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Ventilador Pie 20\" Blanco Eco Axel",
+          "sku_tienda": "61260312005",
+          "url_origen": "https://www.disco.com.ar/ventilador-pie-20-blanco-eco-axel/p"
+        }
+      ]
+    },
+    {
+      "slug": "pava-electrica-1-7-lts-blanca-bvstkt4970w-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Pava Eléctrica 1,7 Lts Blanca BVSTKT4970W Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Pava Eléctrica 1,7 Lts Blanca BVSTKT4970W Oster",
+          "sku_tienda": "61340224006",
+          "url_origen": "https://www.vea.com.ar/pava-electrica-1-7l-bnc-bvstkt4970w-oster-2/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Pava Eléctrica 1,7 Lts Blanca BVSTKT4970W Oster",
+          "sku_tienda": "61340224006",
+          "url_origen": "https://www.disco.com.ar/pava-electrica-1-7l-bnc-bvstkt4970w-oster-2/p"
+        }
+      ]
+    },
+    {
+      "slug": "secarropas-5-5-kg-2800-rpm-negro-n-755-eco-ko-hi-noor",
+      "categoria_slug": "bienes-durables",
+      "marca": "KO-HI-NOOR",
+      "modelo": null,
+      "nombre_normalizado": "Secarropas 5,5 Kg 2800 RPM Negro N-755/ECO Ko-Hi-Noor",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Secarropas 5,5 Kg 2800 RPM Negro N-755/ECO Ko-Hi-Noor",
+          "sku_tienda": "61220312030",
+          "url_origen": "https://www.vea.com.ar/secarropas-centrifugo-n-755-eco-5-5-kg-negro-ko-hi-noor/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Secarropas 5,5 Kg 2800 RPM Negro N-755/ECO Ko-Hi-Noor",
+          "sku_tienda": "61220312030",
+          "url_origen": "https://www.disco.com.ar/secarropas-centrifugo-n-755-eco-5-5-kg-negro-ko-hi-noor/p"
+        }
+      ]
+    },
+    {
+      "slug": "sandwichera-sw14520-nex",
+      "categoria_slug": "bienes-durables",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Sandwichera Sw14520 Nex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Sandwichera Sw14520 Nex",
+          "sku_tienda": "61330416007",
+          "url_origen": "https://www.vea.com.ar/sandwichera-sw14520-nex/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Sandwichera Sw14520 Nex",
+          "sku_tienda": "61330416007",
+          "url_origen": "https://www.disco.com.ar/sandwichera-sw14520-nex/p"
+        }
+      ]
+    },
+    {
+      "slug": "licuadora-de-mano-600-w-blanca-91lm8527ap-atma",
+      "categoria_slug": "bienes-durables",
+      "marca": "ATMA",
+      "modelo": null,
+      "nombre_normalizado": "Licuadora de Mano 600 W Blanca 91LM8527AP Atma",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Licuadora de Mano 600 W Blanca 91LM8527AP Atma",
+          "sku_tienda": "61320505021",
+          "url_origen": "https://www.vea.com.ar/licuadora-de-mano-600w-atma/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Licuadora de Mano 600 W Blanca 91LM8527AP Atma",
+          "sku_tienda": "61320505021",
+          "url_origen": "https://www.disco.com.ar/licuadora-de-mano-600w-atma/p"
+        }
+      ]
+    },
+    {
+      "slug": "celular-moto-g67-256gb-arctic-seal-motorola",
+      "categoria_slug": "bienes-durables",
+      "marca": "MOTOROLA",
+      "modelo": null,
+      "nombre_normalizado": "Celular Moto G67 256GB Arctic Seal Motorola",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Celular Moto G67 256GB Arctic Seal Motorola",
+          "sku_tienda": "61160524323",
+          "url_origen": "https://www.vea.com.ar/celular-moto-g67-arctic-seal-4-56-gb-motorola/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Celular Moto G67 256GB Arctic Seal Motorola",
+          "sku_tienda": "61160524323",
+          "url_origen": "https://www.disco.com.ar/celular-moto-g67-arctic-seal-4-56-gb-motorola/p"
+        }
+      ]
+    },
+    {
+      "slug": "microondas-bgh-28l-q-chef-b228dn26i-grill-negr",
+      "categoria_slug": "bienes-durables",
+      "marca": "BGH",
+      "modelo": null,
+      "nombre_normalizado": "Microondas Bgh 28l Q.chef B228dn26i Grill Negr",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Microondas Bgh 28l Q.chef B228dn26i Grill Negr",
+          "sku_tienda": "61240710042",
+          "url_origen": "https://www.vea.com.ar/microondas-bgh-28l-q-chef-b228dn26i-grill-negr/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Microondas Bgh 28l Q.chef B228dn26i Grill Negr",
+          "sku_tienda": "61240710042",
+          "url_origen": "https://www.disco.com.ar/microondas-bgh-28l-q-chef-b228dn26i-grill-negr/p"
+        }
+      ]
+    },
+    {
+      "slug": "sandwichera-700-w-gris-esg20-electrolux",
+      "categoria_slug": "bienes-durables",
+      "marca": "ELECTROLUX",
+      "modelo": null,
+      "nombre_normalizado": "Sandwichera 700 W Gris ESG20 Electrolux",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Sandwichera 700 W Gris ESG20 Electrolux",
+          "sku_tienda": "61330407002",
+          "url_origen": "https://www.vea.com.ar/sandwichera-700-w-gris-esg20-electrolux/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Sandwichera 700 W Gris ESG20 Electrolux",
+          "sku_tienda": "61330407002",
+          "url_origen": "https://www.disco.com.ar/sandwichera-700-w-gris-esg20-electrolux/p"
+        }
+      ]
+    },
+    {
+      "slug": "ventilador-dee-pie-v-20p-pala-metal-1-nex",
+      "categoria_slug": "bienes-durables",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Ventilador Dee Pie V-20p Pala Metal 1 Nex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Ventilador Dee Pie V-20p Pala Metal 1 Nex",
+          "sku_tienda": "61260336013",
+          "url_origen": "https://www.vea.com.ar/ventilador-dee-pie-v-20p-pala-metal-1-nex/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Ventilador Dee Pie V-20p Pala Metal 1 Nex",
+          "sku_tienda": "61260336013",
+          "url_origen": "https://www.disco.com.ar/ventilador-dee-pie-v-20p-pala-metal-1-nex/p"
+        }
+      ]
+    },
+    {
+      "slug": "mouse-inalambrico-logitech-m170-blanco",
+      "categoria_slug": "bienes-durables",
+      "marca": "LOGITECH",
+      "modelo": null,
+      "nombre_normalizado": "Mouse Inalámbrico Logitech M170 Blanco",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Mouse Inalámbrico Logitech M170 Blanco",
+          "sku_tienda": "61131804026",
+          "url_origen": "https://www.vea.com.ar/mouse-logitech-wir-m170-white-blister-910-0068/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Mouse Inalámbrico Logitech M170 Blanco",
+          "sku_tienda": "61131804026",
+          "url_origen": "https://www.disco.com.ar/mouse-logitech-wir-m170-white-blister-910-0068/p"
+        }
+      ]
+    },
+    {
+      "slug": "cafetera-1-4-lts-blanca-bvstem6801m-054-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Cafetera 1,4 Lts Blanca BVSTEM6801M-054 Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Cafetera 1,4 Lts Blanca BVSTEM6801M-054 Oster",
+          "sku_tienda": "61340117026",
+          "url_origen": "https://www.disco.com.ar/cafetera-primalatte-touch-oster/p"
+        }
+      ]
+    },
+    {
+      "slug": "hervidor-electrico-1-7-lts-negro-kp1765-nex",
+      "categoria_slug": "bienes-durables",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Hervidor Eléctrico 1,7 Lts Negro KP1765 Nex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Hervidor Eléctrico 1,7 Lts Negro KP1765 Nex",
+          "sku_tienda": "61340223006",
+          "url_origen": "https://www.vea.com.ar/hervidor-plastico-kp1765-1-7-l-nex-2/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Hervidor Eléctrico 1,7 Lts Negro KP1765 Nex",
+          "sku_tienda": "61340223006",
+          "url_origen": "https://www.disco.com.ar/hervidor-plastico-kp1765-1-7-l-nex-2/p"
+        }
+      ]
+    },
+    {
+      "slug": "ventilador-turboventilador-12-35-w-3-velocidades-verde-deco-iv-12-indelplas",
+      "categoria_slug": "bienes-durables",
+      "marca": "INDELPLAS",
+      "modelo": null,
+      "nombre_normalizado": "Ventilador Turboventilador 12\" 35 W 3 Velocidades Verde DECO IV 12 Indelplas",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Ventilador Turboventilador 12\" 35 W 3 Velocidades Verde DECO IV 12 Indelplas",
+          "sku_tienda": "61260351006",
+          "url_origen": "https://www.vea.com.ar/turboventilador-deco-iv-d12-verde-indelplas/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Ventilador Turboventilador 12\" 35 W 3 Velocidades Verde DECO IV 12 Indelplas",
+          "sku_tienda": "61260351006",
+          "url_origen": "https://www.disco.com.ar/turboventilador-deco-iv-d12-verde-indelplas/p"
+        }
+      ]
+    },
+    {
+      "slug": "aire-acondicionado-split-inverter-10550-w-phin105hc2an-philco",
+      "categoria_slug": "bienes-durables",
+      "marca": "PHILCO",
+      "modelo": null,
+      "nombre_normalizado": "Aire Acondicionado Split Inverter 10550 W Phin105hc2an Philco",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Aire Acondicionado Split Inverter 10550 W Phin105hc2an Philco",
+          "sku_tienda": "61260140028",
+          "url_origen": "https://www.vea.com.ar/aire-acondicionado-split-inverter-10550-w-phin105hc2an-philco/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Aire Acondicionado Split Inverter 10550 W Phin105hc2an Philco",
+          "sku_tienda": "61260140028",
+          "url_origen": "https://www.disco.com.ar/aire-acondicionado-split-inverter-10550-w-phin105hc2an-philco/p"
+        }
+      ]
+    },
+    {
+      "slug": "aire-acondicionado-frio-calor-inverter-32612-f-4200-w-s3-w120a1da-lg",
+      "categoria_slug": "bienes-durables",
+      "marca": "LG",
+      "modelo": null,
+      "nombre_normalizado": "Aire Acondicionado Frío/Calor Inverter 32612 F 4200 W S3-W120A1DA LG",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Aire Acondicionado Frío/Calor Inverter 32612 F 4200 W S3-W120A1DA LG",
+          "sku_tienda": "61260113049",
+          "url_origen": "https://www.disco.com.ar/aire-acondicionado-split-lg-s3-w120a1da-3612fg/p"
+        }
+      ]
+    },
+    {
+      "slug": "soporte-para-celular-articulado-con-succion-goodyear-iael",
+      "categoria_slug": "bienes-durables",
+      "marca": "IAEL",
+      "modelo": null,
+      "nombre_normalizado": "Soporte para Celular Articulado con Succión Goodyear Iael",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Soporte para Celular Articulado con Succión Goodyear Iael",
+          "sku_tienda": "61160782007",
+          "url_origen": "https://www.vea.com.ar/porta-telefono-goodyear-articulado-succion-iael/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Soporte para Celular Articulado con Succión Goodyear Iael",
+          "sku_tienda": "61160782007",
+          "url_origen": "https://www.disco.com.ar/porta-telefono-goodyear-articulado-succion-iael/p"
+        }
+      ]
+    },
+    {
+      "slug": "ventilador-de-techo-48-85-w-3-velocidades-negro-3418r-protalia",
+      "categoria_slug": "bienes-durables",
+      "marca": "PROTALIA",
+      "modelo": null,
+      "nombre_normalizado": "Ventilador de Techo 48\" 85 W 3 Velocidades Negro 3418R Protalia",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Ventilador de Techo 48\" 85 W 3 Velocidades Negro 3418R Protalia",
+          "sku_tienda": "61260909004",
+          "url_origen": "https://www.vea.com.ar/ventilador-de-techo-48-protalia-3418-rem-negro/p"
+        },
+        {
+          "tienda_slug": "disco",
+          "alias_producto": "Ventilador de Techo 48\" 85 W 3 Velocidades Negro 3418R Protalia",
+          "sku_tienda": "61260909004",
+          "url_origen": "https://www.disco.com.ar/ventilador-de-techo-48-protalia-3418-rem-negro/p"
+        }
+      ]
+    },
+    {
+      "slug": "freidora-aire-5-5-l-5024-nex",
+      "categoria_slug": "bienes-durables",
+      "marca": "NEX",
+      "modelo": null,
+      "nombre_normalizado": "Freidora Aire 5,5 L 5024 Nex",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Freidora Aire 5,5 L 5024 Nex",
+          "sku_tienda": "61330148006",
+          "url_origen": "https://www.vea.com.ar/freidora-aire-5-5-l-5024-nex/p"
+        }
+      ]
+    },
+    {
+      "slug": "licuadora-profesional-xtreme-mix-1500-w-oster",
+      "categoria_slug": "bienes-durables",
+      "marca": "OSTER",
+      "modelo": null,
+      "nombre_normalizado": "Licuadora Profesional Xtreme Mix 1500 W Oster",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Licuadora Profesional Xtreme Mix 1500 W Oster",
+          "sku_tienda": "61320529015",
+          "url_origen": "https://www.vea.com.ar/licuadora-profesional-xtreme-mix-1500-w-oster/p"
+        }
+      ]
+    },
+    {
+      "slug": "ventilador-turbo-20-70-w-3-velocidades-blanco-axtur20-blanco-axel",
+      "categoria_slug": "bienes-durables",
+      "marca": "AXEL",
+      "modelo": null,
+      "nombre_normalizado": "Ventilador Turbo 20\" 70 W 3 Velocidades Blanco AXTUR20 BLANCO Axel",
+      "contenido_neto": {
+        "valor": 1,
+        "unidad": "unidad"
+      },
+      "pack": "x1",
+      "tiendas": [
+        {
+          "tienda_slug": "vea",
+          "alias_producto": "Ventilador Turbo 20\" 70 W 3 Velocidades Blanco AXTUR20 BLANCO Axel",
+          "sku_tienda": "61260314004",
+          "url_origen": "https://www.vea.com.ar/ventilador-turbo-20-blanco-axpie20ble-axel/p"
         }
       ]
     }

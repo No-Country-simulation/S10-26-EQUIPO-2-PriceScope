@@ -53,6 +53,7 @@ export function LineChartReferenceAreaShape({
 
   return (
     <g key={`ref-area-${area.id}`} className="pointer-events-none select-none">
+      {area.label && <title>{area.label}</title>}
       <rect
         x={actualX}
         y={yVal}
@@ -66,17 +67,21 @@ export function LineChartReferenceAreaShape({
         strokeWidth={1.5}
         strokeDasharray="4 4"
       />
-      {area.label && actualWidth >= 32 ? (
+      {area.label && actualWidth >= 16 ? (
         <text
           x={actualX + actualWidth / 2}
           y={yVal + heightVal - 8}
           textAnchor="middle"
           fill={area.labelColor ?? area.strokeColor ?? "#d97706"}
-          fontSize={10.5}
+          fontSize={actualWidth < 36 ? 9 : 10.5}
           fontWeight={700}
           className="tracking-tight"
         >
-          {area.label}
+          {actualWidth < 36
+            ? area.label.toLowerCase().includes("sin")
+              ? "S/D"
+              : area.label.slice(0, 4) + "."
+            : area.label}
         </text>
       ) : null}
     </g>

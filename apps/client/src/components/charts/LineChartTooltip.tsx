@@ -30,7 +30,7 @@ export function ChartTooltip({ active, payload, label, valueFormatter }: ChartTo
               <span className="whitespace-nowrap text-slate-600">{category}</span>
             </div>
             <span className="font-bold whitespace-nowrap text-slate-900 tabular-nums">
-              {valueFormatter(value)}
+              {value !== null ? valueFormatter(value) : "Sin dato"}
             </span>
           </div>
         ))}

@@ -11,7 +11,7 @@ import { cx } from "@/lib/utils";
 export interface TrackerBlockProps {
   /** Identificador único del bloque temporal. */
   key?: string | number;
-  /** Clase de color de fondo de Tailwind (ej. `bg-emerald-500`, `bg-amber-500`, `bg-rose-500`). */
+  /** Clase de color de fondo de Tailwind (ej. `bg-emerald-500`, `bg-amber-500`, `bg-rose-500`) o código hex. */
   color?: string;
   /** Contenido descriptivo mostrado al inspeccionar el bloque. */
   tooltip?: React.ReactNode;
@@ -26,6 +26,7 @@ export interface TrackerBlockProps {
  */
 function Block({ color, tooltip, defaultBackgroundColor, hoverEffect = false }: TrackerBlockProps) {
   const [open, setOpen] = React.useState(false);
+  const isHexOrRgb = color?.startsWith("#") || color?.startsWith("rgb");
 
   const blockElement = (
     <div
@@ -36,9 +37,11 @@ function Block({ color, tooltip, defaultBackgroundColor, hoverEffect = false }: 
       <div
         className={cx(
           "size-full rounded-[1px]",
-          color || defaultBackgroundColor,
+          !isHexOrRgb ? color : undefined,
+          !color && defaultBackgroundColor,
           hoverEffect ? "hover:opacity-60" : ""
         )}
+        style={isHexOrRgb ? { backgroundColor: color } : undefined}
       />
     </div>
   );

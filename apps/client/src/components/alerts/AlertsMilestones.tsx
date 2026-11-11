@@ -31,30 +31,35 @@ export function AlertsMilestones({
         <div>
           <CardTitle className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-900">
             <RiHistoryLine className="size-4 text-purple-600" />
-            <span>Historial de Hitos de Mercado y Reduflación</span>
+            <span>Alertas de Divergencia Activas</span>
+            <Badge variant="default" size="xs">
+              Datos en Vivo
+            </Badge>
           </CardTitle>
           <CardDescription className="mt-1">
-            Eventos observados que justifican las alertas de precios en los productos analizados
+            Productos con mayor spread frente a la devaluación cambiaria (extraídos directamente de la base de datos)
           </CardDescription>
         </div>
 
-        <button
-          type="button"
-          onClick={onToggleShowAll}
-          className="inline-flex cursor-pointer items-center gap-1.5 self-start rounded-lg border border-purple-200 bg-purple-50/80 px-3 py-1.5 text-xs font-semibold text-purple-700 transition-colors hover:bg-purple-100 hover:text-purple-900 sm:self-auto"
-          aria-expanded={showAll}
-        >
-          <span>
-            {showAll
-              ? "Mostrar solo recientes (3)"
-              : `Ver historial completo (${totalMilestonesCount} hitos)`}
-          </span>
-          {showAll ? (
-            <RiArrowUpSLine className="size-4 text-purple-600" />
-          ) : (
-            <RiArrowDownSLine className="size-4 text-purple-600" />
-          )}
-        </button>
+        {totalMilestonesCount > 3 && (
+          <button
+            type="button"
+            onClick={onToggleShowAll}
+            className="inline-flex cursor-pointer items-center gap-1.5 self-start rounded-lg border border-purple-200 bg-purple-50/80 px-3 py-1.5 text-xs font-semibold text-purple-700 transition-colors hover:bg-purple-100 hover:text-purple-900 sm:self-auto"
+            aria-expanded={showAll}
+          >
+            <span>
+              {showAll
+                ? "Mostrar menos (3)"
+                : `Ver todas las alertas (${totalMilestonesCount})`}
+            </span>
+            {showAll ? (
+              <RiArrowUpSLine className="size-4 text-purple-600" />
+            ) : (
+              <RiArrowDownSLine className="size-4 text-purple-600" />
+            )}
+          </button>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -80,8 +85,8 @@ export function AlertsMilestones({
           ) : milestones.length === 0 ? (
             <div className="col-span-full">
               <EmptyState
-                title="Sin hitos registrados"
-                description="No se detectaron eventos macroeconómicos ni alertas de reduflación para los filtros activos."
+                title="Sin alertas registradas"
+                description="No se detectaron alertas de divergencia para los filtros activos."
                 icon={RiHistoryLine}
                 className="py-10"
               />

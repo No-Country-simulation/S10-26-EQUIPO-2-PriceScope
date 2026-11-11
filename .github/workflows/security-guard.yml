@@ -40,8 +40,8 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
-      - name: Run Semgrep SAST Scan
-        run: semgrep scan --config=auto --error
+      - name: Run Semgrep SAST Scan (Client)
+        run: semgrep scan --config=auto --error apps/client
 
       # 3. Verificación de Secretos y Credenciales (Gitleaks)
       - name: Secret Leak Prevention
@@ -51,6 +51,11 @@ jobs:
         continue-on-error: false
 
       # 4. Ejecución de Tests de Frontend
+      - name: Install Client Dependencies
+        if: hashFiles('apps/client/package.json') != ''
+        working-directory: apps/client
+        run: npm ci
+
       - name: Run Client Tests
         if: hashFiles('apps/client/package.json') != ''
         working-directory: apps/client

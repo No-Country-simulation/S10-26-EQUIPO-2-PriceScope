@@ -42,6 +42,9 @@ describe('AlertsService (HU-37, HU-39, HU-46)', () => {
     const query = jest
       .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
       .mockImplementation(async (sql: string) => {
+        if (sql.includes('MIN(timestamp_utc)')) {
+          return { rows: [{ inicio: '2026-10-01T13:00:00Z', fin: '2026-10-30T13:00:00Z' }] };
+        }
         if (sql.includes('COUNT(*) AS total')) {
           return { rows: [{ total: '1' }] };
         }
@@ -61,5 +64,27 @@ describe('AlertsService (HU-37, HU-39, HU-46)', () => {
     expect(alerta.variacion_cotizacion_pct).toBe(20);
     expect(alerta.diferencial_puntos).toBe(10); // 30 - 20 = +10 puntos
     expect(alerta.tipo_alerta).toBe('PRECIO_SUPERA_DEVALUACION');
+  });
+  it('devuelve lista vacía y no inventa una devaluación si no hay cotización de cierre', async () => {
+    const sinDato = { cotizacionAplicada: null, esAproximada: false, fuente: null, estado: 'SIN_DATO' };
+    const mockCierre = {
+      obtenerVariacionPeriodo: jest
+        .fn<(desde: Date, hasta: Date) => Promise<unknown>>()
+        .mockResolvedValue({ inicial: sinDato, final: sinDato, variacionPct: null }),
+    };
+    const query = jest
+      .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
+      .mockImplementation(async (sql: string) =>
+        sql.includes('MIN(timestamp_utc)')
+          ? { rows: [{ inicio: '2026-10-01T13:00:00Z', fin: '2026-10-30T13:00:00Z' }] }
+          : { rows: [] },
+      );
+
+    const service = new AlertsService({ query } as never, mockCierre as never);
+    const result = await service.findAll({ page: 1, limit: 50 });
+
+    expect(result.alertas).toEqual([]);
+    expect(result.paginacion.total_registros).toBe(0);
+    expect(query).toHaveBeenCalledTimes(1);
   });
 });

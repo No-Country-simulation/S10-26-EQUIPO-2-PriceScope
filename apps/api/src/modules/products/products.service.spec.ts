@@ -56,8 +56,7 @@ describe('ProductsService (HU-16, HU-19, HU-35)', () => {
     const query = jest
       .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
       .mockResolvedValue({ rows: [] });
-    const service = new ProductsService({ query } as never);
-
+    const service = new ProductsService({ query } as never, { emparejarConCierre: jest.fn() } as never);
     await expect(
       service.getProductTraceability('no-existe-slug', {}),
     ).rejects.toThrow(NotFoundException);
@@ -79,7 +78,7 @@ describe('ProductsService (HU-16, HU-19, HU-35)', () => {
         return { rows: [] };
       });
 
-    const service = new ProductsService({ query } as never);
+    const service = new ProductsService({ query } as never, { emparejarConCierre: jest.fn() } as never);
     const result = await service.getProductTraceability(mockProduct.id, {});
 
     expect(result.producto.id).toBe(mockProduct.id);
@@ -109,7 +108,7 @@ describe('ProductsService (HU-16, HU-19, HU-35)', () => {
         return { rows: obsCero };
       });
 
-    const service = new ProductsService({ query } as never);
+    const service = new ProductsService({ query } as never, { emparejarConCierre: jest.fn() } as never);
     const result = await service.getProductTraceability(mockProduct.id, {});
 
     expect(result.historico_observaciones[0].precio_regular).toBeNull();

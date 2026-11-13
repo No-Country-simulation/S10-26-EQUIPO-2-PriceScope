@@ -284,11 +284,6 @@ Toda la documentacion de ingenieria, arquitectura y calidad se encuentra version
         <strong>Anthony Ciprian</strong><br>
         <sub>Scraper Developer</sub>
       </th>
-      <th align="center">
-        <img src="docs/assets/isotipo.png" width="100" height="100" alt="Sebastian Torres" style="object-fit: contain;"><br>
-        <strong>Sebastian Torres</strong><br>
-        <sub>Scraper Developer</sub>
-      </th>
     </tr>
   </thead>
   <tbody>
@@ -306,14 +301,6 @@ Toda la documentacion de ingenieria, arquitectura y calidad se encuentra version
           <img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
         </a><br>
         <a href="https://github.com/stuart-ware" target="_blank">
-          <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-        </a>
-      </td>
-      <td align="center">
-        <a href="#" target="_blank">
-          <img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
-        </a><br>
-        <a href="#" target="_blank">
           <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
         </a>
       </td>

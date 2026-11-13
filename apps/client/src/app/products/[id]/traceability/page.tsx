@@ -42,6 +42,7 @@ export default function TraceabilityPage({ params }: TraceabilityPageProps) {
     refetch,
     exportObservationsCsv,
     exportObservationsJson,
+    divergenceMetrics,
     externalStoreUrl,
   } = useTraceabilityData(productId, 10);
 
@@ -80,7 +81,14 @@ export default function TraceabilityPage({ params }: TraceabilityPageProps) {
             externalStoreUrl={externalStoreUrl}
           />
 
-          <TraceabilityKpis product={product} latestObservation={latestObservation} />
+          <TraceabilityKpis
+            product={product}
+            latestObservation={latestObservation}
+            divergencePricePct={divergenceMetrics.priceVariationPct}
+            divergenceDelta={divergenceMetrics.divergenceDelta}
+            divergenceVariant={divergenceMetrics.divergenceVariant}
+            isLoading={isLoading}
+          />
         </>
       )}
 

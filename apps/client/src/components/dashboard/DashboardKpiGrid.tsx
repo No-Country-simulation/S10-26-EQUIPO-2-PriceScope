@@ -3,13 +3,17 @@ import { Card } from "@/components/ui/card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { DashboardResponse, VariacionCategoria } from "@/types/api";
+import type { DashboardResponse, Moneda, VariacionCategoria } from "@/types/api";
 
 interface DashboardKpiGridProps {
   isLoading: boolean;
   kpis: DashboardResponse["kpis"] | null;
   activeCategory: VariacionCategoria | null;
   totalProducts?: number;
+  isAllCategories?: boolean;
+  selectedCurrency?: Moneda;
+  hasNoData?: boolean;
+  isSingleDay?: boolean;
 }
 
 /**
@@ -20,6 +24,10 @@ export function DashboardKpiGrid({
   kpis,
   activeCategory,
   totalProducts = 0,
+  isAllCategories = false,
+  selectedCurrency = "ARS",
+  hasNoData = false,
+  isSingleDay = false,
 }: DashboardKpiGridProps) {
   if (isLoading || !kpis || !activeCategory) {
     return (
@@ -66,45 +74,112 @@ export function DashboardKpiGrid({
     return val.toLocaleString("es-AR");
   };
 
-  const isOverIndexed = (compDev?.diferencial_puntos ?? 0) > 0;
+  const formatCurrency = (val: number | null | undefined): string => {
+    if (val === null || val === undefined || Number.isNaN(val) || val === 0) return "$0";
+    if (selectedCurrency && selectedCurrency !== "ARS") {
+      const rate = varUsd?.cotizacion_usada || 1200;
+      const divisor = selectedCurrency === "USD_OFICIAL" ? rate * 0.78 : rate;
+      const usdVal = val / divisor;
+      return `US$ ${usdVal.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
+    }
+    return `$${Math.round(val).toLocaleString("es-AR")}`;
+  };
+
+  const isNoData = Boolean(hasNoData);
+  const isOneDay = Boolean(isSingleDay);
+
+  const sampleProductsCount =
+    isAllCategories && totalProducts > 0
+      ? totalProducts
+      : activeCategory.cantidad_productos || totalProducts;
+
+  const rawDiff = compDev?.diferencial_puntos ?? 0;
+  const isNeutralDiff = isNoData || isOneDay || rawDiff === 0 || varPesos?.porcentaje === 0;
+  const isOverIndexed = !isNeutralDiff && rawDiff > 0;
+
+  const devMetric = isNeutralDiff ? "0.0 pts" : formatPts(rawDiff);
+  const devBadgeVariant = isNeutralDiff ? "neutral" : isOverIndexed ? "error" : "success";
+  const devBadgeText = isNoData
+    ? "Sin datos"
+    : isNeutralDiff
+      ? "Alineado"
+      : isOverIndexed
+        ? "Alerta"
+        : "Alineado";
+  const devFooterValue = isNeutralDiff
+    ? "Sin divergencia"
+    : isOverIndexed
+      ? "Sobre-indexación"
+      : "Sub-indexación";
+  const devFooterClass = isNeutralDiff
+    ? "text-slate-500 font-semibold"
+    : isOverIndexed
+      ? "text-rose-600"
+      : "text-emerald-600";
 
   return (
     <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <KpiCard
         className="h-full"
         title="Variación ARS"
-        metric={formatPct(varPesos?.porcentaje)}
-        subtitle="Precio Regular vs. Período Base"
+        metric={isNoData || isOneDay ? "0.0%" : formatPct(varPesos?.porcentaje)}
+        subtitle={
+          isNoData
+            ? "Sin cotizaciones en el período"
+            : isOneDay
+              ? "Precio Regular base (1 día)"
+              : "Precio Regular vs. Período Base"
+        }
         icon="$"
         accent="blue"
-        badgeVariant={varPesos?.porcentaje && varPesos.porcentaje > 0 ? "error" : "success"}
+        badgeVariant={
+          isNoData || isOneDay
+            ? "neutral"
+            : varPesos?.porcentaje && varPesos.porcentaje > 0
+              ? "error"
+              : "success"
+        }
         badgeText={
-          <>
-            <RiArrowRightUpLine className="size-3.5" />
-            <span>MoM</span>
-          </>
+          isNoData ? (
+            "Sin datos"
+          ) : isOneDay ? (
+            "1D"
+          ) : (
+            <>
+              <RiArrowRightUpLine className="size-3.5" />
+              <span>MoM</span>
+            </>
+          )
         }
         footerLabel="Muestra ponderada"
-        footerValue={`${formatNumber(activeCategory.cantidad_productos || totalProducts)} productos (${formatNumber(varPesos?.cobertura_pct)}%)`}
+        footerValue={
+          isNoData
+            ? "0 productos (0.0%)"
+            : `${formatNumber(sampleProductsCount)} productos (${formatNumber(varPesos?.cobertura_pct)}%)`
+        }
       />
 
       <KpiCard
         className="h-full"
         title="Variación USD"
-        metric={formatPct(varUsd?.porcentaje)}
-        subtitle={`Cotiz. aplicada: $${formatNumber(varUsd?.cotizacion_usada)} (Venta ${varUsd?.tipo_cotizacion ?? "BLUE"})`}
+        metric={isNoData || isOneDay ? "0.0%" : formatPct(varUsd?.porcentaje)}
+        subtitle={
+          isNoData
+            ? "Sin cotización aplicable"
+            : `Cotiz. aplicada: $${formatNumber(varUsd?.cotizacion_usada)} (Venta ${varUsd?.tipo_cotizacion ?? "BLUE"})`
+        }
         icon="US$"
         accent="emerald"
-        badgeVariant="success"
-        badgeText="Moneda Fuerte"
+        badgeVariant={isNoData || isOneDay ? "neutral" : "success"}
+        badgeText={isNoData ? "Sin datos" : isOneDay ? "1D" : "Moneda Fuerte"}
         footerLabel="Fijación cambiaria"
-        footerValue="Cierre 23:59:59 ART"
+        footerValue={isNoData ? "Sin registros" : "Cierre 23:59:59 ART"}
       />
 
       <KpiCard
         className="h-full"
         title="vs. Devaluación"
-        metric={formatPts(compDev?.diferencial_puntos)}
+        metric={devMetric}
         subtitle="Diferencial neto frente a divisa (Δpts)"
         icon={
           <Tooltip>
@@ -119,25 +194,31 @@ export function DashboardKpiGrid({
           </Tooltip>
         }
         accent="amber"
-        badgeVariant={isOverIndexed ? "error" : "success"}
-        badgeText={isOverIndexed ? "Alerta" : "Alineado"}
+        badgeVariant={devBadgeVariant}
+        badgeText={devBadgeText}
         footerLabel="Divergencia real"
-        footerValue={isOverIndexed ? "Sobre-indexación" : "Sub-indexación"}
-        footerValueClassName={isOverIndexed ? "text-rose-600" : "text-emerald-600"}
+        footerValue={devFooterValue}
+        footerValueClassName={devFooterClass}
       />
 
       <KpiCard
         className="h-full"
         title="Mediana Categoría"
-        metric={formatPct(activeCategory?.variacion_mediana_pct)}
-        subtitle={`Mediana representativa (${formatNumber(activeCategory?.cantidad_productos)} productos)`}
+        metric={isNoData ? "$0" : formatCurrency(activeCategory?.variacion_mediana_pct)}
+        subtitle={
+          isNoData
+            ? "Mediana representativa (0 productos)"
+            : `Mediana representativa (${formatNumber(activeCategory?.cantidad_productos)} productos)`
+        }
         icon="M"
         accent="purple"
         badgeVariant="neutral"
         badgeText={activeCategory?.nombre ?? "Categoría"}
         footerLabel="Cobertura muestral"
-        footerValue={`${formatNumber(activeCategory?.cobertura_pct)}% (Óptima)`}
-        footerValueClassName="text-emerald-600"
+        footerValue={
+          isNoData ? "0% (Sin datos)" : `${formatNumber(activeCategory?.cobertura_pct)}% (Óptima)`
+        }
+        footerValueClassName={isNoData ? "text-slate-500 font-semibold" : "text-emerald-600"}
       />
     </section>
   );

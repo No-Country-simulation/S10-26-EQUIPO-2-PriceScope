@@ -82,6 +82,7 @@ export function calculateQualityBands(seriesRows: SeriesDbRow[]): BandaCalidad[]
     let estado: EstadoSemaforo = 'VERDE';
     if (pct < 70) estado = 'ROJO';
     else if (pct < 90) estado = 'AMARILLO';
+
     return {
       fecha,
       estado,

@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 
 import { cx } from "@/lib/utils";
@@ -11,6 +11,7 @@ const statusDotVariants = tv({
       emeraldLight: "bg-emerald-400",
       amber: "bg-amber-400",
       blue: "bg-blue-400",
+      purple: "bg-purple-400",
       rose: "bg-rose-500",
       slate: "bg-slate-400",
     },

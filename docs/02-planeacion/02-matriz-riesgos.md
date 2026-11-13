@@ -16,11 +16,11 @@
 | **Proyecto** | PriceScope — Monitor de Inflación Real Multimoneda |
 | **Organización / Programa** | Simulación Laboral Abierta — NoCountry |
 | **Sector de Negocio** | FinTech / Analítica Económica (B2B Analytics) |
-| **Versión** | **1.0** (Oficial de Gestión de Riesgos Técnicos y Operativos) |
-| **Fecha de Emisión** | 16 de Octubre de 2026 |
+| **Versión** | **1.1** (Actualización de Infraestructura Neon y Mitigaciones) |
+| **Fecha de Emisión** | 23 de Octubre de 2026 |
 | **Ubicación en Repositorio** | `docs/02-planeacion/02-matriz-riesgos.md` |
-| **Documentos Vinculantes** | `01-SRS-PriceScope.md`, `04-Business-Rules-Math-Logic.md`, `05-Software-Architecture-Pipeline.md`, `06-QA-Test-Matrix.md` |
-| **Estado** | En Revisión y Aprobación Técnica por Células Operativas |
+| **Documentos Vinculantes** | `01-SRS-PriceScope.md`, `04-Business-Rules-Math-Logic.md`, `05-Software-Architecture-Pipeline.md`, `06-QA-Test-Matrix.md`, `07-Frontend-UX-UI-Specs.md`, `08-Casos-de-Uso-Use-Cases.md` |
+| **Estado** | Activa y Monitoreada por Células Operativas |
 
 ---
 
@@ -30,6 +30,7 @@
 | Versión | Fecha | Autor | Descripción del Cambio |
 | :--- | :--- | :--- | :--- |
 | **1.0** | 2026-10-16 | Equipo PriceScope | Formalización de riesgos técnicos, operativos y de infraestructura (bloqueos de scrapers, cuotas cloud gratuitas, caída de APIs cambiarias, desviaciones algorítmicas) y definición de protocolos de contingencia y fallbacks automáticos. |
+| **1.1** | 2026-10-23 | Equipo PriceScope | Incorporación de Neon Cloud Serverless PG16 como alternativa cloud a Timescale Cloud, mitigación de cold starts en frontend vía mocks automáticos locales y actualización de stack. |
 
 ### ACTA DE APROBACIÓN TÉCNICA (SIGN-OFF)
 | Rol Operativo | Célula de Trabajo | Integrante Asignado | Estado de Revisión | Firma / Fecha |
@@ -76,7 +77,7 @@ quadrantChart
 | ID | Categoría | Descripción del Riesgo | Prob. | Imp. | Sev. | Célula Responsable | Estrategia de Mitigación Preventiva |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | **R-01** | Extracción / Red | **Bloqueo Anti-Bot / WAF en Portales E-Commerce:** Detección de tráfico automatizado mediante HTTP 403 (Cloudflare) o HTTP 429 (Rate Limit). | 3 | 3 | **9 (Crítica)** | `E-Scrapper` | (1) Reintentos micro (máx. 3) con Exponential Backoff y Full Jitter ($2\text{s}$ a $30\text{s}$). (2) Respeto estricto a cabecera `Retry-After`. (3) Rotación de `User-Agent`, mutación de viewport y proxies. (4) Activación de Circuit Breaker tras 5 fallos consecutivos para evitar el baneo de IP y paso a contingencia offline. |
-| **R-02** | Infraestructura | **Agotamiento de Cuotas Cloud y Cold Starts en Tiers Gratuitos:** Agotar los 750h/mes o límites de memoria (512MB RAM) en Render/Fly.io por ejecutar navegadores headless o tener contenedores caídos. | 3 | 2 | **6 (Alta)** | Todo el Equipo | **Estrategia Local-First & Flags Chromium:** Ejecución y pruebas locales con Docker Compose durante Sprints 1 a 3. Optimización de Playwright .NET con flags `--no-sandbox`, `--disable-dev-shm-usage` y bloqueo de descarga de imágenes/fuentes para prevenir *OOM Kills*. |
+| **R-02** | Infraestructura | **Agotamiento de Cuotas Cloud y Cold Starts en Tiers Gratuitos:** Agotar los 750h/mes o límites de memoria (512MB RAM) en Render/Fly.io por ejecutar navegadores headless o tener contenedores caídos. | 3 | 2 | **6 (Alta)** | Todo el Equipo | **Estrategia Local-First, Neon Cloud & Flags Chromium:** Ejecución y pruebas locales con Docker Compose durante Sprints 1 a 3. Compatibilidad con Neon Cloud Serverless PG16 para base de datos. Modo mock transparente en Frontend Next.js para independencia total de cold starts del backend. Optimización de Playwright .NET con flags `--no-sandbox`, `--disable-dev-shm-usage` y bloqueo de descarga de imágenes/fuentes para prevenir *OOM Kills*. |
 | **R-03** | Datos / Divisas | **Caída o Cambio de Contrato de APIs de Cotización Financiera:** Que DolarAPI o Bluelytics dejen de responder o cambien la estructura de su JSON intempestivamente. | 2 | 3 | **6 (Alta)** | `E-API` | Implementación del **patrón Multi-Provider Fallback**: si DolarAPI falla, el cron consulta Bluelytics. Si ambas caen, entra en juego el **Fallback Cambiario de 72h** (`cotizacion_aproximada: true`). A las 72h+1s se aplica corte a `SIN_DATO` (RN-03). |
 | **R-04** | Rendimiento UI | **Degradación del Navegador y Caída de FPS en Consultas Anuales:** Transferir y pintar más de 1.400 puntos por gráfica satura la memoria del navegador y congela el scroll en Next.js. | 2 | 2 | **4 (Media)** | `E-API` / `E-F/UX/UI` | Implementación de **Downsampling Semanal Obligatorio (HU-47 / RN-07)** para períodos $> 90$ días mediante la vista continua `agg_precios_semanales` en TimescaleDB, garantizando renderizado fluido a 60 FPS con un máximo de 53 puntos. |
 | **R-05** | Integridad Numérica | **Contaminación Estadística por Inyección de Cero (RN-04):** Que un scraper o servicio de backend interprete una falta de stock como `$0.00`, distorsionando la mediana y el historial económico. | 1 | 3 | **3 (Media)** | `E-API` / `E-DB` | Blindaje en tres niveles: (1) Constraint en base de datos `chk_consistencia_dato`, (2) DTO de validación en NestJS arrojando HTTP 422 RFC 7807, y (3) Caso de prueba bloqueante `TC-MATH-03`. |

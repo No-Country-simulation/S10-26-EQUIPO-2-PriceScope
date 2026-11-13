@@ -152,11 +152,11 @@ export function TraceabilityObservationsTable({
           <div className="flex items-center gap-2">
             <RiHistoryLine className="size-4 text-slate-700" aria-hidden="true" />
             <h2 className="text-sm font-bold text-slate-900">
-              Registro Histórico de Observaciones Diarias (Append-Only)
+              Registro Histórico de Observaciones Diarias
             </h2>
           </div>
           <p className="mt-0.5 text-[11px] text-slate-500">
-            Serie inmutable certificada. Prohibido el uso de cero (0) ante faltantes.
+            Detalle cronológico de capturas de precios y condiciones comerciales relevadas
           </p>
         </div>
 

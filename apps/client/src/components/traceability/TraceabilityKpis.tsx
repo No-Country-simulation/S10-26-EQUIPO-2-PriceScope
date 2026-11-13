@@ -7,7 +7,9 @@ import type { ObservacionTrazabilidadItem, ProductoCanonicoDetalle } from "@/typ
 export interface TraceabilityKpisProps {
   product: ProductoCanonicoDetalle;
   latestObservation?: ObservacionTrazabilidadItem | null;
+  divergencePricePct?: string;
   divergenceDelta?: string;
+  divergenceVariant?: "error" | "warning" | "default";
   isLoading?: boolean;
 }
 
@@ -18,13 +20,15 @@ export interface TraceabilityKpisProps {
 export function TraceabilityKpis({
   product,
   latestObservation,
-  divergenceDelta = "+5.0 pts",
+  divergencePricePct = "+0.0%",
+  divergenceDelta = "+0.0 pts",
+  divergenceVariant = "default",
   isLoading = false,
 }: TraceabilityKpisProps) {
   const regularPrice = latestObservation?.precio_regular ?? null;
   const unitPrice = latestObservation?.precio_por_unidad ?? null;
   const unitMeasure = latestObservation?.unidad_medida ?? product.contenido_neto_unidad;
-  const benchmarkRate = latestObservation?.cotizacion_aplicada ?? 1200;
+  const benchmarkRate = latestObservation?.cotizacion_aplicada ?? null;
   const isApprox = latestObservation?.cotizacion_aproximada ?? false;
 
   return (
@@ -59,10 +63,10 @@ export function TraceabilityKpis({
       <KpiCard
         className="h-full"
         title="Divergencia vs Divisa"
-        metric="+25.0%"
+        metric={divergencePricePct}
         subtitle="Precio supera a la divisa cambiaria"
         badgeText={divergenceDelta}
-        badgeVariant="warning"
+        badgeVariant={divergenceVariant}
         accent="amber"
         footerLabel="Base cambiaria"
         footerValue="ARS vs USD"
@@ -73,7 +77,7 @@ export function TraceabilityKpis({
       <KpiCard
         className="h-full"
         title="Cotización Benchmark"
-        metric={formatCurrency(benchmarkRate)}
+        metric={benchmarkRate ? formatCurrency(benchmarkRate) : "--"}
         subtitle={isApprox ? "Valor estimado por cercanía" : "Cierre oficial del mercado"}
         icon={<RiCoinLine className="size-4" aria-hidden="true" />}
         accent="emerald"

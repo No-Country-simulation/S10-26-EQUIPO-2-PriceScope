@@ -1,6 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { PipelineService } from '../pipeline/pipeline.service';
+import { CierreCambiarioService } from '../currency/cierre-cambiario.service';
 import { GetDashboardDto } from './dto/get-dashboard.dto';
 import {
   CategoriaDbRow,
@@ -20,7 +21,8 @@ export class DashboardService {
   constructor(
     private readonly db: DatabaseService,
     private readonly pipelineService: PipelineService,
-  ) {}
+    private readonly cierreCambiario: CierreCambiarioService,
+  ) { }
 
   async getDashboardData(dto: GetDashboardDto): Promise<DashboardResponse> {
     const { fechaDesde, fechaHasta, diffDays } = this.resolveAndValidateDates(dto);
@@ -104,16 +106,21 @@ export class DashboardService {
     desde: Date,
     hasta: Date,
   ): Promise<CategoriaDbRow[]> {
-    const conditions = ['op.timestamp_utc >= $1', 'op.timestamp_utc <= $2'];
+    const opConditions = ['op.timestamp_utc >= $1', 'op.timestamp_utc <= $2'];
     const params: (string | number)[] = [desde.toISOString(), hasta.toISOString()];
     let pIdx = 3;
 
     if (dto.tienda_id) {
-      conditions.push(`op.tienda_id = $${pIdx++}`);
+      opConditions.push(
+        `op.tienda_id IN (SELECT id FROM tiendas WHERE id::text = $${pIdx} OR slug = $${pIdx})`,
+      );
       params.push(dto.tienda_id);
+      pIdx++;
     }
+    const whereClause = dto.categoria_id
+      ? `WHERE (c.id::text = $${pIdx++} OR c.slug = $${pIdx - 1})`
+      : '';
     if (dto.categoria_id) {
-      conditions.push(`pc.categoria_id = $${pIdx++}`);
       params.push(dto.categoria_id);
     }
 
@@ -132,7 +139,8 @@ export class DashboardService {
       FROM categorias c
       LEFT JOIN productos_canonicos pc ON pc.categoria_id = c.id
       LEFT JOIN observaciones_precios op ON op.producto_canonico_id = pc.id 
-        AND ${conditions.join(' AND ')}
+        AND ${opConditions.join(' AND ')}
+      ${whereClause}
       GROUP BY c.id, c.nombre
       ORDER BY c.nombre ASC;
     `;
@@ -152,12 +160,16 @@ export class DashboardService {
     let pIdx = 3;
 
     if (dto.tienda_id) {
-      conditions.push(`op.tienda_id = $${pIdx++}`);
+      conditions.push(
+        `op.tienda_id IN (SELECT id FROM tiendas WHERE id::text = $${pIdx} OR slug = $${pIdx})`,
+      );
       params.push(dto.tienda_id);
+      pIdx++;
     }
     if (dto.categoria_id) {
-      conditions.push(`pc.categoria_id = $${pIdx++}`);
+      conditions.push(`(c.id::text = $${pIdx} OR c.slug = $${pIdx})`);
       params.push(dto.categoria_id);
+      pIdx++;
     }
 
     const query = downsampling
@@ -173,24 +185,27 @@ export class DashboardService {
           NULL::text AS motivo
         FROM observaciones_precios op
         JOIN productos_canonicos pc ON op.producto_canonico_id = pc.id
+        JOIN categorias c ON pc.categoria_id = c.id
         WHERE ${conditions.join(' AND ')} AND op.precio_regular IS NOT NULL
         GROUP BY date_trunc('week', op.timestamp_utc)
         ORDER BY timestamp_utc ASC;
       `
       : `
         SELECT 
-          op.timestamp_utc,
-          op.precio_regular,
-          op.precio_promocional,
-          (op.precio_regular / NULLIF(op.cotizacion_aplicada, 0))::numeric(14,2) AS precio_usd,
-          op.estado_dato,
-          op.cotizacion_aplicada,
-          op.cotizacion_aproximada,
-          op.motivo_faltante AS motivo
+          date_trunc('day', op.timestamp_utc) AS timestamp_utc,
+          percentile_cont(0.5) WITHIN GROUP (ORDER BY op.precio_regular)::numeric(14,2) AS precio_regular,
+          NULL::numeric(14,2) AS precio_promocional,
+          percentile_cont(0.5) WITHIN GROUP (ORDER BY (op.precio_regular / NULLIF(op.cotizacion_aplicada, 0)))::numeric(14,2) AS precio_usd,
+          'DATO_VALIDO'::text AS estado_dato,
+          AVG(op.cotizacion_aplicada)::numeric(12,4) AS cotizacion_aplicada,
+          bool_or(op.cotizacion_aproximada) AS cotizacion_aproximada,
+          NULL::text AS motivo
         FROM observaciones_precios op
         JOIN productos_canonicos pc ON op.producto_canonico_id = pc.id
-        WHERE ${conditions.join(' AND ')}
-        ORDER BY op.timestamp_utc ASC;
+        JOIN categorias c ON pc.categoria_id = c.id
+        WHERE ${conditions.join(' AND ')} AND op.precio_regular IS NOT NULL
+        GROUP BY date_trunc('day', op.timestamp_utc)
+        ORDER BY timestamp_utc ASC;
       `;
 
     const res = await this.db.query(query, params);
@@ -198,14 +213,12 @@ export class DashboardService {
   }
 
   private async fetchCurrencyRates(desde: Date, hasta: Date): Promise<CotizacionDbRow[]> {
-    const query = `
-      SELECT venta::numeric AS cotizacion, timestamp_utc
-      FROM cotizaciones_divisas
-      WHERE tipo = 'parallel' AND condicion = 'venta'
-        AND timestamp_utc >= $1 AND timestamp_utc <= $2
-      ORDER BY timestamp_utc ASC;
-    `;
-    const res = await this.db.query(query, [desde.toISOString(), hasta.toISOString()]);
-    return res.rows as CotizacionDbRow[];
+    const { inicial, final } = await this.cierreCambiario.obtenerVariacionPeriodo(desde, hasta);
+    if (inicial.cotizacionAplicada === null || final.cotizacionAplicada === null) return [];
+
+    return [
+      { cotizacion: inicial.cotizacionAplicada, timestamp_utc: desde },
+      { cotizacion: final.cotizacionAplicada, timestamp_utc: hasta },
+    ];
   }
 }

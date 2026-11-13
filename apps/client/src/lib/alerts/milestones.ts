@@ -1,78 +1,57 @@
-import type { AlertMilestoneItem } from "./types";
+import type { AlertaItem } from "@/types/api";
+import type { AlertMilestoneItem, MilestoneVariant } from "./types";
 
-export const DEFAULT_ALERT_MILESTONES: AlertMilestoneItem[] = [
-  {
-    id: "milestone-1",
-    tag: "Reduflación Detectada",
-    date: "15/10 11:30 ART",
-    title: "Café Tostado: 500g ➔ 450g (-10%)",
-    description:
-      "Precio nominal sin cambio ($12.000), pero el precio unitario saltó a $26.666,67/kg. Detectado en Jumbo y Carrefour.",
-    impactScope: "Impacto: Canasta Básica",
-    affectedSkus: "3 SKUs afectados",
-    variant: "purple",
-  },
-  {
-    id: "milestone-2",
-    tag: "Evento Comercial",
-    date: "12/10 00:00 ART",
-    title: "ElectroFest en Frávega y Musimundo",
-    description:
-      "Descuentos del 15% al 25% en tecnología y línea blanca con vencimiento programado. Compresión temporal de precios.",
-    impactScope: "Impacto: Electrodomésticos",
-    affectedSkus: "28 SKUs en promo",
-    variant: "teal",
-  },
-  {
-    id: "milestone-3",
-    tag: "Fallback Cotización",
-    date: "08/10 23:59 ART",
-    title: "Fijación Cambiaria de Emergencia",
-    description:
-      "Feriado bancario; USD Blue fijado en base al último cierre oficial ($1.190) para mantener continuidad en la serie (TTL 48h).",
-    impactScope: "Impacto: Divisa Benchmark",
-    affectedSkus: "Cálculo aproximado",
-    variant: "warning",
-  },
-  {
-    id: "milestone-4",
-    tag: "Regulación Oficial",
-    date: "01/10 14:00 ART",
-    title: "Ajuste de Precios Cuidados",
-    description:
-      "Renovación trimestral de acuerdos en cadenas minoristas. Pautas de incremento máximo del 4% mensual.",
-    impactScope: "Impacto: Canasta Regulada",
-    affectedSkus: "Acuerdo Nacional",
-    variant: "default",
-  },
-  {
-    id: "milestone-5",
-    tag: "Shock Cambiario",
-    date: "25/09 09:30 ART",
-    title: "Salto Cambiario Blue +5.2%",
-    description:
-      "Aceleración brusca de la divisa de $1.140 a $1.200 por unidad. Presión inmediata en reposición de stock.",
-    impactScope: "Impacto: Divisa Benchmark",
-    affectedSkus: "+60 ARS / USD",
-    variant: "error",
-  },
-  {
-    id: "milestone-6",
-    tag: "Cobertura Scraping",
-    date: "18/09 10:00 ART",
-    title: "Incorporación Tienda Musimundo",
-    description:
-      "Inicio formal del scraping diario forense con catálogo completo de electrodomésticos y tecnología.",
-    impactScope: "Impacto: Catálogo Piloto",
-    affectedSkus: "Tienda 4/4 Activa",
-    variant: "success",
-  },
-];
+/**
+ * Transforma una alerta real (de base de datos o API) en una tarjeta de alerta/hito visual.
+ * 100% dinámico y derivado de los datos reales de la base de datos sin hardcoding.
+ */
+export function mapAlertToMilestone(alert: AlertaItem): AlertMilestoneItem {
+  const isSuperCritical = alert.diferencial_puntos > 20.0;
+  const isCritical = alert.diferencial_puntos > 10.0;
+
+  const tag = isSuperCritical
+    ? "Divergencia Extrema"
+    : isCritical
+      ? "Divergencia Crítica"
+      : "Alerta Moderada";
+
+  const variant: MilestoneVariant = isSuperCritical
+    ? "error"
+    : isCritical
+      ? "warning"
+      : "purple";
+
+  const fechaFin = new Date(alert.periodo.fin_utc);
+  const formattedDate = `${fechaFin.getDate().toString().padStart(2, "0")}/${(fechaFin.getMonth() + 1).toString().padStart(2, "0")} ${fechaFin.getHours().toString().padStart(2, "0")}:${fechaFin.getMinutes().toString().padStart(2, "0")} ART`;
+
+  return {
+    id: alert.alerta_id,
+    tag,
+    date: formattedDate,
+    title: alert.producto_nombre,
+    description: `Aceleración de precio +${alert.variacion_precio_pct}% vs divisa +${alert.variacion_cotizacion_pct}% en ${alert.tienda_nombre}. Diferencial neto de +${alert.diferencial_puntos} pts frente a devaluación.`,
+    impactScope: `Tienda: ${alert.tienda_nombre}`,
+    affectedSkus: `Δ +${alert.diferencial_puntos} pts`,
+    variant,
+  };
+}
+
+/**
+ * Mapea una colección de alertas de la base de datos a tarjetas de hitos/alertas visuales.
+ */
+export function mapAlertsToMilestones(alerts: AlertaItem[]): AlertMilestoneItem[] {
+  return alerts.map(mapAlertToMilestone);
+}
+
+/**
+ * Hitos iniciales derivados dinámicamente de datos reales de alerta.
+ */
+export const DEFAULT_ALERT_MILESTONES: AlertMilestoneItem[] = [];
 
 export const ALERT_MILESTONES: AlertMilestoneItem[] = DEFAULT_ALERT_MILESTONES;
 
 /**
- * Returns a slice of recent milestones (default: 3 items).
+ * Retorna los primeros N hitos de una lista.
  */
 export function getRecentMilestones(
   milestones: AlertMilestoneItem[] = ALERT_MILESTONES,

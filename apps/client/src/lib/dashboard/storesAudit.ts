@@ -8,23 +8,14 @@ export interface StoresAuditOptions {
   baseBasketArs?: number;
   variationArs?: number;
   variationUsd?: number;
+  hasNoData?: boolean;
+  isSingleDay?: boolean;
 }
 
 /**
  * Resuelve el tag o categoría comercial de la tienda a partir de su nombre o identificador.
  */
-function resolveStoreTag(storeName: string): string {
-  const normalized = storeName
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-  if (
-    normalized.includes("fravega") ||
-    normalized.includes("musimundo") ||
-    normalized.includes("electro")
-  ) {
-    return "Electrodomésticos";
-  }
+function resolveStoreTag(): string {
   return "Almacén / Retail";
 }
 
@@ -41,23 +32,30 @@ export function getPilotStoresAuditRows(
 ): PilotStoreAuditRow[] {
   const isUsdMode = currency !== "ARS";
   const rate = currency === "USD_OFICIAL" ? exchangeRate * 0.78 : exchangeRate;
-  const baseCost = options.baseBasketArs ?? 142500;
-  const baseVarArs = options.variationArs ?? 24.8;
-  const baseVarUsd = options.variationUsd ?? 4.8;
+
+  const isNoData = Boolean(options.hasNoData || options.baseBasketArs === 0);
+  const isOneDay = Boolean(options.isSingleDay || options.variationArs === 0);
+
+  const baseCost = isNoData ? 0 : (options.baseBasketArs ?? 0);
+  const baseVarArs = isNoData || isOneDay ? 0 : (options.variationArs ?? 0);
+  const baseVarUsd = isNoData || isOneDay ? 0 : (options.variationUsd ?? 0);
 
   return tiendas.map((store) => {
-    const tag = resolveStoreTag(store.nombre);
-    const categoryFactor = tag === "Electrodomésticos" ? 3.4 : 1.0;
-    const storeBasketArs = Math.round(baseCost * categoryFactor);
+    const tag = resolveStoreTag();
+    const storeBasketArs = baseCost;
 
-    const formattedBasketCost = isUsdMode
-      ? `US$ ${(storeBasketArs / rate).toFixed(2)}`
-      : `$${storeBasketArs.toLocaleString("es-AR")}`;
+    const formattedBasketCost = isNoData
+      ? (isUsdMode ? "US$ 0.00" : "$0")
+      : isUsdMode
+        ? `US$ ${(storeBasketArs / rate).toFixed(2)}`
+        : `$${storeBasketArs.toLocaleString("es-AR")}`;
 
-    const storeVarUsd = currency === "USD_OFICIAL" ? baseVarUsd * 1.1 : baseVarUsd;
-    const formattedMonthlyVariation = isUsdMode
-      ? `+${storeVarUsd.toFixed(1)}%`
-      : `+${baseVarArs.toFixed(1)}%`;
+    const formattedMonthlyVariation =
+      isNoData || isOneDay || baseVarArs === 0
+        ? "0.0%"
+        : isUsdMode
+          ? `${baseVarUsd > 0 ? "+" : ""}${baseVarUsd.toFixed(1)}%`
+          : `${baseVarArs > 0 ? "+" : ""}${baseVarArs.toFixed(1)}%`;
 
     const dateObj = new Date(store.ultima_corrida_utc);
     const hoursArt = String((dateObj.getUTCHours() + 21) % 24).padStart(2, "0");

@@ -1,10 +1,55 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildAlertsSearchParams,
-  filterMockAlerts,
   getAlertsData,
   getAlertsMilestones,
 } from "../../src/services/alerts.service";
+import type { AlertsResponse } from "../../src/types/api";
+
+const mockResponse: AlertsResponse = {
+  paginacion: {
+    pagina_actual: 1,
+    limite_por_pagina: 50,
+    total_registros: 2,
+    total_paginas: 1,
+  },
+  alertas: [
+    {
+      alerta_id: "alt-20261108-001",
+      producto_canonico_id: "05f3c7d2-77c2-4e71-953d-de677ecb985f",
+      producto_nombre: "Mayonesa NATURA Pouch 475 Gr",
+      tienda_nombre: "Jumbo Argentina",
+      periodo: {
+        inicio_utc: "2026-10-09T22:08:42.710Z",
+        fin_utc: "2026-11-07T22:08:42.710Z",
+      },
+      variacion_precio_pct: 41.7,
+      variacion_cotizacion_pct: 18.8,
+      diferencial_puntos: 22.9,
+      cotizacion_usada_cierre: 1431.75,
+      cobertura_pct: 100,
+      regla_faltantes: "LOCF",
+      tipo_alerta: "PRECIO_SUPERA_DEVALUACION",
+    },
+    {
+      alerta_id: "alt-20261108-002",
+      producto_canonico_id: "05f3c7d2-77c2-4e71-953d-de677ecb985f",
+      producto_nombre: "Heladera Samsung RT29",
+      tienda_nombre: "Disco Argentina",
+      periodo: {
+        inicio_utc: "2026-10-09T22:08:42.710Z",
+        fin_utc: "2026-11-07T22:08:42.710Z",
+      },
+      variacion_precio_pct: 24.5,
+      variacion_cotizacion_pct: 18.8,
+      diferencial_puntos: 5.7,
+      cotizacion_usada_cierre: 1431.75,
+      cobertura_pct: 95,
+      regla_faltantes: "LOCF",
+      tipo_alerta: "PRECIO_SUPERA_DEVALUACION",
+    },
+  ],
+};
 
 describe("Alerts Service - buildAlertsSearchParams", () => {
   it("serializa correctamente los parámetros definidos omitiendo valores 'all'", () => {
@@ -13,7 +58,7 @@ describe("Alerts Service - buildAlertsSearchParams", () => {
       limit: 25,
       fecha_desde: "2026-09-01",
       fecha_hasta: "2026-09-30",
-      tienda_id: "carrefour",
+      tienda_id: "jumbo",
       categoria_id: "all",
       severidad: "danger",
     };
@@ -24,77 +69,56 @@ describe("Alerts Service - buildAlertsSearchParams", () => {
     expect(searchParams.get("limit")).toBe("25");
     expect(searchParams.get("fecha_desde")).toBe("2026-09-01");
     expect(searchParams.get("fecha_hasta")).toBe("2026-09-30");
-    expect(searchParams.get("tienda_id")).toBe("carrefour");
+    expect(searchParams.get("tienda_id")).toBe("jumbo");
     expect(searchParams.get("categoria_id")).toBeNull();
     expect(searchParams.get("severidad")).toBe("danger");
   });
 });
 
-describe("Alerts Service - filterMockAlerts y getAlertsData", () => {
-  it("retorna el dataset completo mock cuando no hay filtros aplicados", () => {
-    const response = filterMockAlerts({});
-    expect(response.alertas.length).toBeGreaterThan(0);
-    expect(response.paginacion.pagina_actual).toBe(1);
-    expect(response.paginacion.total_registros).toBe(response.alertas.length);
-  });
-
-  it("filtra alertas por tienda de forma no sensitiva a mayúsculas", () => {
-    const response = filterMockAlerts({ tienda_id: "jumbo" });
-    expect(response.alertas.length).toBeGreaterThan(0);
-    expect(response.alertas.every((a) => a.tienda_nombre.toLowerCase().includes("jumbo"))).toBe(
-      true
+describe("Alerts Service - getAlertsData y getAlertsMilestones con API real", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockResponse,
+      })
     );
   });
 
-  it("filtra alertas por categoría", () => {
-    const response = filterMockAlerts({ categoria_id: "electro" });
-    expect(response.alertas.length).toBeGreaterThan(0);
-    expect(
-      response.alertas.some(
-        (a) =>
-          a.producto_nombre.toLowerCase().includes("tv") ||
-          a.producto_nombre.toLowerCase().includes("heladera")
-      )
-    ).toBe(true);
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it("filtra alertas por severidad crítica (> 10 pts)", () => {
-    const response = filterMockAlerts({ severidad: "danger" });
-    expect(response.alertas.length).toBeGreaterThan(0);
-    expect(response.alertas.every((a) => a.diferencial_puntos > 10.0)).toBe(true);
-  });
-
-  it("calcula paginación correctamente al especificar límites reducidos", () => {
-    const response = filterMockAlerts({ page: 1, limit: 3 });
-    expect(response.alertas).toHaveLength(3);
-    expect(response.paginacion.pagina_actual).toBe(1);
-    expect(response.paginacion.limite_por_pagina).toBe(3);
-    expect(response.paginacion.total_paginas).toBe(
-      Math.ceil(response.paginacion.total_registros / 3)
-    );
-  });
-
-  it("getAlertsData resuelve una promesa válida con la estructura OpenAPI", async () => {
+  it("getAlertsData resuelve una respuesta tipada válida contra la API", async () => {
     const response = await getAlertsData({ limit: 4 });
     expect(response).toBeDefined();
-    expect(response.paginacion).toBeDefined();
-    expect(Array.isArray(response.alertas)).toBe(true);
-    expect(response.alertas.length).toBeLessThanOrEqual(4);
+    expect(response.paginacion.total_registros).toBe(2);
+    expect(response.alertas).toHaveLength(2);
+    expect(response.alertas[0].producto_nombre).toBe("Mayonesa NATURA Pouch 475 Gr");
   });
-});
 
-describe("Alerts Service - getAlertsMilestones", () => {
-  it("obtiene la lista de hitos contextuales con sus atributos requeridos", async () => {
+  it("getAlertsMilestones mapea las alertas recibidas a hitos formateados", async () => {
     const milestones = await getAlertsMilestones();
     expect(Array.isArray(milestones)).toBe(true);
-    expect(milestones.length).toBeGreaterThanOrEqual(6);
+    expect(milestones).toHaveLength(2);
 
     const first = milestones[0];
-    expect(first).toHaveProperty("id");
-    expect(first).toHaveProperty("tag");
-    expect(first).toHaveProperty("date");
-    expect(first).toHaveProperty("title");
-    expect(first).toHaveProperty("description");
-    expect(first).toHaveProperty("variant");
+    expect(first.title).toBe("Mayonesa NATURA Pouch 475 Gr");
+    expect(first.tag).toBe("Divergencia Extrema");
+    expect(first.variant).toBe("error");
+  });
+
+  it("lanza un error explicativo cuando NEXT_PUBLIC_API_URL no está configurada", async () => {
+    const originalUrl = process.env.NEXT_PUBLIC_API_URL;
+    delete process.env.NEXT_PUBLIC_API_URL;
+
+    try {
+      await expect(getAlertsData()).rejects.toThrow(
+        "NEXT_PUBLIC_API_URL no está configurada en las variables de entorno."
+      );
+    } finally {
+      process.env.NEXT_PUBLIC_API_URL = originalUrl;
+    }
   });
 });

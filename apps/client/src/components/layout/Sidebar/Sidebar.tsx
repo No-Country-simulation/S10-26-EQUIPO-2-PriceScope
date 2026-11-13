@@ -2,7 +2,10 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { RiDashboardLine, RiNotification3Line } from "@remixicon/react";
+import {
+  RiDashboardLine,
+  RiNotification3Line,
+} from "@remixicon/react";
 
 import { useSidebar } from "@/hooks/useSidebar";
 import { SidebarBrandHeader } from "./SidebarBrandHeader";
@@ -24,7 +27,7 @@ export interface SidebarProps {
 
 /**
  * Coordinador principal de la barra lateral ejecutiva de PriceScope.
- * Coordina `SidebarBrandHeader`, `SidebarNavItem`, `SidebarPilotStores`, `SidebarUpcomingPhase` y `SidebarStatusFooter`.
+ * Sincroniza navegación, badges, tiendas y estados entre las 3 páginas oficiales.
  */
 export function Sidebar({ stores, alertCount: propAlertCount }: SidebarProps) {
   const pathname = usePathname();
@@ -39,7 +42,7 @@ export function Sidebar({ stores, alertCount: propAlertCount }: SidebarProps) {
   const effectiveAlertCount = propAlertCount ?? contextAlertCount;
 
   const isDashboard = pathname === "/" || pathname === "/dashboard";
-  const isAlerts = pathname === "/alerts";
+  const isAlerts = pathname.startsWith("/alerts");
 
   return (
     <div

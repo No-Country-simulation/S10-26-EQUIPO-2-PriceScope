@@ -1,5 +1,5 @@
 export type EstadoDato = "DATO_VALIDO" | "AGOTADO" | "ERROR_CAPTURA" | "SIN_DATO";
-export type EstadoSemaforo = "VERDE" | "AMARILLO" | "ROJO";
+export type EstadoSemaforo = "VERDE" | "AMARILLO" | "ROJO" | "GRIS";
 export type Moneda = "ARS" | "USD" | "USD_BLUE" | "USD_OFICIAL";
 
 export interface PaginacionMeta {
@@ -47,6 +47,7 @@ export interface HitoGrafico {
 export interface BandaCalidad {
   fecha: string;
   estado: EstadoSemaforo;
+  porcentaje_completitud?: number;
 }
 
 export interface PipelineTiendaStatus {

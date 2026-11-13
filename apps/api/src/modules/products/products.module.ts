@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { DatabaseModule } from '../../database/database.module';
+import { CurrencyModule } from '../currency/currency.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CurrencyModule],
   controllers: [ProductsController],
   providers: [ProductsService],
   exports: [ProductsService],

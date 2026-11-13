@@ -1,0 +1,65 @@
+name: DevSecOps Automated Security & Quality Guard
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    # Ejecución semanal automatizada (Lunes a las 00:00 UTC) para detectar nuevos CVEs en dependencias existentes
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-audit:
+    name: Security Scan & Vulnerability Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 1. Auditoría de Dependencias (SCA) - apps/client
+      - name: Run NPM Audit (Client)
+        if: hashFiles('apps/client/package.json') != ''
+        working-directory: apps/client
+        run: |
+          npm audit --audit-level=high || echo "::warning title=Vulnerabilities Found::Se detectaron vulnerabilidades en dependencias de apps/client."
+
+      # 2. Análisis Estático de Código (SAST) con Semgrep (OWASP Top 10)
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep SAST Scan (Client)
+        run: semgrep scan --config=auto --error apps/client
+
+      # 3. Verificación Real de Secretos y Credenciales (Gitleaks CLI Open-Source)
+      - name: Install Gitleaks
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar -xz
+          sudo mv gitleaks /usr/local/bin/
+
+      - name: Run Gitleaks Secret Scan
+        run: gitleaks git --verbose --redact
+
+      # 4. Ejecución de Tests de Frontend
+      - name: Install Client Dependencies
+        if: hashFiles('apps/client/package.json') != ''
+        working-directory: apps/client
+        run: npm ci
+
+      - name: Run Client Tests
+        if: hashFiles('apps/client/package.json') != ''
+        working-directory: apps/client
+        run: |
+          npm test --if-present

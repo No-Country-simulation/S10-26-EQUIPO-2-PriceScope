@@ -20,7 +20,7 @@ export interface SidebarNavItemProps {
   /** Indica si el Sidebar está en modo icono contraído. */
   isCollapsed: boolean;
   /** Color de acento del icono cuando la ruta está activa. */
-  accent?: "blue" | "amber";
+  accent?: "blue" | "amber" | "purple";
   /** Contador numérico opcional (ej. alertas activas). */
   badgeCount?: number;
 }
@@ -37,7 +37,12 @@ export function SidebarNavItem({
   accent = "blue",
   badgeCount,
 }: SidebarNavItemProps) {
-  const activeIconColor = accent === "amber" ? "text-amber-400" : "text-blue-400";
+  const activeIconColor =
+    accent === "amber"
+      ? "text-amber-400"
+      : accent === "purple"
+        ? "text-purple-400"
+        : "text-blue-400";
   const hasBadge = typeof badgeCount === "number" && badgeCount > 0;
   const fullLabel = hasBadge ? `${label} (${badgeCount})` : label;
 
@@ -86,7 +91,7 @@ export function SidebarNavItem({
         ) : (
           isActive && (
             <StatusDot
-              variant="blue"
+              variant={accent === "amber" ? "amber" : accent === "purple" ? "purple" : "blue"}
               size="xs"
               className="absolute top-1/2 right-3 -translate-y-1/2 group-data-[collapsible=icon]:hidden"
             />

@@ -4,6 +4,18 @@ import { DashboardService } from './dashboard.service';
 import { PipelineStatusResponse } from '../pipeline/types/pipeline.types';
 
 describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
+  const cierreOk = (valor: number) => ({
+    cotizacionAplicada: valor,
+    esAproximada: false,
+    fuente: 'DolarAPI',
+    estado: 'OK',
+  });
+  const mockCierre = {
+    obtenerVariacionPeriodo: jest
+      .fn<(desde: Date, hasta: Date) => Promise<unknown>>()
+      .mockResolvedValue({ inicial: cierreOk(1000), final: cierreOk(1200), variacionPct: 20 }),
+  };
+
   const mockPipelineStatus: PipelineStatusResponse = {
     estado_global: 'OPERATIVO',
     frescura_general_utc: '2026-11-07T12:00:00Z',
@@ -18,8 +30,7 @@ describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
   };
 
   it('lanza 422 si fecha_desde es posterior a fecha_hasta (RN-09)', async () => {
-    const service = new DashboardService({ query: jest.fn() } as never, mockPipelineService as never);
-
+    const service = new DashboardService({ query: jest.fn() } as never, mockPipelineService as never, mockCierre as never);
     await expect(
       service.getDashboardData({
         fecha_desde: '2026-11-05',
@@ -29,8 +40,7 @@ describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
   });
 
   it('lanza 422 si el rango excede 365 días (RN-09)', async () => {
-    const service = new DashboardService({ query: jest.fn() } as never, mockPipelineService as never);
-
+    const service = new DashboardService({ query: jest.fn() } as never, mockPipelineService as never, mockCierre as never);
     await expect(
       service.getDashboardData({
         fecha_desde: '2025-01-01',
@@ -73,17 +83,14 @@ describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
       },
     ];
 
-    const mockCotiz = [{ cotizacion: '1000' }, { cotizacion: '1200' }];
-
     const query = jest
       .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
       .mockImplementation(async (sql: string) => {
         if (sql.includes('FROM categorias')) return { rows: mockCategorias };
-        if (sql.includes('FROM cotizaciones_divisas')) return { rows: mockCotiz };
         return { rows: mockSeries };
       });
 
-    const service = new DashboardService({ query } as never, mockPipelineService as never);
+    const service = new DashboardService({ query } as never, mockPipelineService as never, mockCierre as never);
 
     const result = await service.getDashboardData({
       fecha_desde: '2026-10-01',
@@ -104,7 +111,7 @@ describe('DashboardService (HU-26..30, HU-47, RN-09)', () => {
       .fn<(sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>>()
       .mockResolvedValue({ rows: [] });
 
-    const service = new DashboardService({ query } as never, mockPipelineService as never);
+    const service = new DashboardService({ query } as never, mockPipelineService as never, mockCierre as never);
 
     const result = await service.getDashboardData({
       fecha_desde: '2026-06-01',

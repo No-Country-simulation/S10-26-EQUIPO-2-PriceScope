@@ -26,7 +26,7 @@ export function formatCurrencyARS(value: number): string {
 }
 
 /**
- * Infers product category name from canonical product name.
+ * Infers product category name from canonical product name or domain context.
  */
 export function inferAlertCategory(productName: string): string {
   const lower = productName.toLowerCase();
@@ -45,27 +45,28 @@ export function inferAlertCategory(productName: string): string {
     lower.includes("tv") ||
     lower.includes("smart") ||
     lower.includes("heladera") ||
-    lower.includes("lavarropas")
+    lower.includes("lavarropas") ||
+    lower.includes("aire")
   ) {
-    return "Electrodomésticos";
+    return "Bienes Durables";
   }
   return "Almacén";
 }
 
 /**
- * Infers currency benchmark rate type and approximation status.
+ * Infers currency benchmark rate type and approximation status directly from alert properties.
  */
 export function inferAlertRateType(alert: AlertaItem): {
   rateType: string;
   isApprox: boolean;
 } {
   const rate = alert.cotizacion_usada_cierre;
-  const isApprox = alert.cobertura_pct < 95 && alert.regla_faltantes === "LOCF" && rate === 1190;
+  const isApprox = alert.cobertura_pct < 90 || alert.regla_faltantes !== "LOCF";
 
   if (rate <= 950) {
     return { rateType: "Oficial", isApprox };
   }
-  if (rate >= 1150 && rate <= 1190 && !isApprox) {
+  if (rate >= 1150 && rate <= 1190) {
     return { rateType: "MEP", isApprox };
   }
   return { rateType: "Blue", isApprox };

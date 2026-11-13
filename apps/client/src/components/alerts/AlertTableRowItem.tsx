@@ -29,7 +29,7 @@ export function AlertTableRowItem({ row }: AlertTableRowItemProps) {
       <TableCell className="px-5 py-3.5">
         <p className="text-xs font-bold text-slate-900">{row.name}</p>
         <p className="mt-0.5 text-[10px] text-slate-400">
-          {row.category} • SKU: {row.id}
+          {row.category ? `${row.category} • ` : ""}SKU: {row.id}
         </p>
       </TableCell>
       <TableCell className="px-4 py-3.5 font-semibold text-slate-800">{row.store}</TableCell>
